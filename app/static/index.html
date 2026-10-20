@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>中医课堂实时字幕</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="bar">
+    <span class="brand">TCM Live Captions</span>
+
+    <div class="dirs" role="group" aria-label="翻译方向">
+      <button class="dir active" data-dir="zh">中文 → EN</button>
+      <button class="dir" data-dir="en">EN → 中文</button>
+    </div>
+
+    <button id="toggle" class="primary">开始</button>
+    <span id="level" class="level" title="麦克风电平"></span>
+    <span id="status" class="status">未连接</span>
+  </header>
+
+  <main class="stage">
+    <div id="scroll" class="scroll">
+      <p class="empty">点「开始」，允许麦克风权限，字幕会从下一句开始出现。</p>
+    </div>
+    <div id="interim" class="interim"></div>
+  </main>
+
+  <footer class="foot">
+    <kbd>空格</kbd> 开始 / 停止　　字幕保留在本页，刷新即清空
+  </footer>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

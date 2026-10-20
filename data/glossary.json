@@ -1,0 +1,1871 @@
+[
+ {
+  "zh": "阴阳",
+  "en": "yin-yang",
+  "category": "theory",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "阴",
+  "en": "yin",
+  "category": "theory",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "阳",
+  "en": "yang",
+  "category": "theory",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "五行",
+  "en": "five phases",
+  "category": "theory",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "木",
+  "en": "wood",
+  "category": "theory",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "火（五行）",
+  "en": "fire",
+  "category": "theory",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "土",
+  "en": "earth",
+  "category": "theory",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "金",
+  "en": "metal",
+  "category": "theory",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "水（五行）",
+  "en": "water",
+  "category": "theory",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "相生",
+  "en": "engendering",
+  "category": "theory",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "相克",
+  "en": "restraining",
+  "category": "theory",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "相乘",
+  "en": "overacting",
+  "category": "theory",
+  "source": "who",
+  "who_hit": false
+ },
+ {
+  "zh": "相侮",
+  "en": "counteracting",
+  "category": "theory",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "阴阳互根",
+  "en": "mutual rooting of yin and yang",
+  "category": "theory",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "阴阳转化",
+  "en": "yin-yang conversion",
+  "category": "theory",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "阴阳消长",
+  "en": "waxing and waning of yin and yang",
+  "category": "theory",
+  "source": "who",
+  "who_hit": false
+ },
+ {
+  "zh": "阴阳失衡",
+  "en": "yin-yang imbalance",
+  "category": "theory",
+  "source": "who",
+  "who_hit": false
+ },
+ {
+  "zh": "五行学说",
+  "en": "five phase theory",
+  "category": "theory",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "精",
+  "en": "essence",
+  "category": "substance",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "气",
+  "en": "qi",
+  "category": "substance",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "血",
+  "en": "blood",
+  "category": "substance",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "津液",
+  "en": "body fluid",
+  "category": "substance",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "神",
+  "en": "spirit",
+  "category": "substance",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "元气",
+  "en": "original qi",
+  "category": "substance",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "宗气",
+  "en": "pectoral qi",
+  "category": "substance",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "营气",
+  "en": "nutrient qi",
+  "category": "substance",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "卫气",
+  "en": "defensive qi",
+  "category": "substance",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "中气",
+  "en": "middle qi",
+  "category": "substance",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "正气",
+  "en": "healthy qi",
+  "category": "substance",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "邪气",
+  "en": "pathogenic qi",
+  "category": "substance",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "气血两虚",
+  "en": "qi and blood deficiency",
+  "category": "pattern",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "气虚",
+  "en": "qi deficiency",
+  "category": "pattern",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "气滞",
+  "en": "qi stagnation",
+  "category": "pathology",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "气逆",
+  "en": "qi counterflow",
+  "category": "pathology",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "气陷",
+  "en": "qi sinking",
+  "category": "pathology",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "气脱",
+  "en": "qi collapse",
+  "category": "pathology",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "血虚",
+  "en": "blood deficiency",
+  "category": "pattern",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "血瘀",
+  "en": "blood stasis",
+  "category": "pathology",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "血热",
+  "en": "blood heat",
+  "category": "pathology",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "血寒",
+  "en": "blood cold",
+  "category": "pathology",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "痰",
+  "en": "phlegm",
+  "category": "pathology",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "饮",
+  "en": "retained fluid",
+  "category": "pathology",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "水湿",
+  "en": "water-dampness",
+  "category": "pathology",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "津亏",
+  "en": "fluid depletion",
+  "category": "pathology",
+  "source": "conv",
+  "who_hit": true
+ },
+ {
+  "zh": "痰湿",
+  "en": "phlegm-dampness",
+  "category": "pathology",
+  "source": "conv",
+  "who_hit": true
+ },
+ {
+  "zh": "痰热",
+  "en": "phlegm-heat",
+  "category": "pathology",
+  "source": "conv",
+  "who_hit": true
+ },
+ {
+  "zh": "痰浊",
+  "en": "phlegm turbidity",
+  "category": "pathology",
+  "source": "conv",
+  "who_hit": true
+ },
+ {
+  "zh": "五脏",
+  "en": "five zang-organs",
+  "category": "organ",
+  "source": "who",
+  "who_hit": false
+ },
+ {
+  "zh": "六腑",
+  "en": "six fu-organs",
+  "category": "organ",
+  "source": "who",
+  "who_hit": false
+ },
+ {
+  "zh": "心",
+  "en": "heart",
+  "category": "organ",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "肝",
+  "en": "liver",
+  "category": "organ",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "脾",
+  "en": "spleen",
+  "category": "organ",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "肺",
+  "en": "lung",
+  "category": "organ",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "肾",
+  "en": "kidney",
+  "category": "organ",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "心包",
+  "en": "pericardium",
+  "category": "organ",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "胆",
+  "en": "gallbladder",
+  "category": "organ",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "胃",
+  "en": "stomach",
+  "category": "organ",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "小肠",
+  "en": "small intestine",
+  "category": "organ",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "大肠",
+  "en": "large intestine",
+  "category": "organ",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "膀胱",
+  "en": "bladder",
+  "category": "organ",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "三焦",
+  "en": "triple energizer",
+  "category": "organ",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "奇恒之腑",
+  "en": "extraordinary fu-organs",
+  "category": "organ",
+  "source": "who",
+  "who_hit": false
+ },
+ {
+  "zh": "脑",
+  "en": "brain",
+  "category": "organ",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "髓",
+  "en": "marrow",
+  "category": "organ",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "骨",
+  "en": "bone",
+  "category": "organ",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "脉",
+  "en": "vessel",
+  "category": "organ",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "女子胞",
+  "en": "uterus",
+  "category": "organ",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "脾胃",
+  "en": "spleen and stomach",
+  "category": "organ",
+  "source": "conv",
+  "who_hit": true
+ },
+ {
+  "zh": "心主神明",
+  "en": "heart governs mental activities",
+  "category": "organ",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "肝主疏泄",
+  "en": "liver governs free flow",
+  "category": "organ",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "脾主运化",
+  "en": "spleen governs transportation and transformation",
+  "category": "organ",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "肝藏血",
+  "en": "liver stores blood",
+  "category": "organ",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "肾藏精",
+  "en": "kidney stores essence",
+  "category": "organ",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "脾统血",
+  "en": "spleen controls blood",
+  "category": "organ",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "心主血脉",
+  "en": "heart governs blood and vessels",
+  "category": "organ",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "肝肾同源",
+  "en": "liver and kidney share the same source",
+  "category": "organ",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "心肾相交",
+  "en": "interaction between heart and kidney",
+  "category": "organ",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "经络",
+  "en": "meridian and collateral",
+  "category": "meridian",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "经脉",
+  "en": "meridian",
+  "category": "meridian",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "络脉",
+  "en": "collateral",
+  "category": "meridian",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "十二正经",
+  "en": "twelve regular meridians",
+  "category": "meridian",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "奇经八脉",
+  "en": "eight extra meridians",
+  "category": "meridian",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "任脉",
+  "en": "Conception Vessel",
+  "category": "meridian",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "督脉",
+  "en": "Governing Vessel",
+  "category": "meridian",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "冲脉",
+  "en": "Penetrating Vessel",
+  "category": "meridian",
+  "source": "who",
+  "who_hit": false
+ },
+ {
+  "zh": "带脉",
+  "en": "Girdling Vessel",
+  "category": "meridian",
+  "source": "who",
+  "who_hit": false
+ },
+ {
+  "zh": "手太阴肺经",
+  "en": "Hand-Taiyin Lung Meridian",
+  "category": "meridian",
+  "source": "who",
+  "who_hit": false
+ },
+ {
+  "zh": "手阳明大肠经",
+  "en": "Hand-Yangming Large Intestine Meridian",
+  "category": "meridian",
+  "source": "who",
+  "who_hit": false
+ },
+ {
+  "zh": "足阳明胃经",
+  "en": "Foot-Yangming Stomach Meridian",
+  "category": "meridian",
+  "source": "who",
+  "who_hit": false
+ },
+ {
+  "zh": "足太阴脾经",
+  "en": "Foot-Taiyin Spleen Meridian",
+  "category": "meridian",
+  "source": "who",
+  "who_hit": false
+ },
+ {
+  "zh": "手少阴心经",
+  "en": "Hand-Shaoyin Heart Meridian",
+  "category": "meridian",
+  "source": "who",
+  "who_hit": false
+ },
+ {
+  "zh": "手太阳小肠经",
+  "en": "Hand-Taiyang Small Intestine Meridian",
+  "category": "meridian",
+  "source": "who",
+  "who_hit": false
+ },
+ {
+  "zh": "足太阳膀胱经",
+  "en": "Foot-Taiyang Bladder Meridian",
+  "category": "meridian",
+  "source": "who",
+  "who_hit": false
+ },
+ {
+  "zh": "足少阴肾经",
+  "en": "Foot-Shaoyin Kidney Meridian",
+  "category": "meridian",
+  "source": "who",
+  "who_hit": false
+ },
+ {
+  "zh": "手厥阴心包经",
+  "en": "Hand-Jueyin Pericardium Meridian",
+  "category": "meridian",
+  "source": "who",
+  "who_hit": false
+ },
+ {
+  "zh": "手少阳三焦经",
+  "en": "Hand-Shaoyang Sanjiao Meridian",
+  "category": "meridian",
+  "source": "who",
+  "who_hit": false
+ },
+ {
+  "zh": "足少阳胆经",
+  "en": "Foot-Shaoyang Gallbladder Meridian",
+  "category": "meridian",
+  "source": "who",
+  "who_hit": false
+ },
+ {
+  "zh": "足厥阴肝经",
+  "en": "Foot-Jueyin Liver Meridian",
+  "category": "meridian",
+  "source": "who",
+  "who_hit": false
+ },
+ {
+  "zh": "腧穴",
+  "en": "acupoint",
+  "category": "meridian",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "六淫",
+  "en": "six excesses",
+  "category": "pathology",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "风",
+  "en": "wind",
+  "category": "pathology",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "寒",
+  "en": "cold",
+  "category": "pathology",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "暑",
+  "en": "summerheat",
+  "category": "pathology",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "湿",
+  "en": "dampness",
+  "category": "pathology",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "燥",
+  "en": "dryness",
+  "category": "pathology",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "热",
+  "en": "heat",
+  "category": "pathology",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "七情",
+  "en": "seven emotions",
+  "category": "pathology",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "喜",
+  "en": "joy",
+  "category": "pathology",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "怒",
+  "en": "anger",
+  "category": "pathology",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "忧",
+  "en": "anxiety",
+  "category": "pathology",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "思",
+  "en": "thought",
+  "category": "pathology",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "悲",
+  "en": "sorrow",
+  "category": "pathology",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "恐",
+  "en": "fear",
+  "category": "pathology",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "惊",
+  "en": "fright",
+  "category": "pathology",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "内伤",
+  "en": "internal damage",
+  "category": "pathology",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "疠气",
+  "en": "pestilential qi",
+  "category": "pathology",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "病机",
+  "en": "pathogenesis",
+  "category": "pathology",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "传变",
+  "en": "transmission and transformation",
+  "category": "pathology",
+  "source": "conv",
+  "who_hit": true
+ },
+ {
+  "zh": "正邪相争",
+  "en": "struggle between healthy qi and pathogenic qi",
+  "category": "pathology",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "虚实夹杂",
+  "en": "deficiency-excess complex",
+  "category": "pathology",
+  "source": "conv",
+  "who_hit": true
+ },
+ {
+  "zh": "四诊",
+  "en": "four diagnostic methods",
+  "category": "diagnosis",
+  "source": "who",
+  "who_hit": false
+ },
+ {
+  "zh": "望诊",
+  "en": "inspection",
+  "category": "diagnosis",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "闻诊",
+  "en": "listening and smelling",
+  "category": "diagnosis",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "问诊",
+  "en": "inquiry",
+  "category": "diagnosis",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "切诊",
+  "en": "palpation",
+  "category": "diagnosis",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "舌诊",
+  "en": "tongue diagnosis",
+  "category": "diagnosis",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "舌质",
+  "en": "tongue body",
+  "category": "diagnosis",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "舌苔",
+  "en": "tongue coating",
+  "category": "diagnosis",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "脉诊",
+  "en": "pulse diagnosis",
+  "category": "diagnosis",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "脉象",
+  "en": "pulse image",
+  "category": "diagnosis",
+  "source": "who",
+  "who_hit": false
+ },
+ {
+  "zh": "浮脉",
+  "en": "floating pulse",
+  "category": "diagnosis",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "沉脉",
+  "en": "deep pulse",
+  "category": "diagnosis",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "迟脉",
+  "en": "slow pulse",
+  "category": "diagnosis",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "数脉",
+  "en": "rapid pulse",
+  "category": "diagnosis",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "虚脉",
+  "en": "vacuous pulse",
+  "category": "diagnosis",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "实脉",
+  "en": "replete pulse",
+  "category": "diagnosis",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "滑脉",
+  "en": "slippery pulse",
+  "category": "diagnosis",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "涩脉",
+  "en": "choppy pulse",
+  "category": "diagnosis",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "弦脉",
+  "en": "wiry pulse",
+  "category": "diagnosis",
+  "source": "who",
+  "who_hit": false
+ },
+ {
+  "zh": "舌红",
+  "en": "red tongue",
+  "category": "diagnosis",
+  "source": "conv",
+  "who_hit": true
+ },
+ {
+  "zh": "舌淡",
+  "en": "pale tongue",
+  "category": "diagnosis",
+  "source": "conv",
+  "who_hit": true
+ },
+ {
+  "zh": "苔黄",
+  "en": "yellow coating",
+  "category": "diagnosis",
+  "source": "conv",
+  "who_hit": true
+ },
+ {
+  "zh": "苔白",
+  "en": "white coating",
+  "category": "diagnosis",
+  "source": "conv",
+  "who_hit": true
+ },
+ {
+  "zh": "苔腻",
+  "en": "greasy coating",
+  "category": "diagnosis",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "八纲",
+  "en": "eight principles",
+  "category": "diagnosis",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "表",
+  "en": "exterior",
+  "category": "diagnosis",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "里",
+  "en": "interior",
+  "category": "diagnosis",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "虚",
+  "en": "deficiency",
+  "category": "diagnosis",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "实",
+  "en": "excess",
+  "category": "diagnosis",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "表证",
+  "en": "exterior pattern",
+  "category": "diagnosis",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "里证",
+  "en": "interior pattern",
+  "category": "diagnosis",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "寒证",
+  "en": "cold pattern",
+  "category": "diagnosis",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "热证",
+  "en": "heat pattern",
+  "category": "diagnosis",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "虚证",
+  "en": "deficiency pattern",
+  "category": "diagnosis",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "实证",
+  "en": "excess pattern",
+  "category": "diagnosis",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "半表半里",
+  "en": "half-exterior half-interior",
+  "category": "diagnosis",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "寒热错杂",
+  "en": "cold-heat complex",
+  "category": "diagnosis",
+  "source": "conv",
+  "who_hit": true
+ },
+ {
+  "zh": "辨证论治",
+  "en": "pattern identification and treatment",
+  "category": "diagnosis",
+  "source": "who",
+  "who_hit": false
+ },
+ {
+  "zh": "证候",
+  "en": "pattern",
+  "category": "diagnosis",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "六经辨证",
+  "en": "six-meridian pattern identification",
+  "category": "diagnosis",
+  "source": "conv",
+  "who_hit": true
+ },
+ {
+  "zh": "三焦辨证",
+  "en": "sanjiao pattern identification",
+  "category": "diagnosis",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "卫气营血辨证",
+  "en": "wei-qi-ying-xue pattern identification",
+  "category": "diagnosis",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "肝气郁结",
+  "en": "liver qi stagnation",
+  "category": "pattern",
+  "source": "conv",
+  "who_hit": true
+ },
+ {
+  "zh": "肝火上炎",
+  "en": "liver fire flaming upward",
+  "category": "pattern",
+  "source": "conv",
+  "who_hit": true
+ },
+ {
+  "zh": "肝阳上亢",
+  "en": "liver yang hyperactivity",
+  "category": "pattern",
+  "source": "conv",
+  "who_hit": true
+ },
+ {
+  "zh": "肝血虚",
+  "en": "liver blood deficiency",
+  "category": "pattern",
+  "source": "conv",
+  "who_hit": true
+ },
+ {
+  "zh": "肝阴虚",
+  "en": "liver yin deficiency",
+  "category": "pattern",
+  "source": "conv",
+  "who_hit": true
+ },
+ {
+  "zh": "脾气虚",
+  "en": "spleen qi deficiency",
+  "category": "pattern",
+  "source": "conv",
+  "who_hit": true
+ },
+ {
+  "zh": "脾阳虚",
+  "en": "spleen yang deficiency",
+  "category": "pattern",
+  "source": "conv",
+  "who_hit": true
+ },
+ {
+  "zh": "脾虚湿困",
+  "en": "spleen deficiency with dampness retention",
+  "category": "pattern",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "心气虚",
+  "en": "heart qi deficiency",
+  "category": "pattern",
+  "source": "conv",
+  "who_hit": true
+ },
+ {
+  "zh": "心阳虚",
+  "en": "heart yang deficiency",
+  "category": "pattern",
+  "source": "conv",
+  "who_hit": true
+ },
+ {
+  "zh": "心血虚",
+  "en": "heart blood deficiency",
+  "category": "pattern",
+  "source": "conv",
+  "who_hit": true
+ },
+ {
+  "zh": "心火亢盛",
+  "en": "heart fire hyperactivity",
+  "category": "pattern",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "心血瘀阻",
+  "en": "heart blood stasis",
+  "category": "pattern",
+  "source": "conv",
+  "who_hit": true
+ },
+ {
+  "zh": "肺气虚",
+  "en": "lung qi deficiency",
+  "category": "pattern",
+  "source": "conv",
+  "who_hit": true
+ },
+ {
+  "zh": "肺阴虚",
+  "en": "lung yin deficiency",
+  "category": "pattern",
+  "source": "conv",
+  "who_hit": true
+ },
+ {
+  "zh": "风寒犯肺",
+  "en": "wind-cold invading lung",
+  "category": "pattern",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "风热犯肺",
+  "en": "wind-heat invading lung",
+  "category": "pattern",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "肾阳虚",
+  "en": "kidney yang deficiency",
+  "category": "pattern",
+  "source": "conv",
+  "who_hit": true
+ },
+ {
+  "zh": "肾阴虚",
+  "en": "kidney yin deficiency",
+  "category": "pattern",
+  "source": "conv",
+  "who_hit": true
+ },
+ {
+  "zh": "肾气不固",
+  "en": "kidney qi insecurity",
+  "category": "pattern",
+  "source": "conv",
+  "who_hit": true
+ },
+ {
+  "zh": "肾精不足",
+  "en": "kidney essence insufficiency",
+  "category": "pattern",
+  "source": "conv",
+  "who_hit": true
+ },
+ {
+  "zh": "胃阴虚",
+  "en": "stomach yin deficiency",
+  "category": "pattern",
+  "source": "conv",
+  "who_hit": true
+ },
+ {
+  "zh": "胃火",
+  "en": "stomach fire",
+  "category": "pattern",
+  "source": "conv",
+  "who_hit": true
+ },
+ {
+  "zh": "痰浊阻肺",
+  "en": "phlegm turbidity obstructing lung",
+  "category": "pattern",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "痰蒙心窍",
+  "en": "phlegm clouding heart orifice",
+  "category": "pattern",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "膀胱湿热",
+  "en": "bladder damp-heat",
+  "category": "pattern",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "太阳伤寒",
+  "en": "Taiyang cold damage",
+  "category": "pattern",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "少阳证",
+  "en": "Shaoyang pattern",
+  "category": "pattern",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "阳明证",
+  "en": "Yangming pattern",
+  "category": "pattern",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "卫分证",
+  "en": "Wei-level pattern",
+  "category": "pattern",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "气分证",
+  "en": "Qi-level pattern",
+  "category": "pattern",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "营分证",
+  "en": "Ying-level pattern",
+  "category": "pattern",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "血分证",
+  "en": "Xue-level pattern",
+  "category": "pattern",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "上热下寒",
+  "en": "upper heat and lower cold",
+  "category": "pattern",
+  "source": "conv",
+  "who_hit": true
+ },
+ {
+  "zh": "心脾两虚",
+  "en": "heart and spleen deficiency",
+  "category": "pattern",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "肝肾阴虚",
+  "en": "liver and kidney yin deficiency",
+  "category": "pattern",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "阴虚火旺",
+  "en": "yin deficiency with hyperactive fire",
+  "category": "pattern",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "阳虚水泛",
+  "en": "yang deficiency with water diffusion",
+  "category": "pattern",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "治则",
+  "en": "treatment principle",
+  "category": "treatment",
+  "source": "conv",
+  "who_hit": true
+ },
+ {
+  "zh": "补",
+  "en": "tonify",
+  "category": "treatment",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "泻",
+  "en": "purge",
+  "category": "treatment",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "温",
+  "en": "warm",
+  "category": "treatment",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "清",
+  "en": "clear heat",
+  "category": "treatment",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "汗法",
+  "en": "diaphoresis",
+  "category": "treatment",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "吐法",
+  "en": "emesis",
+  "category": "treatment",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "下法",
+  "en": "purgation",
+  "category": "treatment",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "和法",
+  "en": "harmonizing method",
+  "category": "treatment",
+  "source": "conv",
+  "who_hit": true
+ },
+ {
+  "zh": "消法",
+  "en": "resolution method",
+  "category": "treatment",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "益气",
+  "en": "replenish qi",
+  "category": "treatment",
+  "source": "conv",
+  "who_hit": true
+ },
+ {
+  "zh": "养血",
+  "en": "nourish blood",
+  "category": "treatment",
+  "source": "conv",
+  "who_hit": true
+ },
+ {
+  "zh": "滋阴",
+  "en": "nourish yin",
+  "category": "treatment",
+  "source": "conv",
+  "who_hit": true
+ },
+ {
+  "zh": "温阳",
+  "en": "warm yang",
+  "category": "treatment",
+  "source": "conv",
+  "who_hit": true
+ },
+ {
+  "zh": "活血化瘀",
+  "en": "invigorate blood and resolve stasis",
+  "category": "treatment",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "行气",
+  "en": "move qi",
+  "category": "treatment",
+  "source": "conv",
+  "who_hit": true
+ },
+ {
+  "zh": "化痰",
+  "en": "resolve phlegm",
+  "category": "treatment",
+  "source": "conv",
+  "who_hit": true
+ },
+ {
+  "zh": "祛湿",
+  "en": "eliminate dampness",
+  "category": "treatment",
+  "source": "conv",
+  "who_hit": true
+ },
+ {
+  "zh": "疏肝",
+  "en": "soothe liver",
+  "category": "treatment",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "健脾",
+  "en": "strengthen spleen",
+  "category": "treatment",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "补肾",
+  "en": "tonify kidney",
+  "category": "treatment",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "清热解毒",
+  "en": "clear heat and resolve toxin",
+  "category": "treatment",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "针灸",
+  "en": "acupuncture and moxibustion",
+  "category": "treatment",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "针刺",
+  "en": "acupuncture",
+  "category": "treatment",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "艾灸",
+  "en": "moxibustion",
+  "category": "treatment",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "拔罐",
+  "en": "cupping",
+  "category": "treatment",
+  "source": "conv",
+  "who_hit": true
+ },
+ {
+  "zh": "推拿",
+  "en": "tuina",
+  "category": "treatment",
+  "source": "conv",
+  "who_hit": true
+ },
+ {
+  "zh": "四君子汤",
+  "en": "Four Gentlemen Decoction",
+  "category": "formula",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "四物汤",
+  "en": "Four Substances Decoction",
+  "category": "formula",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "八珍汤",
+  "en": "Eight Treasure Decoction",
+  "category": "formula",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "六味地黄丸",
+  "en": "Six-Ingredient Rehmannia Pill",
+  "category": "formula",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "桂枝汤",
+  "en": "Cinnamon Twig Decoction",
+  "category": "formula",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "麻黄汤",
+  "en": "Ephedra Decoction",
+  "category": "formula",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "小柴胡汤",
+  "en": "Minor Bupleurum Decoction",
+  "category": "formula",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "逍遥散",
+  "en": "Free Wanderer Powder",
+  "category": "formula",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "补中益气汤",
+  "en": "Decoction for Tonifying the Middle and Benefiting Qi",
+  "category": "formula",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "归脾汤",
+  "en": "Decoction for Restoring Spleen",
+  "category": "formula",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "温胆汤",
+  "en": "Decoction for Warming Gallbladder",
+  "category": "formula",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "玉屏风散",
+  "en": "Jade Windscreen Powder",
+  "category": "formula",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "银翘散",
+  "en": "Lonicera and Forsythia Powder",
+  "category": "formula",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "血府逐瘀汤",
+  "en": "Decoction for Removing Blood Stasis in the Blood Mansion",
+  "category": "formula",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "天王补心丹",
+  "en": "Celestial Emperor Heart-Supplementing Elixir",
+  "category": "formula",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "合谷",
+  "en": "Hegu (LI4)",
+  "category": "acupoint",
+  "source": "who",
+  "who_hit": false
+ },
+ {
+  "zh": "足三里",
+  "en": "Zusanli (ST36)",
+  "category": "acupoint",
+  "source": "who",
+  "who_hit": false
+ },
+ {
+  "zh": "太冲",
+  "en": "Taichong (LR3)",
+  "category": "acupoint",
+  "source": "who",
+  "who_hit": false
+ },
+ {
+  "zh": "三阴交",
+  "en": "Sanyinjiao (SP6)",
+  "category": "acupoint",
+  "source": "who",
+  "who_hit": false
+ },
+ {
+  "zh": "内关",
+  "en": "Neiguan (PC6)",
+  "category": "acupoint",
+  "source": "who",
+  "who_hit": false
+ },
+ {
+  "zh": "百会",
+  "en": "Baihui (GV20)",
+  "category": "acupoint",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "关元",
+  "en": "Guanyuan (CV4)",
+  "category": "acupoint",
+  "source": "who",
+  "who_hit": false
+ },
+ {
+  "zh": "气海",
+  "en": "Qihai (CV6)",
+  "category": "acupoint",
+  "source": "who",
+  "who_hit": false
+ },
+ {
+  "zh": "神门",
+  "en": "Shenmen (HT7)",
+  "category": "acupoint",
+  "source": "who",
+  "who_hit": false
+ },
+ {
+  "zh": "曲池",
+  "en": "Quchi (LI11)",
+  "category": "acupoint",
+  "source": "who",
+  "who_hit": false
+ },
+ {
+  "zh": "阳陵泉",
+  "en": "Yanglingquan (GB34)",
+  "category": "acupoint",
+  "source": "who",
+  "who_hit": false
+ },
+ {
+  "zh": "阴陵泉",
+  "en": "Yinlingquan (SP9)",
+  "category": "acupoint",
+  "source": "who",
+  "who_hit": false
+ },
+ {
+  "zh": "太溪",
+  "en": "Taixi (KI3)",
+  "category": "acupoint",
+  "source": "who",
+  "who_hit": false
+ },
+ {
+  "zh": "风池",
+  "en": "Fengchi (GB20)",
+  "category": "acupoint",
+  "source": "who",
+  "who_hit": false
+ },
+ {
+  "zh": "中脘",
+  "en": "Zhongwan (CV12)",
+  "category": "acupoint",
+  "source": "who",
+  "who_hit": false
+ },
+ {
+  "zh": "血海",
+  "en": "Xuehai (SP10)",
+  "category": "acupoint",
+  "source": "who",
+  "who_hit": false
+ },
+ {
+  "zh": "尺泽",
+  "en": "Chize (LU5)",
+  "category": "acupoint",
+  "source": "who",
+  "who_hit": false
+ },
+ {
+  "zh": "中医",
+  "en": "traditional Chinese medicine",
+  "category": "general",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "中药",
+  "en": "Chinese materia medica",
+  "category": "general",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "本草",
+  "en": "materia medica",
+  "category": "general",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "方剂",
+  "en": "formula",
+  "category": "general",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "四气",
+  "en": "four natures",
+  "category": "general",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "五味",
+  "en": "five flavors",
+  "category": "general",
+  "source": "who",
+  "who_hit": true
+ },
+ {
+  "zh": "归经",
+  "en": "channel tropism",
+  "category": "general",
+  "source": "conv",
+  "who_hit": false
+ },
+ {
+  "zh": "君臣佐使",
+  "en": "sovereign, minister, assistant and courier",
+  "category": "general",
+  "source": "conv",
+  "who_hit": true
+ }
+]

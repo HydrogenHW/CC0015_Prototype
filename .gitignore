@@ -1,0 +1,31 @@
+# 密钥，绝不提交
+.env
+keys.txt
+*.key
+*.pem
+secrets.*
+
+# 虚拟环境与依赖
+.venv/
+vendor/
+
+# 打包产物
+dist/
+
+# 原始资料（2MB PDF，术语表已从中提取成 data/glossary.json）
+data/raw/
+
+# 本地验证产物
+.tmp/
+logs/
+__pycache__/
+*.pyc
+
+# 安装包
+.setup/*.exe
+.setup/*.nupkg
+.setup/*.log
+
+# 系统文件
+Thumbs.db
+.DS_Store
