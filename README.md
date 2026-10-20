@@ -1,140 +1,171 @@
-# 中医课堂实时字幕
+# TCM Lecture Live Captions
 
-把课堂语音实时转成中英双语字幕，术语按 WHO 国际标准译法锁定。
+Real-time bilingual captions for Traditional Chinese Medicine lectures, with terminology locked to the WHO international standard.
 
-在本机运行，浏览器打开 `http://127.0.0.1:8000` 即可使用。
+**English** | [中文](README.zh.md)
 
 ---
 
-## 快速开始
+## The problem
 
-### 1. Python（已就绪）
+A student of Traditional Chinese Medicine whose first language differs from the language of instruction faces two barriers at once.
 
-Python 3.13.16 装在这台机器上了：
+**Speed.** A lecture is a continuous, one-directional stream. Anything missed is lost.
+
+**Terminology.** General-purpose translation tools have no stable rendering for TCM vocabulary. 肝阳上亢, 气血两虚 and 足三里 come out as literal glosses that carry little or no meaning.
+
+The second barrier is the one worth solving. Live captioning is already a commodity; accurately carrying TCM concepts across languages is not.
+
+## How it works
 
 ```
-%LocalAppData%\Programs\Python\Python313
+Browser (localhost:8000)
+  getUserMedia → AudioWorklet → 16 kHz PCM
+        │
+        ▼  WebSocket
+  FastAPI ──► Deepgram streaming ASR
+        │           │
+        │           ▼
+        │      sentence assembly
+        │           │
+        │           ▼
+        │   pinyin homophone repair
+        │           │
+        │           ▼
+        │   GPT-4o-mini + glossary (temperature 0)
+        │
+        ▼
+  bilingual captions
 ```
 
-已加入用户 PATH，项目依赖也装在了 `.venv/` 里，**不需要再做什么**。
+Four ideas do the heavy lifting:
 
-换机器或重装系统时，运行 `.setup\install_python.py` 可以按同样方式装回来
-（官方 NuGet 包，解压即用，不需要管理员权限）。
+**Glossary-constrained translation.** 267 curated terms (11 categories) are injected into the prompt as mandatory renderings, and translation runs at `temperature=0`. A term is rendered identically for the whole lecture — consistency matters more than occasional variety.
 
-### 2. 配置密钥
+**Pinyin homophone repair.** In a noisy room the characteristic ASR failure is homophone substitution (肝阳上亢 → 肝阳上抗). Pronunciation is unchanged, so pinyin recovers the characters locally, with zero added latency. This matters because a mis-recognised term silently loses its mandatory rendering, and translation degrades into improvisation — 气血两需 was once rendered "requires both qi and blood", inverting the meaning.
 
-密钥放在 **Windows 用户环境变量**里，**不写进项目文件**——这样整个文件夹可以安全发给别人。
+**Concurrent translation, ordered output.** Serial translation falls behind lecture pace, the queue grows, and whatever is unfinished at stop time is lost. Translation now runs three-wide, with sequence numbers and a reorder buffer so captions still appear in the order they were spoken.
 
-PowerShell 里执行一次（换成你自己的值）：
+**Two-stage captions.** Interim results appear greyed and get overwritten; finals commit to a bilingual row. Text shows up immediately while the translation lands a moment later.
+
+Measured end-to-end latency: **1.5–2.2 s**.
+
+## Quick start
+
+### Requirements
+
+- Python 3.10+
+- A microphone (built-in is fine, external is much better)
+- Accounts on [Deepgram](https://console.deepgram.com) and [OpenAI](https://platform.openai.com/api-keys)
+
+### Configure API keys
+
+Keys live in **environment variables**, never in the repo:
 
 ```powershell
-[Environment]::SetEnvironmentVariable("DEEPGRAM_API_KEY", "你的key", "User")
-[Environment]::SetEnvironmentVariable("OPENAI_API_KEY", "你的key", "User")
+[Environment]::SetEnvironmentVariable("DEEPGRAM_API_KEY", "your_key", "User")
+[Environment]::SetEnvironmentVariable("OPENAI_API_KEY", "your_key", "User")
 ```
 
-设完重开一个窗口才生效。
+Reopen your terminal afterwards. On macOS/Linux, export them in your shell profile instead.
 
-- Deepgram：<https://console.deepgram.com>，注册即送 200 美元额度，不需要信用卡
-- OpenAI：<https://platform.openai.com/api-keys>
+### Run
 
-> **为什么不放 .env**：`.env` 是明文文件，打包发人或误提交时整份泄露。
-> 现在项目里一个密钥都没有，`tools/pack_for_team.py` 打包前还会再扫一遍文件内容兜底。
+```
+run.bat          # Windows
+```
 
-### 3. 启动
+Then open `http://127.0.0.1:8000`, press **开始**, and allow microphone access.
 
-双击 `run.bat`。首次运行会自动建虚拟环境并装依赖（几分钟），之后秒开。
-
-浏览器会自动打开。点「开始」，允许麦克风权限，说话即有字幕。
-
-> 手动启动（等价）：
+> Manual start:
 > ```bash
 > pip install -r requirements.txt
 > python -m uvicorn app.server:app --host 127.0.0.1 --port 8000
 > ```
 
----
+The address must be `127.0.0.1` or `localhost`. Browsers only grant microphone access in a secure context, and on a LAN IP they fail **silently**.
 
-## 没有密钥？先用假数据看界面
+### No keys? Run on mock data
 
-在 `.env` 里加一行：
+Set `MOCK=1` in `.env`. Nothing external is called; recognition and translation are driven by local fixtures. The UI, scrolling, sentence assembly and glossary matching all work normally — useful for reviewing the interface, or as a fallback if an API misbehaves during a demo.
 
-```
-MOCK=1
-```
+## What is in the box
 
-此时不调用任何外部 API，识别和翻译都由本地假数据驱动，界面、滚动、术语匹配逻辑全部照常工作。适合先验收前端，或者演示当天 API 抽风时兜底。
+| Component | Notes |
+|---|---|
+| Streaming ASR | Deepgram nova-2, ~300 ms to first token |
+| Translation | GPT-4o-mini, glossary-constrained, 3-way concurrent |
+| Glossary | 267 terms, 11 categories, WHO ISTTM (2007) |
+| Homophone repair | pypinyin, local, zero latency |
+| Frontend | Plain HTML/CSS/JS, no build step |
+| Audio | 80 Hz high-pass; browser noise suppression is switchable |
 
----
-
-## 分享给组员
-
-```bash
-python tools/pack_for_team.py
-```
-
-生成 `dist/CC0015-发给组员.zip`（约 0.2 MB，28 个文件），自动排除 `.env`、`keys.txt`、`.venv`、`logs`、原始 PDF。
-
-打包前会扫描所有文件内容，发现疑似密钥就**中止打包**——排除名单可能漏，内容扫描不会。
-
-组员拿到后：装 Python → 设自己的环境变量（或先用 `MOCK=1` 看界面）→ 双击 `run.bat`。
-
-## 目录
+## Project structure
 
 ```
 app/
-├── server.py            FastAPI 入口，WebSocket 桥接
-├── asr.py               Deepgram 流式识别（含 Mock）
-├── segmenter.py         语义分句
-├── glossary.py          术语匹配（长词优先）
-├── translate.py         翻译 + 术语约束
-├── config.py            配置
-└── static/              前端四件套
+├── server.py         FastAPI entry, WebSocket bridge, ordered translation
+├── asr.py            Deepgram streaming client (+ mock)
+├── segmenter.py      sentence assembly
+├── glossary.py       longest-first, non-overlapping term matching
+├── pinyin_fix.py     homophone repair
+├── translate.py      translation with term constraints
+├── config.py         configuration
+└── static/           frontend
 data/
-└── glossary.json        267 条中英术语
+└── glossary.json     267 zh↔en terms
 docs/
-├── implementation_zh.md 实现文档（中文）
-└── implementation_en.md Implementation document (English)
+├── implementation_zh.md
+└── implementation_en.md
 tools/
-├── build_glossary.py    从术语源重建 glossary.json
-├── make_review.py       生成人工复核表
-├── smoke_test.py        端到端冒烟测试（MOCK 模式）
-└── fetch_deps.py        pip 装不上时的备用下载脚本
+├── build_glossary.py  rebuild glossary.json
+├── make_review.py     generate human-review sheet
+├── smoke_test.py      end-to-end test, no keys needed
+├── test_order.py      concurrent translation ordering test
+└── pack_for_team.py   share-safe packaging
 ```
 
-跑冒烟测试（不需要密钥）：
+## Testing
+
+No keys required:
 
 ```bash
-python tools/smoke_test.py
+python tools/smoke_test.py   # end-to-end: speech in, captions out
+python tools/test_order.py   # concurrent translation keeps caption order
 ```
 
----
+## FAQ
 
-## 常见问题
+**Start does nothing / no microphone**
 
-**点开始没反应 / 没有麦克风权限**
+Check the address is `127.0.0.1` or `localhost`. A LAN IP is refused silently.
 
-地址必须是 `127.0.0.1` 或 `localhost`。用局域网 IP（`192.168.x.x`）打开时，浏览器出于安全策略不授予麦克风，且**不会报错**。
+**Grey text appears but never commits**
 
-**有灰色文字但没有正式字幕**
+Recognition works; sentence assembly has not fired. Deepgram finalises on 300 ms of silence, so pause naturally between sentences. If it still lags, lower `SEG_MAX_WAIT` in `app/config.py`.
 
-说明识别在工作、分句没触发。正常说话说完整句即可；如果长时间不出，调小 `config.py` 里的 `SEG_MAX_WAIT`。
+**Captions feel slow**
 
-**字幕出得慢**
+Budget: 100 ms buffering + ~300 ms ASR + up to 1.2 s assembly + ~1 s translation. Lower `SEG_MAX_WAIT` to 0.6 to trade context for speed.
 
-链路预算是 100 ms 缓冲 + 300 ms 识别 + 最长 1.2 s 分句 + 约 1 s 翻译。想更快就把 `SEG_MAX_WAIT` 调到 0.6。
+**Source text without translation**
 
-**翻译不出现，只有原文**
+The backend log will say why. The common cause is exhausted OpenAI quota or an invalid key; the pipeline degrades to source-only rather than stalling.
 
-看后端窗口日志。常见原因是 OpenAI 额度用完或密钥无效——程序会降级为只显示原文，不会中断。
+**Terms not applied**
 
-**术语没被正确使用**
+Matching is exact against `data/glossary.json`. If ASR hears 肝阳上抗 the pinyin repair should catch it — check the log line `[纠字]` to confirm.
 
-`glossary.json` 里的中文必须与识别文本完全一致（含标点差异）。识别把「肝阳上亢」听成「肝阳上抗」时匹配不到，这属于识别问题，不是术语表问题。
+## Terminology
 
----
+267 entries across 11 categories: foundational theory, essence-qi-blood-fluids, zang-fu organs, meridians, aetiology and pathology, diagnostics, patterns, treatment methods, formulas, acupoints, and general vocabulary.
 
-## 术语表
+Renderings follow the **WHO International Standard Terminologies on Traditional Medicine in the Western Pacific Region (2007)**. The standard's full English text was used to verify every entry; 173 of 267 (64.8%) appear verbatim. The rest are combinations the standard does not list, rendered under the same conventions. Entries awaiting human review are marked in `notes/glossary_review.md`.
 
-267 条，11 类，译法以 WHO《西太平洋地区传统医学名词术语国际标准》（2007）为准。
+One known divergence: for the seven emotions, WHO 2007 uses *thought / anxiety / sorrow*, while the widely taught Wiseman convention uses *pensiveness / worry / grief*. This project follows WHO.
 
-构建与校验过程见 `docs/implementation_zh.md` 第 9 节。待人工复核的清单在 `notes/glossary_review.md`。
+## Design documents
+
+- [`docs/implementation_en.md`](docs/implementation_en.md) — full implementation guide
+- [`docs/implementation_zh.md`](docs/implementation_zh.md) — 同一份文档的中文版
+- [`notes/terminology_feasibility.md`](notes/terminology_feasibility.md) — how the glossary was sourced and what could not be obtained
