@@ -59,7 +59,6 @@ class ChatIn(BaseModel):
 
 
 class PresetIn(BaseModel):
-    direction: str = "zh2en"
     name: str
 
 
@@ -142,45 +141,37 @@ async def health():
 
 
 @app.get("/presets")
-async def list_presets(direction: str = "zh2en"):
-    return {
-        "direction": direction,
-        "active": presets.active_id(direction),
-        "items": presets.list(direction),
-    }
+async def list_presets():
+    """预设是双向共用的，不按语言方向分开。"""
+    return {"active": presets.active_id(), "items": presets.list()}
 
 
 @app.post("/presets")
 async def create_preset(payload: PresetIn):
-    preset = presets.create(payload.direction, payload.name)
-    return {"preset": preset, "items": presets.list(payload.direction)}
+    preset = presets.create(payload.name)
+    return {"preset": preset, "items": presets.list()}
 
 
 @app.patch("/presets/{preset_id}")
 async def rename_preset(preset_id: str, payload: RenameIn):
     ok = presets.rename(preset_id, payload.name)
-    found = presets.get(preset_id)
-    direction = found[0] if found else "zh2en"
-    return {"ok": ok, "items": presets.list(direction)}
+    return {"ok": ok, "items": presets.list()}
 
 
 @app.delete("/presets/{preset_id}")
 async def delete_preset(preset_id: str):
-    found = presets.get(preset_id)
-    direction = found[0] if found else "zh2en"
     ok = presets.delete(preset_id)
     return {
         "ok": ok,
         "reason": "" if ok else "至少要保留一个预设",
-        "items": presets.list(direction),
-        "active": presets.active_id(direction),
+        "items": presets.list(),
+        "active": presets.active_id(),
     }
 
 
 @app.post("/presets/{preset_id}/activate")
 async def activate_preset(preset_id: str):
-    ok = presets.activate(preset_id)
-    return {"ok": ok}
+    return {"ok": presets.activate(preset_id)}
 
 
 @app.post("/chat")
@@ -197,22 +188,23 @@ async def chat_reset():
 
 @app.get("/hotwords")
 async def get_hotwords(direction: str = "zh2en"):
+    preset = presets.get(presets.active_id())
     return {
-        "preset": presets.active_name(direction),
-        "total": len(presets.words(direction, limit=999)),
-        "hotwords": presets.words(direction),
+        "preset": presets.active_name(),
+        "total": len(preset["words"]) if preset else 0,
+        "hotwords": presets.words_for(direction, limit=999),
     }
 
 
 @app.post("/hotwords")
 async def set_hotwords(payload: HotwordIn):
-    pid = presets.active_id(payload.direction)
+    pid = presets.active_id()
     added = presets.add_words(pid, payload.add)
     removed = presets.remove_words(pid, payload.remove)
     return {
         "added": added,
         "removed": removed,
-        "preset": presets.active_name(payload.direction),
+        "preset": presets.active_name(),
         "note": "下一次点「开始」时生效",
     }
 
@@ -242,7 +234,7 @@ async def ws_endpoint(ws: WebSocket):
 async def run_session(client: Client, lang: str) -> str | None:
     """跑一次会话。返回新语言表示要切换方向，返回 None 表示结束。"""
     pair = config.DIRECTIONS[lang]["pair"]
-    keywords = presets.words(pair) if config.ASR_KEYWORDS else None
+    keywords = presets.words_for(pair) if config.ASR_KEYWORDS else None
     stream = await asr.connect(config.DIRECTIONS[lang]["dg_lang"], keywords=keywords)
     segmenter = Segmenter(
         max_len=config.SEG_MAX_LEN,

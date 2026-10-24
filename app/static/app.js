@@ -393,7 +393,7 @@
       const dir = btn.dataset.dir;
       if (dir === state.dir) return;
       setDir(dir);
-      loadPresets(dir);          // 每个方向有各自的热词组
+      loadPresets(dir);          // 只更新标签，列表是双向共用的
       // 后端会重建会话，前端连接保持不变
       if (state.ws && state.ws.readyState === WebSocket.OPEN) {
         state.ws.send(JSON.stringify({ type: "lang", value: dir }));
@@ -558,15 +558,16 @@
     });
   }
 
-  async function fetchPresets(dir) {
-    const res = await fetch(`/presets?direction=${pairOf(dir)}`);
+  async function fetchPresets() {
+    const res = await fetch("/presets");
     return res.json();
   }
 
   async function loadPresets(dir = state.dir) {
+    // 预设是双向共用的：切换语言只换标签，列表不变
     presetUI.label.textContent = dir === "zh" ? "预设（中文-En）" : "Preset（En-中文）";
     try {
-      const data = await fetchPresets(dir);
+      const data = await fetchPresets();
       presetUI.select.innerHTML = "";
       for (const p of data.items) {
         const opt = document.createElement("option");
@@ -601,7 +602,7 @@
       await fetch("/presets", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ direction: pairOf(state.dir), name }),
+        body: JSON.stringify({ name }),
       });
       await loadPresets();
       setStatus(`已新建「${name}」`, "ok");
@@ -614,7 +615,7 @@
     const dir = state.dir;
     let data;
     try {
-      data = await fetchPresets(dir);
+      data = await fetchPresets();
     } catch {
       setStatus("读取预设失败", "err");
       return;

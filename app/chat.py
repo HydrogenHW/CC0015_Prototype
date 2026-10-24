@@ -97,11 +97,11 @@ class ChatService:
             return {"reply": "助手未配置密钥（DEEPSEEK_API_KEY）。", "changed": None}
 
         async with self._lock:          # 串行，避免并发改对话历史
-            preset_name = self.presets.active_name(direction)
-            words = self.presets.words(direction, limit=999)
+            preset = self.presets.get(self.presets.active_id()) or {"words": []}
+            preset_name = self.presets.active_name() or "未命名"
             system = SYSTEM.format(
-                preset_name=preset_name or "未命名",
-                hotword_state=f"当前预设「{preset_name}」，共 {len(words)} 个词",
+                preset_name=preset_name,
+                hotword_state=f"当前预设「{preset_name}」，共 {len(preset['words'])} 个词",
             )
             messages = [{"role": "system", "content": system}, *self.history[-self.MAX_TURNS * 2:]]
             messages.append({"role": "user", "content": message})
@@ -168,13 +168,15 @@ class ChatService:
             args = json.loads(tool_call.function.arguments or "{}")
         except ValueError:
             return {"error": "参数解析失败"}
-        pid = self.presets.active_id(direction)
+        # 词不分方向存：加进去的词两边都能用，取用时再按方向筛
+        pid = self.presets.active_id()
         added = self.presets.add_words(pid, args.get("add") or [])
         removed = self.presets.remove_words(pid, args.get("remove") or [])
+        preset = self.presets.get(pid) or {"words": []}
         return {
             "added": added,
             "removed": removed,
-            "preset": self.presets.active_name(direction),
-            "total": len(self.presets.words(direction, limit=999)),
+            "preset": self.presets.active_name(),
+            "total": len(preset["words"]),
             "note": "已写入当前预设，下一次点「开始」时生效",
         }
