@@ -394,6 +394,9 @@ class VolcengineStream:
             "show_utterances": True,
             "result_type": "full",
             "end_window_size": vad_ms,
+            # 不开启的话模型锁定中文，播英语会被硬拆成中文音译
+            # 并满屏打问号；开了才能中英（含几种方言）自动判别。
+            "enable_lid": True,
         }
         if keywords:
             # 术语热词：火山会把命中的词优先听成这些写法
