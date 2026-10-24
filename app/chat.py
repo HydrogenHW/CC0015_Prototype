@@ -15,15 +15,15 @@ import logging
 
 from . import config
 from .glossary import Glossary
-from .lexicon import Lexicon
+from .presets import PresetStore
 
 log = logging.getLogger("chat")
 
-SYSTEM = """你是「中医课堂实时字幕」这个工具内置的助手。
+SYSTEM = """你是「课堂实时字幕」这个工具内置的助手。
 
 你的职责只有两类问题：
 1. 翻译相关：某个词为什么这样译、有没有更准的译法、中英表达差异。
-2. 中医术语：某条术语的含义、出处、相近术语的区别。
+2. 专业术语：某条术语的含义、出处、相近术语的区别。
 
 除此之外的一切（闲聊、写代码、时事、生活建议等），一律简短礼貌地
 说明你只负责本工具的翻译与术语问题，然后请对方换个问题。不要假装
@@ -32,11 +32,12 @@ SYSTEM = """你是「中医课堂实时字幕」这个工具内置的助手。
 回答要短。这是课堂场景，用户正在看字幕，没人有空读长文——
 两三句话说清即可，必要时举一个例子。
 
-你有权调整语音识别的热词表。当用户明确要求增加或减少热词时
-（例如「把XX加进热词」「别识别成XX」），调用 update_hotwords 工具，
-不要只说「好的」。工具执行完再用一句话确认结果。
+用户可以切换「热词预设」来适配不同学科。你手上这份热词属于预设
+「{preset_name}」。当用户要求增加或减少热词时（例如「把XX加进热词」
+「别识别成XX」），调用 update_hotwords 工具，不要只说「好的」。
+工具执行完再用一句话确认结果。
 
-当前热词状况：{hotword_state}
+{hotword_state}
 """
 
 TOOLS = [{
@@ -67,8 +68,8 @@ TOOLS = [{
 class ChatService:
     MAX_TURNS = 12        # 保留最近几轮，避免上下文无限增长
 
-    def __init__(self, lexicon: Lexicon, glossary: Glossary):
-        self.lexicon = lexicon
+    def __init__(self, presets: PresetStore, glossary: Glossary):
+        self.presets = presets
         self.glossary = glossary
         self.history: list[dict] = []
         self._client = None
@@ -87,7 +88,7 @@ class ChatService:
     def reset(self) -> None:
         self.history.clear()
 
-    async def ask(self, message: str) -> dict:
+    async def ask(self, message: str, direction: str = "zh2en") -> dict:
         message = (message or "").strip()
         if not message:
             return {"reply": "", "changed": None}
@@ -96,12 +97,11 @@ class ChatService:
             return {"reply": "助手未配置密钥（DEEPSEEK_API_KEY）。", "changed": None}
 
         async with self._lock:          # 串行，避免并发改对话历史
-            state = self.lexicon.snapshot()
+            preset_name = self.presets.active_name(direction)
+            words = self.presets.words(direction, limit=999)
             system = SYSTEM.format(
-                hotword_state=(
-                    f"共 {state['total']} 个；用户自定义 {len(state['custom'])} 个"
-                    + (f"（{'、'.join(state['custom'][:6])}）" if state["custom"] else "")
-                )
+                preset_name=preset_name or "未命名",
+                hotword_state=f"当前预设「{preset_name}」，共 {len(words)} 个词",
             )
             messages = [{"role": "system", "content": system}, *self.history[-self.MAX_TURNS * 2:]]
             messages.append({"role": "user", "content": message})
@@ -134,7 +134,7 @@ class ChatService:
                         ],
                     })
                     for tc in msg.tool_calls:
-                        changed = self._run_tool(tc)
+                        changed = self._run_tool(tc, direction)
                         messages.append({
                             "role": "tool", "tool_call_id": tc.id,
                             "content": json.dumps(changed, ensure_ascii=False),
@@ -163,16 +163,18 @@ class ChatService:
                 log.warning("助手调用失败：%s", exc)
                 return {"reply": f"助手暂时不可用（{type(exc).__name__}）。", "changed": changed}
 
-    def _run_tool(self, tool_call) -> dict:
+    def _run_tool(self, tool_call, direction: str) -> dict:
         try:
             args = json.loads(tool_call.function.arguments or "{}")
         except ValueError:
             return {"error": "参数解析失败"}
-        added = self.lexicon.add(args.get("add") or [])
-        removed = self.lexicon.remove(args.get("remove") or [])
+        pid = self.presets.active_id(direction)
+        added = self.presets.add_words(pid, args.get("add") or [])
+        removed = self.presets.remove_words(pid, args.get("remove") or [])
         return {
             "added": added,
             "removed": removed,
-            "hotwords": self.lexicon.hotwords(),
-            "note": "热词已保存，下一次点「开始」时生效",
+            "preset": self.presets.active_name(direction),
+            "total": len(self.presets.words(direction, limit=999)),
+            "note": "已写入当前预设，下一次点「开始」时生效",
         }

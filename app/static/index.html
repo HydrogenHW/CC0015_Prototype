@@ -4,15 +4,22 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>中医课堂实时字幕</title>
-  <link rel="stylesheet" href="/static/style.css?v=3">
+  <link rel="stylesheet" href="/static/style.css?v=4">
 </head>
 <body>
   <header class="bar">
-    <span class="brand">TCM Live Captions</span>
+    <span class="brand">Live Captions</span>
 
     <div class="dirs" role="group" aria-label="翻译方向">
       <button class="dir active" data-dir="zh">中文 → EN</button>
       <button class="dir" data-dir="en">EN → 中文</button>
+    </div>
+
+    <div class="presets">
+      <label id="preset-label" class="preset-label" for="preset-select">预设（中文-En）</label>
+      <select id="preset-select" class="preset-select"></select>
+      <button id="preset-add" class="ghost icon" title="新建热词组">+</button>
+      <button id="preset-manage" class="ghost icon" title="管理热词组">⋯</button>
     </div>
 
     <button id="toggle" class="primary">开始</button>
@@ -51,6 +58,20 @@
     <kbd>空格</kbd> 开始 / 停止　　字幕保留在本页，刷新即清空
   </footer>
 
-  <script src="/static/app.js?v=3"></script>
+  <!-- 与页面同风格的弹窗：新建 / 重命名 / 管理热词组 -->
+  <div id="modal" class="modal" hidden>
+    <div class="modal-card" role="dialog" aria-modal="true">
+      <h3 id="modal-title" class="modal-title">新建热词组</h3>
+      <p id="modal-desc" class="modal-desc"></p>
+      <input id="modal-input" class="modal-input" type="text" maxlength="24" placeholder="给它起个名字">
+      <div id="modal-body" class="modal-body"></div>
+      <div class="modal-actions">
+        <button id="modal-cancel" class="ghost">取消</button>
+        <button id="modal-ok" class="primary">创建</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/app.js?v=4"></script>
 </body>
 </html>

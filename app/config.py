@@ -81,6 +81,7 @@ TRANSLATE_DRAIN_TIMEOUT = float(os.getenv("TRANSLATE_DRAIN_TIMEOUT", "25"))
 
 GLOSSARY_PATH = ROOT / "data" / "glossary.json"
 HOTWORD_STORE = ROOT / "data" / "hotwords_custom.json"
+PRESET_STORE = ROOT / "data" / "presets.json"
 STATIC_DIR = Path(__file__).resolve().parent / "static"
 
 DIRECTIONS = {

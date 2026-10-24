@@ -393,6 +393,7 @@
       const dir = btn.dataset.dir;
       if (dir === state.dir) return;
       setDir(dir);
+      loadPresets(dir);          // 每个方向有各自的热词组
       // 后端会重建会话，前端连接保持不变
       if (state.ws && state.ws.readyState === WebSocket.OPEN) {
         state.ws.send(JSON.stringify({ type: "lang", value: dir }));
@@ -450,7 +451,7 @@
       const res = await fetch("/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text }),
+        body: JSON.stringify({ message: text, direction: pairOf(state.dir) }),
       });
       const data = await res.json();
       pending.remove();
@@ -500,6 +501,182 @@
     const w = parseInt(chat.panel.style.getPropertyValue("--chat-w") || "0", 10);
     if (w) localStorage.setItem("chatW", String(w));
   });
+
+  // ------------------------------------------------------- 预设（热词组）
+
+  const presetUI = {
+    select: document.getElementById("preset-select"),
+    label: document.getElementById("preset-label"),
+    add: document.getElementById("preset-add"),
+    manage: document.getElementById("preset-manage"),
+  };
+
+  const modalUI = {
+    root: document.getElementById("modal"),
+    title: document.getElementById("modal-title"),
+    desc: document.getElementById("modal-desc"),
+    input: document.getElementById("modal-input"),
+    body: document.getElementById("modal-body"),
+    ok: document.getElementById("modal-ok"),
+    cancel: document.getElementById("modal-cancel"),
+  };
+
+  const pairOf = (dir) => (dir === "zh" ? "zh2en" : "en2zh");
+
+  /** 通用弹窗，返回 Promise：确认拿到输入值（或 true），取消拿到 null。 */
+  function showModal({ title, desc = "", withInput = true, value = "", placeholder = "", okText = "确定", renderBody = null }) {
+    return new Promise((resolve) => {
+      modalUI.title.textContent = title;
+      modalUI.desc.textContent = desc;
+      modalUI.desc.hidden = !desc;
+      modalUI.input.hidden = !withInput;
+      modalUI.input.value = value;
+      modalUI.input.placeholder = placeholder;
+      modalUI.body.hidden = !renderBody;
+      modalUI.body.innerHTML = "";
+      if (renderBody) renderBody(modalUI.body);
+      modalUI.ok.textContent = okText;
+      modalUI.root.hidden = false;
+      if (withInput) setTimeout(() => modalUI.input.focus(), 30);
+
+      const finish = (val) => {
+        modalUI.root.hidden = true;
+        modalUI.ok.onclick = null;
+        modalUI.cancel.onclick = null;
+        modalUI.input.onkeydown = null;
+        modalUI.root.onclick = null;
+        resolve(val);
+      };
+
+      modalUI.ok.onclick = () => finish(withInput ? modalUI.input.value.trim() : true);
+      modalUI.cancel.onclick = () => finish(null);
+      modalUI.input.onkeydown = (e) => {
+        if (e.key === "Enter") { e.preventDefault(); modalUI.ok.click(); }
+        if (e.key === "Escape") { e.preventDefault(); finish(null); }
+      };
+      modalUI.root.onclick = (e) => { if (e.target === modalUI.root) finish(null); };
+    });
+  }
+
+  async function fetchPresets(dir) {
+    const res = await fetch(`/presets?direction=${pairOf(dir)}`);
+    return res.json();
+  }
+
+  async function loadPresets(dir = state.dir) {
+    presetUI.label.textContent = dir === "zh" ? "预设（中文-En）" : "Preset（En-中文）";
+    try {
+      const data = await fetchPresets(dir);
+      presetUI.select.innerHTML = "";
+      for (const p of data.items) {
+        const opt = document.createElement("option");
+        opt.value = p.id;
+        opt.textContent = `${p.name}（${p.count}）`;
+        if (p.id === data.active) opt.selected = true;
+        presetUI.select.appendChild(opt);
+      }
+    } catch {
+      presetUI.select.innerHTML = "<option>未连接</option>";
+    }
+  }
+
+  presetUI.select.addEventListener("change", async () => {
+    try {
+      await fetch(`/presets/${presetUI.select.value}/activate`, { method: "POST" });
+      setStatus("已切换热词组，下次开始时生效", "warn");
+    } catch {
+      setStatus("切换失败", "err");
+    }
+  });
+
+  presetUI.add.addEventListener("click", async () => {
+    const name = await showModal({
+      title: "新建热词组",
+      desc: "取一个一眼能看懂的名字，比如「计算机」「法律」「药理」。",
+      placeholder: "热词组名称",
+      okText: "创建",
+    });
+    if (!name) return;
+    try {
+      await fetch("/presets", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ direction: pairOf(state.dir), name }),
+      });
+      await loadPresets();
+      setStatus(`已新建「${name}」`, "ok");
+    } catch {
+      setStatus("新建失败", "err");
+    }
+  });
+
+  presetUI.manage.addEventListener("click", async () => {
+    const dir = state.dir;
+    let data;
+    try {
+      data = await fetchPresets(dir);
+    } catch {
+      setStatus("读取预设失败", "err");
+      return;
+    }
+
+    await showModal({
+      title: "管理热词组",
+      desc: "当前方向：" + (dir === "zh" ? "中文 → EN" : "EN → 中文"),
+      withInput: false,
+      okText: "完成",
+      renderBody: (box) => {
+        data.items.forEach((p) => {
+          const row = document.createElement("div");
+          row.className = "preset-row" + (p.id === data.active ? " current" : "");
+
+          const name = document.createElement("span");
+          name.className = "name";
+          name.textContent = p.name;
+
+          const count = document.createElement("span");
+          count.className = "count";
+          count.textContent = `${p.count} 词`;
+
+          const ren = document.createElement("button");
+          ren.className = "ghost";
+          ren.textContent = "改名";
+          ren.onclick = async () => {
+            const v = await showModal({
+              title: "重命名热词组",
+              value: p.name,
+              placeholder: "新名称",
+              okText: "保存",
+            });
+            if (!v) return;
+            await fetch(`/presets/${p.id}`, {
+              method: "PATCH",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ name: v }),
+            }).catch(() => {});
+            await loadPresets(dir);
+            presetUI.manage.click();
+          };
+
+          const del = document.createElement("button");
+          del.className = "ghost";
+          del.textContent = "删除";
+          del.onclick = async () => {
+            const r = await fetch(`/presets/${p.id}`, { method: "DELETE" }).catch(() => null);
+            const j = r ? await r.json().catch(() => ({})) : {};
+            if (j && j.ok === false) setStatus(j.reason || "删除失败", "err");
+            await loadPresets(dir);
+            presetUI.manage.click();
+          };
+
+          row.append(name, count, ren, del);
+          box.appendChild(row);
+        });
+      },
+    });
+  });
+
+  loadPresets();
 
   setStatus("未连接");
 })();

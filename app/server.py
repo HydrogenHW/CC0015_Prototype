@@ -24,7 +24,7 @@ from pydantic import BaseModel
 from . import asr, config
 from .chat import ChatService
 from .glossary import Glossary
-from .lexicon import Lexicon
+from .presets import PresetStore
 from .segmenter import Segmenter
 from .translate import Translator
 
@@ -49,17 +49,28 @@ log = logging.getLogger("app")
 
 glossary = Glossary(config.GLOSSARY_PATH)
 translator = Translator(glossary)
-lexicon = Lexicon(glossary, config.HOTWORD_STORE)
-assistant = ChatService(lexicon, glossary)
+presets = PresetStore(config.PRESET_STORE, glossary)
+assistant = ChatService(presets, glossary)
 
 
 class ChatIn(BaseModel):
     message: str
+    direction: str = "zh2en"
+
+
+class PresetIn(BaseModel):
+    direction: str = "zh2en"
+    name: str
+
+
+class RenameIn(BaseModel):
+    name: str
 
 
 class HotwordIn(BaseModel):
     add: list[str] = []
     remove: list[str] = []
+    direction: str = "zh2en"
 
 
 class Client:
@@ -126,15 +137,56 @@ async def health():
         "glossary": len(glossary),
         "sampleRate": config.SAMPLE_RATE,
         "provider": config.ASR_PROVIDER,
-        "hotwords": len(lexicon.hotwords()),
         "assistant": bool(config.DEEPSEEK_API_KEY),
     }
 
 
+@app.get("/presets")
+async def list_presets(direction: str = "zh2en"):
+    return {
+        "direction": direction,
+        "active": presets.active_id(direction),
+        "items": presets.list(direction),
+    }
+
+
+@app.post("/presets")
+async def create_preset(payload: PresetIn):
+    preset = presets.create(payload.direction, payload.name)
+    return {"preset": preset, "items": presets.list(payload.direction)}
+
+
+@app.patch("/presets/{preset_id}")
+async def rename_preset(preset_id: str, payload: RenameIn):
+    ok = presets.rename(preset_id, payload.name)
+    found = presets.get(preset_id)
+    direction = found[0] if found else "zh2en"
+    return {"ok": ok, "items": presets.list(direction)}
+
+
+@app.delete("/presets/{preset_id}")
+async def delete_preset(preset_id: str):
+    found = presets.get(preset_id)
+    direction = found[0] if found else "zh2en"
+    ok = presets.delete(preset_id)
+    return {
+        "ok": ok,
+        "reason": "" if ok else "至少要保留一个预设",
+        "items": presets.list(direction),
+        "active": presets.active_id(direction),
+    }
+
+
+@app.post("/presets/{preset_id}/activate")
+async def activate_preset(preset_id: str):
+    ok = presets.activate(preset_id)
+    return {"ok": ok}
+
+
 @app.post("/chat")
 async def chat(payload: ChatIn):
-    """右侧术语助手的对话入口。"""
-    return await assistant.ask(payload.message)
+    """右侧术语助手的对话入口。direction 决定改哪个预设的热词。"""
+    return await assistant.ask(payload.message, payload.direction)
 
 
 @app.post("/chat/reset")
@@ -144,18 +196,23 @@ async def chat_reset():
 
 
 @app.get("/hotwords")
-async def get_hotwords():
-    return {"hotwords": lexicon.hotwords(), **lexicon.snapshot()}
+async def get_hotwords(direction: str = "zh2en"):
+    return {
+        "preset": presets.active_name(direction),
+        "total": len(presets.words(direction, limit=999)),
+        "hotwords": presets.words(direction),
+    }
 
 
 @app.post("/hotwords")
 async def set_hotwords(payload: HotwordIn):
-    added = lexicon.add(payload.add)
-    removed = lexicon.remove(payload.remove)
+    pid = presets.active_id(payload.direction)
+    added = presets.add_words(pid, payload.add)
+    removed = presets.remove_words(pid, payload.remove)
     return {
         "added": added,
         "removed": removed,
-        "hotwords": lexicon.hotwords(),
+        "preset": presets.active_name(payload.direction),
         "note": "下一次点「开始」时生效",
     }
 
@@ -185,7 +242,7 @@ async def ws_endpoint(ws: WebSocket):
 async def run_session(client: Client, lang: str) -> str | None:
     """跑一次会话。返回新语言表示要切换方向，返回 None 表示结束。"""
     pair = config.DIRECTIONS[lang]["pair"]
-    keywords = lexicon.hotwords(pair) if config.ASR_KEYWORDS else None
+    keywords = presets.words(pair) if config.ASR_KEYWORDS else None
     stream = await asr.connect(config.DIRECTIONS[lang]["dg_lang"], keywords=keywords)
     segmenter = Segmenter(
         max_len=config.SEG_MAX_LEN,
