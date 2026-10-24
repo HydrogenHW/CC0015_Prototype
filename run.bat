@@ -5,13 +5,27 @@ chcp 65001 >nul
 set PYTHONUTF8=1
 cd /d "%~dp0"
 
-rem ---- find python ----
+rem ---- find python, install a portable copy if missing ----
+rem  Check the local install first: on machines without Python, Windows may
+rem  answer "python" with the Microsoft Store stub, which pops the store
+rem  instead of running anything.
+set "PYHOME=%LOCALAPPDATA%\Programs\Python\Python313"
+set "PY=%PYHOME%\python.exe"
+if exist "%PYHOME%\python.exe" goto use_local_python
+
 set "PY=python"
 python --version >nul 2>nul
 if not errorlevel 1 goto have_python
 
-set "PYHOME=%LOCALAPPDATA%\Programs\Python\Python313"
+echo.
+echo   Python not found. Installing a portable copy (about 15 MB)...
+echo   This needs an internet connection and runs without admin rights.
+echo.
+powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0setup_python.ps1"
+if errorlevel 1 goto no_python
 if not exist "%PYHOME%\python.exe" goto no_python
+
+:use_local_python
 set "PATH=%PYHOME%;%PATH%"
 set "PY=%PYHOME%\python.exe"
 "%PY%" --version >nul 2>nul
@@ -20,9 +34,9 @@ goto have_python
 
 :no_python
 echo.
-echo   Python not found.
-echo   Run  .setup\install_python.py  first,
-echo   or install Python 3.10+ from python.org
+echo   Could not set up Python automatically.
+echo   Install Python 3.10+ from https://www.python.org/downloads/
+echo   (tick "Add python.exe to PATH"), then run this file again.
 echo.
 pause
 exit /b 1

@@ -76,7 +76,9 @@ Keys entered in the app always take priority. If a key is missing from both plac
 
 Double-click **`run.bat`**.
 
-On first run it creates a virtual environment and installs dependencies; afterwards it starts straight away. The browser opens by itself a few seconds later — keep the window open, since closing it stops the service.
+If Python is missing it downloads a portable copy first (about 15 MB, no admin rights needed), then creates a virtual environment and installs dependencies. The browser opens by itself a few seconds later — keep the window open, since closing it stops the service.
+
+First run needs an internet connection. Nothing else has to be pre-installed.
 
 ## Using it
 
