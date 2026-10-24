@@ -1,183 +1,175 @@
-# TCM Lecture Live Captions
+# Live Captions
 
-Real-time bilingual captions for Traditional Chinese Medicine lectures, with terminology locked to the WHO international standard.
+Real-time bilingual captions for lectures, running entirely on your own machine.
+
+Speech goes in through the microphone, subtitles come out in two languages side by side. Built for Chinese↔English study, with terminology hotword sets for nine fields.
 
 **English** | [中文](README.zh.md)
 
 ---
 
-## The problem
+## Features
 
-A student of Traditional Chinese Medicine whose first language differs from the language of instruction faces two barriers at once.
+**Live bilingual captions** — original text on the left, translation on the right. Interim results appear greyed as you speak; finished sentences commit to a full row.
 
-**Speed.** A lecture is a continuous, one-directional stream. Anything missed is lost.
+**Both directions** — Chinese→English or English→Chinese, switchable at any time. The interface language follows the direction: Chinese UI for Chinese→EN, English UI for EN→Chinese.
 
-**Terminology.** General-purpose translation tools have no stable rendering for TCM vocabulary. 肝阳上亢, 气血两虚 and 足三里 come out as literal glosses that carry little or no meaning.
+**Nine built-in terminology sets** — TCM, computer science, mathematics, physics, chemistry, biology, economics, law, medicine. Each holds 60–490 Chinese and English terms that nudge recognition toward domain vocabulary.
 
-The second barrier is the one worth solving. Live captioning is already a commodity; accurately carrying TCM concepts across languages is not.
+**Custom terminology sets** — create your own, name it, switch between them from the top bar.
 
-## How it works
+**Terminology assistant** — a side panel that answers questions about translations and terms, and can add or remove hotwords on request.
+
+**Homophone repair** — when recognition mishears a term as a homophone (肝阳上亢 → 肝阳上抗), pinyin matching restores the correct characters before translation.
+
+**Browser extension** — optional one-click entry point in the toolbar.
+
+## The interface
 
 ```
-Browser (localhost:8000)
-  getUserMedia → AudioWorklet → 16 kHz PCM
-        │
-        ▼  WebSocket
-  FastAPI ──► OpenAI Realtime transcription
-        │           │
-        │           ▼
-        │      sentence assembly
-        │           │
-        │           ▼
-        │   pinyin homophone repair
-        │           │
-        │           ▼
-        │   GPT-4o-mini + glossary (temperature 0)
-        │
-        ▼
-  bilingual captions
+┌──────────────────────────────────────────────────────────────────┐
+│ Live Captions [Chinese→EN│EN→Chinese]  Presets▾ + ⋯  Start  ▮    │
+├───────────────────────────────────────────┬──────────────────────┤
+│  原文 原句原文              译文 翻译结果    │  Terminology         │
+│  ──────────────────────────────────────    │  ┌────────────────┐  │
+│  原文 原句原文              译文 翻译结果    │  │ Q: 什么是…      │  │
+│                                           │  │ A: …            │  │
+│                                           │  └────────────────┘  │
+│  ┌ 正在识别的草稿 ─────────────────────┐   │  [ ask about a… ]    │
+├───────────────────────────────────────────┴──────────────────────┤
+│ Space to start / stop                                            │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
-Four ideas do the heavy lifting:
+- **Top bar** — translation direction, terminology set, start/stop, microphone level, status
+- **Caption area** — completed sentence pairs, newest at the bottom; the greyed line below is what's currently being recognized
+- **Side panel** — terminology assistant; drag the divider to resize (240–720px)
 
-**Glossary-constrained translation.** 267 curated terms (11 categories) are injected into the prompt as mandatory renderings, and translation runs at `temperature=0`. A term is rendered identically for the whole lecture — consistency matters more than occasional variety.
+## Requirements
 
-**Pinyin homophone repair.** In a noisy room the characteristic ASR failure is homophone substitution (肝阳上亢 → 肝阳上抗). Pronunciation is unchanged, so pinyin recovers the characters locally, with zero added latency. This matters because a mis-recognised term silently loses its mandatory rendering, and translation degrades into improvisation — 气血两需 was once rendered "requires both qi and blood", inverting the meaning.
+- Windows 10/11
+- Python 3.10 or newer
+- A microphone
+- API keys: [Volcengine](https://console.volcengine.com/speech/new/setting/apikeys) (recognition), [OpenAI](https://platform.openai.com/api-keys) (translation), [DeepSeek](https://platform.deepseek.com/api_keys) (assistant, optional)
 
-**Concurrent translation, ordered output.** Serial translation falls behind lecture pace, the queue grows, and whatever is unfinished at stop time is lost. Translation now runs three-wide, with sequence numbers and a reorder buffer so captions still appear in the order they were spoken.
+## Setup
 
-**Two-stage captions.** Interim results appear greyed and get overwritten; finals commit to a bilingual row. Text shows up immediately while the translation lands a moment later.
+### 1. Python
 
-Measured end-to-end latency: **1.5–2.2 s**.
+Install [Python 3.10+](https://www.python.org/downloads/), or run `.setup/install_python.py`, which installs it without admin rights.
 
-## Quick start
+### 2. API keys
 
-### Requirements
-
-- Python 3.10+
-- A microphone (built-in is fine, external is much better)
-- An [OpenAI](https://platform.openai.com/api-keys) account — used for both recognition and translation, so one key is enough
-- Optional: [Deepgram](https://console.deepgram.com) if you switch `ASR_PROVIDER=deepgram`
-
-### Configure API keys
-
-Keys live in **environment variables**, never in the repo:
+Keys live in **environment variables**, never in the project folder:
 
 ```powershell
-[Environment]::SetEnvironmentVariable("DEEPGRAM_API_KEY", "your_key", "User")
-[Environment]::SetEnvironmentVariable("OPENAI_API_KEY", "your_key", "User")
+[Environment]::SetEnvironmentVariable("VOLC_API_KEY",     "your_key", "User")
+[Environment]::SetEnvironmentVariable("OPENAI_API_KEY",   "your_key", "User")
+[Environment]::SetEnvironmentVariable("DEEPSEEK_API_KEY", "your_key", "User")
 ```
 
-Reopen your terminal afterwards. On macOS/Linux, export them in your shell profile instead.
+Reopen your terminal afterwards.
 
-### Run
+### 3. Start
 
-**Option 1 — browser extension (recommended for daily use)**
+Double-click **`run.bat`** — it creates a virtual environment, installs dependencies (first run only), and opens `http://127.0.0.1:8000`.
 
-1. Double-click `start_service.vbs` — starts the backend **with no console window**
-2. First time only: open `chrome://extensions`, enable **Developer mode**, click **Load unpacked**, pick the `extension/` folder
-3. From then on, click the toolbar icon
+Or double-click **`start_service.vbs`** to run the backend silently, then open the address yourself.
 
-The icon probes the service before opening anything. If it is not running you get an explanatory page instead of the browser's "can't reach this site".
+## Using it
 
-To start the service at login, run `install_autostart.bat` once (it drops a shortcut in your Startup folder, trivially removable).
+1. **Pick a direction** in the top bar — 中文→EN or EN→中文
+2. **Pick a terminology set** — the default is TCM; switch if your subject differs
+3. **Press Start** and allow microphone access
+4. Speak. Interim text appears greyed; finished sentences commit as bilingual pairs
+5. **Ask the assistant** anything about a translation or a term
 
-**Option 2 — `run.bat` (visible log, useful when debugging)**
+Press Space to start or stop from anywhere (except while typing in the assistant box).
 
-Double-click `run.bat`, then open `http://127.0.0.1:8000`, press **开始**, and allow microphone access.
+## Terminology sets
 
-> Manual start:
-> ```bash
-> pip install -r requirements.txt
-> python -m uvicorn app.server:app --host 127.0.0.1 --port 8000
-> ```
+Nine are built in. Each set is shared by both directions — it holds Chinese and English terms together, and recognition only receives the ones matching the current direction.
 
-The address must be `127.0.0.1` or `localhost`. Browsers only grant microphone access in a secure context, and on a LAN IP they fail **silently**.
+**Create** — press `+` in the top bar, type a name, done. The new set becomes active.
 
-### No keys? Run on mock data
+**Manage** — press `⋯` to rename or delete. At least one set must remain.
 
-Set `MOCK=1` in `.env`. Nothing external is called; recognition and translation are driven by local fixtures. The UI, scrolling, sentence assembly and glossary matching all work normally — useful for reviewing the interface, or as a fallback if an API misbehaves during a demo.
+**Add terms** — ask the assistant: *"add 链表 and hash table to the hotwords"*. Or `POST /hotwords` with `{"add": ["链表"]}`.
 
-## What is in the box
+Changes take effect the next time you press Start, because the recognition engine receives hotwords when the connection opens.
 
-| Component | Notes |
-|---|---|
-| Streaming ASR | OpenAI `gpt-4o-transcribe` via Realtime API; `delta` → interim, `completed` → final |
-| Translation | GPT-4o-mini, glossary-constrained, 3-way concurrent |
-| Glossary | 267 terms, 11 categories, WHO ISTTM (2007) |
-| Homophone repair | pypinyin, local, zero latency |
-| Frontend | Plain HTML/CSS/JS, no build step |
-| Audio | 80 Hz high-pass; browser noise suppression is switchable |
+## Assistant
 
-## Project structure
+The side panel answers questions about translations and terminology, and refuses anything else. It can change hotwords when asked — say *"把太阳伤寒加进热词"* and it calls the tool rather than just agreeing.
 
-```
-app/
-├── server.py         FastAPI entry, WebSocket bridge, ordered translation
-├── asr.py            OpenAI Realtime transcription (+ Deepgram, + mock)
-├── segmenter.py      sentence assembly
-├── glossary.py       longest-first, non-overlapping term matching
-├── pinyin_fix.py     homophone repair
-├── translate.py      translation with term constraints
-├── config.py         configuration
-└── static/           frontend
-data/
-└── glossary.json     267 zh↔en terms
-docs/
-├── implementation_zh.md
-└── implementation_en.md
-tools/
-├── build_glossary.py  rebuild glossary.json
-├── make_review.py     generate human-review sheet
-├── smoke_test.py      end-to-end test, no keys needed
-├── test_order.py      concurrent translation ordering test
-└── pack_for_team.py   share-safe packaging
-extension/             Chrome extension (one-click entry point)
-start_service.vbs      silent backend launcher
-install_autostart.bat  enable start-at-login
-```
+It remembers the last few turns, so follow-ups like *"what was that term again — add it"* work.
 
-## Testing
+## Configuration
 
-No keys required:
+All optional; set in `.env` or as environment variables.
 
-```bash
-python tools/smoke_test.py   # end-to-end: speech in, captions out
-python tools/test_order.py   # concurrent translation keeps caption order
-```
+| Variable | Default | Purpose |
+|---|---|---|
+| `ASR_PROVIDER` | `volc` | Recognition engine: `volc` / `openai` / `deepgram` |
+| `OPENAI_ASR_MODEL` | `gpt-4o-transcribe` | Used when `ASR_PROVIDER=openai` |
+| `ASR_ENDPOINTING` | `800` | ms of silence before a sentence is closed |
+| `ASR_KEYWORDS` | `1` | Feed terminology sets to the recognizer |
+| `PINYIN_FIX` | `1` | Homophone repair |
+| `TRANSLATE_MODEL` | `gpt-4o-mini` | Translation model |
+| `TRANSLATE_CONCURRENCY` | `3` | Parallel translation requests |
+| `CHAT_MODEL` | `deepseek-chat` | Assistant model |
+| `MOCK` | `0` | `1` = run on fake data, no API calls |
 
-## FAQ
+## Troubleshooting
 
 **Start does nothing / no microphone**
 
-Check the address is `127.0.0.1` or `localhost`. A LAN IP is refused silently.
+The address must be `127.0.0.1` or `localhost`. A LAN IP is silently refused — browsers only grant microphone access in a secure context.
 
-**Grey text appears but never commits**
+**Grey text but no committed captions**
 
-Recognition works; sentence assembly has not fired. The transcription session uses server-side VAD, which finalises a sentence after ~500 ms of silence — pause naturally between sentences. If it still lags, lower `SEG_MAX_WAIT` in `app/config.py`.
+Recognition works; the sentence boundary hasn't fired. The recognizer closes a sentence after ~800 ms of silence or when it emits a full stop. Pause naturally between sentences.
 
-**Captions feel slow**
+**Captions but no translation**
 
-Budget: 100 ms buffering + ~300 ms ASR + up to 1.2 s assembly + ~1 s translation. Lower `SEG_MAX_WAIT` to 0.6 to trade context for speed.
+Check the backend window or `logs/app.log`. Usually an expired OpenAI key or exhausted quota — the pipeline degrades to source-only rather than stalling.
 
-**Source text without translation**
+**Terms not recognized correctly**
 
-The backend log will say why. The common cause is exhausted OpenAI quota or an invalid key; the pipeline degrades to source-only rather than stalling.
+Make sure the active terminology set covers your subject and that its terms match the current direction (Chinese terms for Chinese→EN). Search the log for `[纠字]` lines to see whether homophone repair fired.
 
-**Terms not applied**
+**Page loads but nothing responds**
 
-Matching is exact against `data/glossary.json`. If ASR hears 肝阳上抗 the pinyin repair should catch it — check the log line `[纠字]` to confirm.
+Press F12 and check the console. A JavaScript error at load time leaves the page looking fine while every control stays dead.
 
-## Terminology
+## Project layout
 
-267 entries across 11 categories: foundational theory, essence-qi-blood-fluids, zang-fu organs, meridians, aetiology and pathology, diagnostics, patterns, treatment methods, formulas, acupoints, and general vocabulary.
+```
+app/
+├── server.py           FastAPI entry, WebSocket bridge, /chat and /presets endpoints
+├── asr.py              Volcengine streaming ASR (+ OpenAI, Deepgram, mock)
+├── segmenter.py        sentence assembly
+├── glossary.py         term matching for translation constraints
+├── pinyin_fix.py       homophone repair
+├── presets.py          terminology set storage
+├── builtin_presets.py  the nine built-in subject sets
+├── chat.py             terminology assistant (DeepSeek + tool calling)
+├── translate.py        translation with term constraints
+└── static/             frontend (HTML/CSS/JS, no build step)
+data/
+├── glossary.json       267 TCM terms, bilingual
+└── presets.json        terminology sets, generated locally
+extension/              optional Chrome extension entry point
+tools/                  tests and maintenance scripts
+docs/                   implementation notes
+```
 
-Renderings follow the **WHO International Standard Terminologies on Traditional Medicine in the Western Pacific Region (2007)**. The standard's full English text was used to verify every entry; 173 of 267 (64.8%) appear verbatim. The rest are combinations the standard does not list, rendered under the same conventions. Entries awaiting human review are marked in `notes/glossary_review.md`.
+## Sharing
 
-One known divergence: for the seven emotions, WHO 2007 uses *thought / anxiety / sorrow*, while the widely taught Wiseman convention uses *pensiveness / worry / grief*. This project follows WHO.
+```bash
+python tools/pack_for_team.py
+```
 
-## Design documents
+Produces `dist/CC0015-发给组员.zip` with secrets, virtualenv, logs and raw PDFs excluded. It also scans every file's content and aborts if it finds anything key-shaped.
 
-- [`docs/implementation_en.md`](docs/implementation_en.md) — full implementation guide
-- [`docs/implementation_zh.md`](docs/implementation_zh.md) — 同一份文档的中文版
-- [`notes/terminology_feasibility.md`](notes/terminology_feasibility.md) — how the glossary was sourced and what could not be obtained
+Recipients need their own API keys — set the same environment variables.
