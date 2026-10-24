@@ -104,22 +104,6 @@
 
 记得最近几轮对话，所以「刚才问的那个词，加进去」这种指代也认得。
 
-## 配置项
-
-全部可选，写在 `.env` 或设为环境变量。
-
-| 变量 | 默认 | 说明 |
-|---|---|---|
-| `ASR_PROVIDER` | `volc` | 识别引擎：`volc` / `openai` / `deepgram` |
-| `OPENAI_ASR_MODEL` | `gpt-4o-transcribe` | `ASR_PROVIDER=openai` 时用 |
-| `ASR_ENDPOINTING` | `800` | 静音多少毫秒判定一句结束 |
-| `ASR_KEYWORDS` | `1` | 把热词组喂给识别引擎 |
-| `PINYIN_FIX` | `1` | 同音纠错 |
-| `TRANSLATE_MODEL` | `gpt-4o-mini` | 翻译模型 |
-| `TRANSLATE_CONCURRENCY` | `3` | 并发翻译路数 |
-| `CHAT_MODEL` | `deepseek-chat` | 助手模型 |
-| `MOCK` | `0` | 设 `1` 用假数据跑，不调任何 API |
-
 ## 常见问题
 
 **点开始没反应 / 没有麦克风**
@@ -163,13 +147,3 @@ extension/             可选的 Chrome 扩展入口
 tools/                 测试与维护脚本
 docs/                  实现文档
 ```
-
-## 分享给组员
-
-```bash
-python tools/pack_for_team.py
-```
-
-生成 `dist/CC0015-发给组员.zip`，自动排除密钥、虚拟环境、日志和原始 PDF。打包前会扫描每个文件的内容，发现像密钥的东西就中止。
-
-对方需要自己的 API 密钥——设同样的环境变量即可。

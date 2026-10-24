@@ -104,22 +104,6 @@ The side panel answers questions about translations and terminology, and refuses
 
 It remembers the last few turns, so follow-ups like *"what was that term again — add it"* work.
 
-## Configuration
-
-All optional; set in `.env` or as environment variables.
-
-| Variable | Default | Purpose |
-|---|---|---|
-| `ASR_PROVIDER` | `volc` | Recognition engine: `volc` / `openai` / `deepgram` |
-| `OPENAI_ASR_MODEL` | `gpt-4o-transcribe` | Used when `ASR_PROVIDER=openai` |
-| `ASR_ENDPOINTING` | `800` | ms of silence before a sentence is closed |
-| `ASR_KEYWORDS` | `1` | Feed terminology sets to the recognizer |
-| `PINYIN_FIX` | `1` | Homophone repair |
-| `TRANSLATE_MODEL` | `gpt-4o-mini` | Translation model |
-| `TRANSLATE_CONCURRENCY` | `3` | Parallel translation requests |
-| `CHAT_MODEL` | `deepseek-chat` | Assistant model |
-| `MOCK` | `0` | `1` = run on fake data, no API calls |
-
 ## Troubleshooting
 
 **Start does nothing / no microphone**
@@ -163,13 +147,3 @@ extension/              optional Chrome extension entry point
 tools/                  tests and maintenance scripts
 docs/                   implementation notes
 ```
-
-## Sharing
-
-```bash
-python tools/pack_for_team.py
-```
-
-Produces `dist/CC0015-发给组员.zip` with secrets, virtualenv, logs and raw PDFs excluded. It also scans every file's content and aborts if it finds anything key-shaped.
-
-Recipients need their own API keys — set the same environment variables.
