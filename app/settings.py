@@ -17,8 +17,8 @@ log = logging.getLogger("settings")
 
 
 # 界面上暴露哪些配置。group 会渲染成小标题，顺序即显示顺序。
-# readonly 的项只显示当前值，不给改——先把模型参数锁死，
-# 避免用户随手改坏，等明确了再放开。
+# readonly 只用在「选择模型」的三项上（识别引擎、翻译模型、助手模型），
+# 其余调参项保持可改。
 SCHEMA = [
     {
         "group": "API 密钥", "group_en": "API keys",
@@ -43,12 +43,12 @@ SCHEMA = [
             {"key": "ASR_PROVIDER", "type": "select", "readonly": True,
              "label": "识别引擎", "label_en": "Engine",
              "options": [["volc", "火山豆包", "Volcengine"], ["deepgram", "Deepgram", "Deepgram"]]},
-            {"key": "ASR_ENDPOINTING", "type": "number", "readonly": True, "min": 300, "max": 5000,
+            {"key": "ASR_ENDPOINTING", "type": "number", "min": 300, "max": 5000,
              "label": "断句静音阈值（毫秒）", "label_en": "Silence threshold (ms)"},
-            {"key": "ASR_KEYWORDS", "type": "select", "readonly": True,
+            {"key": "ASR_KEYWORDS", "type": "select",
              "label": "启用热词组", "label_en": "Use hotword sets",
              "options": [["1", "开", "On"], ["0", "关", "Off"]]},
-            {"key": "PINYIN_FIX", "type": "select", "readonly": True,
+            {"key": "PINYIN_FIX", "type": "select",
              "label": "同音纠错", "label_en": "Homophone repair",
              "options": [["1", "开", "On"], ["0", "关", "Off"]]},
         ],
@@ -58,9 +58,9 @@ SCHEMA = [
         "items": [
             {"key": "TRANSLATE_MODEL", "type": "text", "readonly": True,
              "label": "翻译模型", "label_en": "Model"},
-            {"key": "TRANSLATE_CONCURRENCY", "type": "number", "readonly": True, "min": 1, "max": 8,
+            {"key": "TRANSLATE_CONCURRENCY", "type": "number", "min": 1, "max": 8,
              "label": "并发路数", "label_en": "Parallel requests"},
-            {"key": "TRANSLATE_TIMEOUT", "type": "number", "readonly": True, "min": 1, "max": 30,
+            {"key": "TRANSLATE_TIMEOUT", "type": "number", "min": 1, "max": 30,
              "label": "单句超时（秒）", "label_en": "Per-sentence timeout (s)"},
         ],
     },
