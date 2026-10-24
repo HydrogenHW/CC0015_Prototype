@@ -402,6 +402,9 @@
 
   document.addEventListener("keydown", (e) => {
     if (e.code !== "Space") return;
+    // 在输入框里敲空格是打字，不是开始/停止录制的快捷键
+    const tag = (e.target && e.target.tagName) || "";
+    if (tag === "INPUT" || tag === "TEXTAREA" || e.target.isContentEditable) return;
     e.preventDefault();
     if (state.running) stop();
     else start();
@@ -409,6 +412,92 @@
 
   window.addEventListener("beforeunload", () => {
     if (state.ws) state.ws.close();
+  });
+
+  // ------------------------------------------------------------ 术语助手
+
+  const chat = {
+    panel: document.getElementById("chat"),
+    log: document.getElementById("chat-log"),
+    form: document.getElementById("chat-form"),
+    input: document.getElementById("chat-input"),
+    send: document.getElementById("chat-send"),
+    clear: document.getElementById("chat-clear"),
+    resizer: document.getElementById("resizer"),
+  };
+
+  function addMsg(role, text, extra = "") {
+    const tip = chat.log.querySelector(".chat-tip");
+    if (tip) tip.remove();
+    const div = document.createElement("div");
+    div.className = `msg ${role}${extra ? " " + extra : ""}`;
+    div.textContent = text;          // 助手回复来自外部模型，绝不走 innerHTML
+    chat.log.appendChild(div);
+    chat.log.scrollTop = chat.log.scrollHeight;
+    return div;
+  }
+
+  chat.form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const text = chat.input.value.trim();
+    if (!text) return;
+    chat.input.value = "";
+    addMsg("user", text);
+    const pending = addMsg("bot", "思考中…", "pending");
+    chat.send.disabled = true;
+    try {
+      const res = await fetch("/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: text }),
+      });
+      const data = await res.json();
+      pending.remove();
+      addMsg("bot", data.reply || "（没有回复）");
+      const c = data.changed;
+      if (c && (c.added?.length || c.removed?.length)) {
+        const bits = [];
+        if (c.added?.length) bits.push("+" + c.added.join("、"));
+        if (c.removed?.length) bits.push("−" + c.removed.join("、"));
+        addMsg("sys", `热词已更新：${bits.join("　")}\n下一次点「开始」时生效`);
+      }
+    } catch {
+      pending.remove();
+      addMsg("bot", "连不上后端服务，确认 run.bat 窗口还开着。");
+    } finally {
+      chat.send.disabled = false;
+      chat.input.focus();
+    }
+  });
+
+  chat.clear.addEventListener("click", () => {
+    chat.log.innerHTML = "";
+    fetch("/chat/reset", { method: "POST" }).catch(() => {});
+  });
+
+  // 拖动分隔条调整助手宽度，宽度记在本地
+  let dragging = false;
+  const savedW = Number(localStorage.getItem("chatW") || 0);
+  if (savedW >= 240) chat.panel.style.setProperty("--chat-w", savedW + "px");
+
+  chat.resizer.addEventListener("mousedown", (e) => {
+    dragging = true;
+    chat.resizer.classList.add("active");
+    document.body.style.cursor = "col-resize";
+    e.preventDefault();
+  });
+  window.addEventListener("mousemove", (e) => {
+    if (!dragging) return;
+    const w = Math.max(240, Math.min(720, window.innerWidth - e.clientX));
+    chat.panel.style.setProperty("--chat-w", w + "px");
+  });
+  window.addEventListener("mouseup", () => {
+    if (!dragging) return;
+    dragging = false;
+    chat.resizer.classList.remove("active");
+    document.body.style.cursor = "";
+    const w = parseInt(chat.panel.style.getPropertyValue("--chat-w") || "0", 10);
+    if (w) localStorage.setItem("chatW", String(w));
   });
 
   setStatus("未连接");

@@ -15,6 +15,9 @@ dist/
 # 原始资料（2MB PDF，术语表已从中提取成 data/glossary.json）
 data/raw/
 
+# 用户自定义热词（本机数据）
+data/hotwords_custom.json
+
 # 本地验证产物
 .tmp/
 logs/

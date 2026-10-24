@@ -20,6 +20,12 @@ DEEPGRAM_API_KEY = os.getenv("DEEPGRAM_API_KEY", "").strip()
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "").strip()
 VOLC_API_KEY = os.getenv("VOLC_API_KEY", "").strip()
 
+# 右侧术语助手（DeepSeek，兼容 OpenAI 协议）
+DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY", "").strip()
+DEEPSEEK_BASE_URL = os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com")
+CHAT_MODEL = os.getenv("CHAT_MODEL", "deepseek-chat")
+CHAT_TIMEOUT = float(os.getenv("CHAT_TIMEOUT", "25"))
+
 ASR_MODEL = os.getenv("ASR_MODEL", "nova-2")
 TRANSLATE_MODEL = os.getenv("TRANSLATE_MODEL", "gpt-4o-mini")
 
@@ -45,8 +51,8 @@ ASR_ENDPOINTING = int(os.getenv("ASR_ENDPOINTING", "800"))
 ASR_MAX_SPEECH_MS = int(os.getenv("ASR_MAX_SPEECH_MS", "0"))
 
 # 术语偏置：把术语表里的词喂给识别引擎，期望它更愿意听成这些词。
-# 效果因引擎和语言而异，所以做成开关，方便 A/B 对比。
-ASR_KEYWORDS = os.getenv("ASR_KEYWORDS", "0").strip() == "1"
+# 右侧助手可以增删这份热词，所以默认开着；设 0 可完全关闭。
+ASR_KEYWORDS = os.getenv("ASR_KEYWORDS", "1").strip() == "1"
 ASR_KEYWORDS_MAX = int(os.getenv("ASR_KEYWORDS_MAX", "40"))
 
 # 采样率由引擎决定：OpenAI Realtime 只收 24 kHz 及以上，
@@ -74,6 +80,7 @@ TRANSLATE_CONCURRENCY = int(os.getenv("TRANSLATE_CONCURRENCY", "3"))
 TRANSLATE_DRAIN_TIMEOUT = float(os.getenv("TRANSLATE_DRAIN_TIMEOUT", "25"))
 
 GLOSSARY_PATH = ROOT / "data" / "glossary.json"
+HOTWORD_STORE = ROOT / "data" / "hotwords_custom.json"
 STATIC_DIR = Path(__file__).resolve().parent / "static"
 
 DIRECTIONS = {

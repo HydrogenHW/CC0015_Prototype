@@ -19,9 +19,12 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel
 
 from . import asr, config
+from .chat import ChatService
 from .glossary import Glossary
+from .lexicon import Lexicon
 from .segmenter import Segmenter
 from .translate import Translator
 
@@ -46,6 +49,17 @@ log = logging.getLogger("app")
 
 glossary = Glossary(config.GLOSSARY_PATH)
 translator = Translator(glossary)
+lexicon = Lexicon(glossary, config.HOTWORD_STORE)
+assistant = ChatService(lexicon, glossary)
+
+
+class ChatIn(BaseModel):
+    message: str
+
+
+class HotwordIn(BaseModel):
+    add: list[str] = []
+    remove: list[str] = []
 
 
 class Client:
@@ -112,6 +126,37 @@ async def health():
         "glossary": len(glossary),
         "sampleRate": config.SAMPLE_RATE,
         "provider": config.ASR_PROVIDER,
+        "hotwords": len(lexicon.hotwords()),
+        "assistant": bool(config.DEEPSEEK_API_KEY),
+    }
+
+
+@app.post("/chat")
+async def chat(payload: ChatIn):
+    """右侧术语助手的对话入口。"""
+    return await assistant.ask(payload.message)
+
+
+@app.post("/chat/reset")
+async def chat_reset():
+    assistant.reset()
+    return {"ok": True}
+
+
+@app.get("/hotwords")
+async def get_hotwords():
+    return {"hotwords": lexicon.hotwords(), **lexicon.snapshot()}
+
+
+@app.post("/hotwords")
+async def set_hotwords(payload: HotwordIn):
+    added = lexicon.add(payload.add)
+    removed = lexicon.remove(payload.remove)
+    return {
+        "added": added,
+        "removed": removed,
+        "hotwords": lexicon.hotwords(),
+        "note": "下一次点「开始」时生效",
     }
 
 
@@ -140,7 +185,7 @@ async def ws_endpoint(ws: WebSocket):
 async def run_session(client: Client, lang: str) -> str | None:
     """跑一次会话。返回新语言表示要切换方向，返回 None 表示结束。"""
     pair = config.DIRECTIONS[lang]["pair"]
-    keywords = glossary.keywords_for(pair) if config.ASR_KEYWORDS else None
+    keywords = lexicon.hotwords(pair) if config.ASR_KEYWORDS else None
     stream = await asr.connect(config.DIRECTIONS[lang]["dg_lang"], keywords=keywords)
     segmenter = Segmenter(
         max_len=config.SEG_MAX_LEN,

@@ -20,12 +20,32 @@
     <span id="status" class="status">未连接</span>
   </header>
 
-  <main class="stage">
-    <div id="scroll" class="scroll">
-      <p class="empty">点「开始」，允许麦克风权限，字幕会从下一句开始出现。</p>
-    </div>
-    <div id="interim" class="interim"></div>
-  </main>
+  <div class="app">
+    <main class="stage">
+      <div id="scroll" class="scroll">
+        <p class="empty">点「开始」，允许麦克风权限，字幕会从下一句开始出现。</p>
+      </div>
+      <div id="interim" class="interim"></div>
+    </main>
+
+    <div id="resizer" class="resizer" title="拖动调整宽度"></div>
+
+    <aside class="chat" id="chat">
+      <div class="chat-head">
+        <span class="chat-title">术语助手</span>
+        <button id="chat-clear" class="ghost" title="清空对话">清空</button>
+      </div>
+      <div id="chat-log" class="chat-log">
+        <p class="chat-tip">
+          可以问译法、术语含义，也能说「把某某加进热词」。
+        </p>
+      </div>
+      <form id="chat-form" class="chat-form">
+        <input id="chat-input" type="text" placeholder="问术语或译法…" autocomplete="off">
+        <button type="submit" id="chat-send">发送</button>
+      </form>
+    </aside>
+  </div>
 
   <footer class="foot">
     <kbd>空格</kbd> 开始 / 停止　　字幕保留在本页，刷新即清空
