@@ -81,9 +81,11 @@ def pick_lang(value: str | None) -> str:
 async def lifespan(_app: FastAPI):
     config.validate()
     log.info("术语表：%s", glossary.summary())
-    log.info("翻译模型：%s ｜ 识别引擎：%s（%s）",
-             config.TRANSLATE_MODEL, config.ASR_PROVIDER,
-             config.OPENAI_ASR_MODEL if config.ASR_PROVIDER == "openai" else config.ASR_MODEL)
+    _engines = {"volc": f"火山豆包 {config.VOLC_RESOURCE_ID}",
+                "openai": f"OpenAI {config.OPENAI_ASR_MODEL}",
+                "deepgram": f"Deepgram {config.ASR_MODEL}"}
+    log.info("翻译模型：%s ｜ 识别引擎：%s",
+             config.TRANSLATE_MODEL, _engines.get(config.ASR_PROVIDER, config.ASR_PROVIDER))
     log.info("采集采样率：%d Hz ｜ endpointing=%dms ｜ 术语偏置=%s",
              config.SAMPLE_RATE, config.ASR_ENDPOINTING,
              "开" if config.ASR_KEYWORDS else "关")

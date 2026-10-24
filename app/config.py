@@ -18,20 +18,26 @@ MOCK = os.getenv("MOCK", "0").strip() == "1"
 
 DEEPGRAM_API_KEY = os.getenv("DEEPGRAM_API_KEY", "").strip()
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "").strip()
+VOLC_API_KEY = os.getenv("VOLC_API_KEY", "").strip()
 
 ASR_MODEL = os.getenv("ASR_MODEL", "nova-2")
 TRANSLATE_MODEL = os.getenv("TRANSLATE_MODEL", "gpt-4o-mini")
 
-# 识别引擎：openai（默认，走 OpenAI Realtime 转写）或 deepgram。
-# Deepgram 的 key 曾因撤销而 401，OpenAI 这条线复用了已有的 key，
-# 少一个供应商、少一个要来的密钥。
-ASR_PROVIDER = os.getenv("ASR_PROVIDER", "openai").strip().lower()
+# 识别引擎：volc（默认，火山豆包流式）| openai | deepgram
+#
+# 换到火山的理由来自实测：同一段加了噪声的音频，火山 0% 字错，
+# OpenAI Realtime 85% 字错（整句崩成别的句子）。而且火山是真流式，
+# 边说话边出字，OpenAI 要等句子结束才吐。
+ASR_PROVIDER = os.getenv("ASR_PROVIDER", "volc").strip().lower()
+
+# 火山豆包：2.0 模型用 seedasr，1.0 用 bigasr。用错会直接 403。
+VOLC_RESOURCE_ID = os.getenv("VOLC_RESOURCE_ID", "volc.seedasr.sauc.duration")
 
 # OpenAI Realtime 转写模型。mini 更快更便宜，4o 更准。
 OPENAI_ASR_MODEL = os.getenv("OPENAI_ASR_MODEL", "gpt-4o-transcribe")
 
-# 静音多久判定一句结束。太小会把词切碎、丢上下文，太大字幕出得慢。
-ASR_ENDPOINTING = int(os.getenv("ASR_ENDPOINTING", "400"))
+# 静音多久判定一句结束（毫秒）。火山推荐 800~1000，太小会切碎句子。
+ASR_ENDPOINTING = int(os.getenv("ASR_ENDPOINTING", "800"))
 
 # 一句话最长多久必须强制切分（毫秒）。VAD 只在静音时断句，
 # 老师连讲不停就永远不结束；到点强制 commit 一刀，代价是可能切在词中间，
@@ -57,7 +63,7 @@ SEG_MIN_LEN = 10
 # 同音纠错：识别把术语听成同音字时，按拼音把它改回来（零延迟，本地做）。
 PINYIN_FIX = os.getenv("PINYIN_FIX", "1").strip() == "1"
 
-TRANSLATE_TIMEOUT = 3.0
+TRANSLATE_TIMEOUT = float(os.getenv("TRANSLATE_TIMEOUT", "6.0"))
 
 # 同时进行的翻译请求数。串行跑跟不上一堂课的语速，
 # 但开太多会撞 OpenAI 的速率限制。
@@ -89,11 +95,14 @@ def validate() -> None:
         print("[config] MOCK 模式：不调用任何外部 API")
         return
 
+    # 翻译总是要 OpenAI；识别看引擎
     missing = []
-    if not DEEPGRAM_API_KEY:
-        missing.append("DEEPGRAM_API_KEY")
     if not OPENAI_API_KEY:
         missing.append("OPENAI_API_KEY")
+    if ASR_PROVIDER == "volc" and not VOLC_API_KEY:
+        missing.append("VOLC_API_KEY")
+    if ASR_PROVIDER == "deepgram" and not DEEPGRAM_API_KEY:
+        missing.append("DEEPGRAM_API_KEY")
     if missing:
         MOCK = True
         print()
@@ -101,9 +110,8 @@ def validate() -> None:
         print(f"  缺少密钥：{', '.join(missing)}")
         print("  已自动切换到 MOCK 模式，界面能用，但字幕是假数据。")
         print()
-        print("  要接真实识别与翻译：")
-        print("    1. 复制 .env.example 为 .env")
-        print("    2. 填入 Deepgram 和 OpenAI 的 key")
-        print("    3. 重启本窗口")
+        print("  要接真实识别与翻译（当前识别引擎 " + ASR_PROVIDER + "）：")
+        print("    1. 设置环境变量（见 README「配置密钥」）")
+        print("    2. 重启本窗口")
         print("=" * 64)
         print()
