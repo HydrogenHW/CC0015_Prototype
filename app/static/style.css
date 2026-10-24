@@ -242,6 +242,16 @@ kbd {
   min-height: 0;
 }
 
+/* flex 子项的 min-width 默认是 auto：字幕里一旦有长句，
+   就会把 .stage 的最小宽度顶大，右侧面板被挤出视口。必须归零。 */
+.app > .stage {
+  min-width: 0;
+}
+
+.row > div {
+  min-width: 0;
+}
+
 .resizer {
   flex: 0 0 5px;
   width: 5px;
@@ -376,8 +386,12 @@ kbd {
 
 .chat-form button:disabled { opacity: .5; cursor: default; }
 
-/* 窄屏：助手改成抽屉式，先隐藏 */
+/* 窄屏：字幕区让一让，对话框仍然留在右边，只是变窄 */
 @media (max-width: 900px) {
-  .chat { width: 0; padding: 0; border: 0; overflow: hidden; }
-  .resizer { display: none; }
+  .chat { width: 260px; min-width: 260px; }
+}
+
+@media (max-width: 680px) {
+  .chat { width: 220px; min-width: 220px; }
+  .brand { display: none; }
 }

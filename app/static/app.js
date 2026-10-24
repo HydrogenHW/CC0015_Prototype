@@ -84,6 +84,7 @@
     b.textContent = dst || "…";
     if (!dst) b.classList.add("pending");
 
+    // 原文在左、译文在右，保持原样
     row.append(a, b);
     el.scroll.appendChild(row);
     el.scroll.scrollTop = el.scroll.scrollHeight;
