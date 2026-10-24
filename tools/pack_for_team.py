@@ -9,13 +9,20 @@ PDF 都不进去。
 """
 from __future__ import annotations
 
+import os
 import re
+import shutil
+import socket
+import subprocess
 import sys
+import tempfile
+import time
+import urllib.request
 import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-VERSION = "1.0.0"
+VERSION = "1.0.1"
 OUT_DIR = ROOT / "dist"
 OUT = OUT_DIR / f"LiveCaptions-{VERSION}.zip"
 
@@ -75,6 +82,83 @@ def collect() -> tuple[list[Path], list[tuple[Path, str]]]:
     return keep, leaks
 
 
+def _free_port() -> int:
+    with socket.socket() as s:
+        s.bind(("127.0.0.1", 0))
+        return int(s.getsockname()[1])
+
+
+def self_check(zip_path: Path) -> list[str]:
+    """把刚打好的包解压到临时目录，用当前解释器真跑一遍。
+
+    为什么要真起一次：`py_compile` / `compileall` 只查语法，抓不到运行期的
+    `NameError`——1.0.0 就是这么发出去的：包能打、能编译，一开麦就崩。
+    这里走三步：编译整棵 app/ → 导入 app.server → MOCK 模式起服务连 /health。
+    """
+    problems: list[str] = []
+    tmp = Path(tempfile.mkdtemp(prefix="lc-packcheck-"))
+    env = {**os.environ, "MOCK": "1", "PYTHONUTF8": "1"}
+    try:
+        with zipfile.ZipFile(zip_path) as z:
+            z.extractall(tmp)
+        root = tmp / f"LiveCaptions-{VERSION}"
+
+        # 1) 语法：整棵 app/ 编一遍
+        comp = subprocess.run(
+            [sys.executable, "-m", "compileall", "-q", str(root / "app")],
+            capture_output=True, text=True, encoding="utf-8", errors="replace",
+        )
+        if comp.returncode != 0:
+            problems.append("编译失败：\n" + (comp.stdout + comp.stderr).strip()[-2000:])
+            return problems
+
+        # 2) 导入：模块级代码（日志初始化、术语表加载）能不能跑完
+        imp = subprocess.run(
+            [sys.executable, "-c", "import app.server"],
+            cwd=root, env=env, timeout=90,
+            capture_output=True, text=True, encoding="utf-8", errors="replace",
+        )
+        if imp.returncode != 0:
+            problems.append("导入失败：\n" + (imp.stderr or imp.stdout).strip()[-2000:])
+            return problems
+
+        # 3) 起服务 + 连 /health：确认端口能听、健康检查能应答
+        port = _free_port()
+        proc = subprocess.Popen(
+            [sys.executable, "-m", "uvicorn", "app.server:app",
+             "--host", "127.0.0.1", "--port", str(port), "--log-level", "warning"],
+            cwd=root, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+        )
+        healthy = False
+        try:
+            deadline = time.time() + 30
+            while time.time() < deadline:
+                if proc.poll() is not None:
+                    break
+                try:
+                    with urllib.request.urlopen(
+                        f"http://127.0.0.1:{port}/health", timeout=2
+                    ) as r:
+                        if r.status == 200:
+                            healthy = True
+                            break
+                except Exception:
+                    time.sleep(0.4)
+        finally:
+            proc.terminate()
+            try:
+                out, _ = proc.communicate(timeout=8)
+            except subprocess.TimeoutExpired:
+                proc.kill()
+                out, _ = proc.communicate()
+        if not healthy:
+            log = out.decode("utf-8", "replace").strip()[-2000:]
+            problems.append("MOCK 模式起服务没成功（/health 无应答）：\n" + log)
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+    return problems
+
+
 def main() -> int:
     files, leaks = collect()
 
@@ -108,7 +192,19 @@ def main() -> int:
     for rel in sorted(files, key=lambda x: x.as_posix()):
         print(f"  LiveCaptions-{VERSION}/{rel.as_posix()}")
     print("\n不含：密钥 / 用户设置 / 热词组 / .venv / logs / docs / notes / tools / data/raw")
-    print("使用者解压后双击 run.bat 即可（缺 Python 会自动装便携版）。")
+
+    print("\n自检：解压 → 编译 → 导入 → MOCK 起服务连 /health …")
+    problems = self_check(OUT)
+    if problems:
+        print("!! 自检没过，这个包不能发：\n")
+        for why in problems:
+            print(why)
+        OUT.unlink(missing_ok=True)
+        print(f"\n已删除 {OUT.name}。修好再打一次，别上传半成品。")
+        return 2
+    print("自检通过：编译、导入、MOCK 起服务 + /health 都正常。")
+
+    print("\n使用者解压后双击 run.bat 即可（缺 Python 会自动装便携版）。")
     return 0
 
 

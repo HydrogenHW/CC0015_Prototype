@@ -190,6 +190,40 @@ class MockStream:
         await self._queue.put(None)
 
 
+def _volc_frame(header: bytes, payload: bytes) -> bytes:
+    """组一帧：4 字节头 + 4 字节大端长度 + gzip 压缩的 payload。"""
+    body = gzip.compress(payload)
+    return header + struct.pack(">I", len(body)) + body
+
+
+def _volc_parse(raw) -> dict:
+    """拆一帧回复。返回 {"error": str} 或 {"payload": dict, "flags": int}。"""
+    data = raw.encode("latin-1") if isinstance(raw, str) else raw
+    msg_type = data[1] >> 4
+    flags = data[1] & 0x0F
+    compressed = (data[2] & 0x0F) == 0x01
+    off = 4
+
+    if msg_type == 0x0F:                       # 错误帧：4 字节状态码 + 正文
+        code = struct.unpack(">I", data[off:off + 4])[0]
+        off += 4
+        size = struct.unpack(">I", data[off:off + 4])[0]
+        off += 4
+        body = data[off:off + size]
+        if compressed or body[:2] == b"\x1f\x8b":
+            body = gzip.decompress(body)
+        return {"error": f"{code}: {body.decode('utf-8', 'replace')}"}
+
+    if flags & 0x01:                           # 带序号
+        off += 4
+    size = struct.unpack(">I", data[off:off + 4])[0]
+    off += 4
+    body = data[off:off + size]
+    if compressed and body:
+        body = gzip.decompress(body)
+    return {"payload": json.loads(body) if body else {}, "flags": flags}
+
+
 class VolcengineStream:
     """火山豆包流式识别（2.0 模型）。
 

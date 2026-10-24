@@ -15,6 +15,17 @@
   let TARGET_RATE = 24000;
   let FRAME_SAMPLES = 2400;    // 100 ms
 
+  // 断线重连的节奏：1s→2s→4s→8s→15s，连败 6 次就停手。
+  // 后端真挂了的时候，每秒重连一次只会把状态栏刷成"录音中↔重连中"
+  // 无限横跳，日志也会被一秒一条会话刷满。
+  const RETRY_BASE_MS = 1000;
+  const RETRY_MAX_MS = 15000;
+  const RETRY_LIMIT = 6;
+  // 连接要稳定撑过这么久，才算「真的好了」，失败计数才清零。
+  // 少了这一条，「连上就被后端踢掉」会被当成成功，退避永远回到 1 秒——
+  // 那正是后端一挂、状态栏就横跳个没完的原因。
+  const RETRY_STABLE_MS = 8000;
+
   // 浏览器自带的降噪/回声消除是为通话设计的，会削掉语音里的弱成分，
   // 对识别不一定是好事。做成 URL 开关，方便同一句话反复对比：
   //   ?ns=0    关降噪      ?aec=0  关回声消除      ?agc=0  关自动增益
@@ -46,6 +57,9 @@
     ratio: 1,
     retryTimer: null,
     retries: 0,
+    retryDelay: RETRY_BASE_MS,
+    stableTimer: null,
+    lastError: "",
     firstRow: true,
     statusKey: "",
     statusArgs: [],
@@ -85,7 +99,13 @@
       st_stopped: "已停止",
       st_switch: "切换中…",
       st_switch_ok: "已切换热词组，下次开始时生效",
-      st_reconnect: (c) => `断开(${c})，重连中…`,
+      st_reconnect: (c, s) => `断开(${c})，${s} 秒后重连…`,
+      st_lost: (c) => `后端连接已断开(${c})`,
+      lost_hint: (n) =>
+        `自动重连 ${n} 次都没成功。看一眼 run.bat 窗口里有没有红色报错；` +
+        `服务恢复后点「重试」。`,
+      lost_toast: "后端连接已断开，录音已停止。",
+      retry: "重试",
       st_switched_preset: (n) => `已新建「${n}」`,
       st_no_mic_api: "当前环境拿不到麦克风",
       st_no_keys: "缺少 API 密钥",
@@ -151,7 +171,13 @@
       st_stopped: "Stopped",
       st_switch: "Switching…",
       st_switch_ok: "Hotword set switched — applies next time you press Start",
-      st_reconnect: (c) => `Dropped (${c}), reconnecting…`,
+      st_reconnect: (c, s) => `Dropped (${c}), retrying in ${s}s…`,
+      st_lost: (c) => `Backend disconnected (${c})`,
+      lost_hint: (n) =>
+        `Gave up after ${n} retries. Check the run.bat window for errors; ` +
+        `hit Retry once it is back.`,
+      lost_toast: "Backend disconnected. Recording stopped.",
+      retry: "Retry",
       st_switched_preset: (n) => `Created “${n}”`,
       st_no_mic_api: "Microphone API unavailable",
       st_no_keys: "Missing API keys",
@@ -329,8 +355,18 @@
 
       ws.onopen = () => {
         state.retryTimer = null;
-        state.retries = 0;
+        state.lastError = "";
         setStatus("st_rec", "ok");
+        // 别在这里把 retries 清零：刚连上就被后端踢掉也走 open→close，
+        // 清零等于永不退避。等它稳定活过 RETRY_STABLE_MS 再算数。
+        clearTimeout(state.stableTimer);
+        state.stableTimer = setTimeout(() => {
+          state.stableTimer = null;
+          if (state.ws === ws && ws.readyState === WebSocket.OPEN) {
+            state.retries = 0;
+            state.retryDelay = RETRY_BASE_MS;
+          }
+        }, RETRY_STABLE_MS);
         resolve(ws);
       };
 
@@ -347,6 +383,8 @@
           setInterim("");
           addRow(msg.src, msg.dst);
         } else if (msg.type === "error") {
+          // 后端把自己的异常也推过来，记下来给「反复断开」的提示用
+          state.lastError = msg.message || "";
           setStatus(msg.message || "出错", "err");
         }
       };
@@ -357,12 +395,28 @@
       };
 
       ws.onclose = (ev) => {
+        clearTimeout(state.stableTimer);
+        state.stableTimer = null;
         if (!state.running) return;
         state.retries += 1;
-        setStatus("st_reconnect", "warn", ev.code);
+
+        // 连败到头就别再每秒重连了：停掉录音、松开麦克风，留一个手动重试。
+        // 否则后端一挂，状态栏就永远在「录音中 ↔ 重连中」之间横跳。
+        if (state.retries > RETRY_LIMIT) {
+          stop();
+          setStatus("st_lost", "err", ev.code);
+          showError(t("st_lost", ev.code), t("lost_hint", RETRY_LIMIT));
+          showToast(t("lost_toast"), t("retry"), () => start());
+          return;
+        }
+
+        const delay = state.retryDelay;
+        state.retryDelay = Math.min(state.retryDelay * 2, RETRY_MAX_MS);
+        setStatus("st_reconnect", "warn", ev.code, Math.round(delay / 1000));
         if (state.retries === 3) {
           showError(
-            "后端连接反复断开",
+            t("disconnect_msg"),
+            (state.lastError ? `后端报错：${state.lastError}\n` : "") +
             "1) 确认 run.bat 的窗口还开着、没被关掉；" +
             "2) 看那个窗口里有没有红色报错，贴给开发者；" +
             "3) 如果它显示端口被占用，说明已经有一个在跑了。"
@@ -372,7 +426,7 @@
         state.retryTimer = setTimeout(() => {
           state.retryTimer = null;
           if (state.running) connectWs().catch(() => {});
-        }, 1000);
+        }, delay);
       };
     });
   }
@@ -381,6 +435,10 @@
 
   async function start() {
     if (state.running) return;
+    // 每次人手动「开始」都从干净的计数起步——否则上一轮放弃时留下的
+    // retries 会让这一次一断开就直接判死。
+    state.retries = 0;
+    state.retryDelay = RETRY_BASE_MS;
     el.toggle.disabled = true;
     setStatus("st_check");
 
@@ -527,6 +585,10 @@
     if (state.retryTimer) {
       clearTimeout(state.retryTimer);
       state.retryTimer = null;
+    }
+    if (state.stableTimer) {
+      clearTimeout(state.stableTimer);
+      state.stableTimer = null;
     }
 
     if (state.ws && state.ws.readyState === WebSocket.OPEN) {

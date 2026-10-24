@@ -249,8 +249,14 @@ async def ws_endpoint(ws: WebSocket):
             log.info("切换方向 → %s", lang)
     except WebSocketDisconnect:
         pass
-    except Exception:
+    except Exception as exc:
         log.exception("会话异常")
+        # 别让前端只看到「断开(1011)」：把异常类型和消息一起推过去，
+        # 页面上就能直接看出是哪一行、什么类型的问题。
+        await client.send({
+            "type": "error",
+            "message": f"{type(exc).__name__}: {exc}",
+        })
     finally:
         await client.close()
         log.info("会话结束")
