@@ -195,6 +195,9 @@ class OpenAITranscribeStream:
         self._vad_ms = vad_ms
         self._cur = ""
         self._closed = False
+        # 已推入、但还没被 VAD 切分掉的音频时长（毫秒）。
+        # 到 ASR_MAX_SPEECH_MS 就主动 commit 一刀，防止连讲不停时永不出字。
+        self._pending_ms = 0.0
 
     @classmethod
     async def connect(cls, lang: str, keywords: list[str] | None = None) -> "OpenAITranscribeStream":
@@ -246,6 +249,16 @@ class OpenAITranscribeStream:
             "audio": base64.b64encode(data).decode(),
         }))
 
+        seconds = len(data) / 2 / config.SAMPLE_RATE
+        self._pending_ms += seconds * 1000
+        if self._pending_ms >= config.ASR_MAX_SPEECH_MS:
+            try:
+                await self._sock.send(json.dumps({"type": "input_audio_buffer.commit"}))
+                log.info("连讲超过 %.0f 秒，强制切分一次", self._pending_ms / 1000)
+            except Exception:
+                log.exception("强制 commit 失败")
+            self._pending_ms = 0.0
+
     async def __aiter__(self) -> AsyncIterator[ASRResult]:
         async for raw in self._sock:
             if self._closed:
@@ -263,6 +276,7 @@ class OpenAITranscribeStream:
             elif kind.endswith("input_audio_transcription.completed"):
                 text = (msg.get("transcript") or self._cur).strip()
                 self._cur = ""
+                self._pending_ms = 0.0   # VAD 已经切过一刀，累计清零
                 if text:
                     yield ASRResult(text=text, is_final=True)
             elif kind.endswith("input_audio_transcription.failed"):

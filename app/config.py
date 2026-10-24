@@ -31,7 +31,12 @@ ASR_PROVIDER = os.getenv("ASR_PROVIDER", "openai").strip().lower()
 OPENAI_ASR_MODEL = os.getenv("OPENAI_ASR_MODEL", "gpt-4o-transcribe")
 
 # 静音多久判定一句结束。太小会把词切碎、丢上下文，太大字幕出得慢。
-ASR_ENDPOINTING = int(os.getenv("ASR_ENDPOINTING", "500"))
+ASR_ENDPOINTING = int(os.getenv("ASR_ENDPOINTING", "400"))
+
+# 一句话最长多久必须强制切分（毫秒）。VAD 只在静音时断句，
+# 老师连讲不停就永远不结束；到点强制 commit 一刀，代价是可能切在词中间，
+# 所以别设太小（实测 5 秒会切出「治以。」这种碎片，8 秒比较平衡）。
+ASR_MAX_SPEECH_MS = int(os.getenv("ASR_MAX_SPEECH_MS", "8000"))
 
 # 术语偏置：把术语表里的词喂给识别引擎，期望它更愿意听成这些词。
 # 效果因引擎和语言而异，所以做成开关，方便 A/B 对比。
