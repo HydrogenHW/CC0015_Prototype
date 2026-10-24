@@ -1,13 +1,11 @@
 @echo off
-rem ---------------------------------------------------------------
-rem  This file is intentionally ASCII-only. cmd.exe parses .bat in
-rem  the system code page, so UTF-8 Chinese here corrupts command
-rem  lines. All user-facing Chinese lives in README and app logs.
-rem ---------------------------------------------------------------
+rem  ASCII-only on purpose: cmd.exe parses .bat in the system code page,
+rem  so UTF-8 Chinese here would corrupt command lines.
 chcp 65001 >nul
 set PYTHONUTF8=1
 cd /d "%~dp0"
 
+rem ---- find python ----
 set "PY=python"
 python --version >nul 2>nul
 if not errorlevel 1 goto have_python
@@ -30,6 +28,7 @@ pause
 exit /b 1
 
 :have_python
+rem ---- first run: virtualenv + dependencies ----
 if not exist .venv (
     echo   Creating virtual environment...
     "%PY%" -m venv .venv
@@ -53,19 +52,16 @@ if not exist .venv\.deps_ok (
     type nul > .venv\.deps_ok
 )
 
-if not exist .env (
-    echo.
-    echo   No .env file yet:
-    echo     with keys : copy .env.example to .env and fill in both keys
-    echo     just demo : put MOCK=1 in .env
-    echo.
-)
-
 echo.
-echo   Starting on http://127.0.0.1:8000   (close this window to stop)
+echo   Starting on http://127.0.0.1:8000
+echo   The browser opens by itself in a few seconds.
+echo   Close this window to stop the service.
 echo.
 
-start "" http://127.0.0.1:8000
+rem  Delay the browser a few seconds: opening it first would just show
+rem  "can't reach this site" while uvicorn is still booting.
+start "" /min powershell -NoProfile -WindowStyle Hidden -Command "Start-Sleep -Seconds 6; Start-Process 'http://127.0.0.1:8000'"
+
 python -m uvicorn app.server:app --host 127.0.0.1 --port 8000
 
 pause

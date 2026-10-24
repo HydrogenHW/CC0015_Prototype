@@ -22,8 +22,6 @@ Speech goes in through the microphone, subtitles come out in two languages side 
 
 **Homophone repair** — when recognition mishears a term as a homophone (肝阳上亢 → 肝阳上抗), pinyin matching restores the correct characters before translation.
 
-**Browser extension** — optional one-click entry point in the toolbar.
-
 ## The interface
 
 ```
@@ -76,9 +74,9 @@ Keys entered in the app always take priority. If a key is missing from both plac
 
 ### 3. Start
 
-Double-click **`run.bat`** — it creates a virtual environment, installs dependencies (first run only), and opens `http://127.0.0.1:8000`.
+Double-click **`run.bat`**.
 
-Or double-click **`start_service.vbs`** to run the backend silently, then open the address yourself.
+On first run it creates a virtual environment and installs dependencies; afterwards it starts straight away. The browser opens by itself a few seconds later — keep the window open, since closing it stops the service.
 
 ## Using it
 
@@ -147,7 +145,6 @@ app/
 data/
 ├── glossary.json       267 TCM terms, bilingual
 └── presets.json        terminology sets, generated locally
-extension/              optional Chrome extension entry point
 tools/                  tests and maintenance scripts
 docs/                   implementation notes
 ```
