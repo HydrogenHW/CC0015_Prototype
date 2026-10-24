@@ -47,6 +47,9 @@
     retryTimer: null,
     retries: 0,
     firstRow: true,
+    statusKey: "",
+    statusArgs: [],
+    statusKind: "",
   };
 
   // ------------------------------------------------------------ 文案
@@ -208,12 +211,20 @@
       node.placeholder = t(node.dataset.i18nPlaceholder);
     });
     if (!state.running) el.toggle.textContent = t("start");
+    // 状态栏是动态文案，不能用 data-i18n 静态替换；
+    // 切语言时按记住的 key 重新算一遍，否则会停在旧语言。
+    if (state.statusKey) {
+      el.status.textContent = t(state.statusKey, ...state.statusArgs);
+    }
   }
 
   // ---------------------------------------------------------------- 工具
 
-  function setStatus(text, kind = "") {
-    el.status.textContent = text;
+  function setStatus(key, kind = "", ...args) {
+    state.statusKey = key;
+    state.statusArgs = args;
+    state.statusKind = kind;
+    el.status.textContent = t(key, ...args);
     el.status.className = "status" + (kind ? " " + kind : "");
   }
 
@@ -317,7 +328,7 @@
       ws.onopen = () => {
         state.retryTimer = null;
         state.retries = 0;
-        setStatus(t("st_rec"), "ok");
+        setStatus("st_rec", "ok");
         resolve(ws);
       };
 
@@ -339,14 +350,14 @@
       };
 
       ws.onerror = () => {
-        setStatus(t("st_no_backend"), "err");
+        setStatus("st_no_backend", "err");
         reject(new Error("websocket error"));
       };
 
       ws.onclose = (ev) => {
         if (!state.running) return;
         state.retries += 1;
-        setStatus(t("st_reconnect", ev.code), "warn");
+        setStatus("st_reconnect", "warn", ev.code);
         if (state.retries === 3) {
           showError(
             "后端连接反复断开",
@@ -369,7 +380,7 @@
   async function start() {
     if (state.running) return;
     el.toggle.disabled = true;
-    setStatus(t("st_check"));
+    setStatus("st_check");
 
     // 问后端要采样率，顺便看密钥齐不齐
     try {
@@ -380,7 +391,7 @@
       }
       if (cfg && Array.isArray(cfg.missing) && cfg.missing.length > 0) {
         // 缺密钥就别急着开麦了，先把人引到设置去
-        setStatus(t("st_no_keys"), "err");
+        setStatus("st_no_keys", "err");
         showToast(t("missing_keys", cfg.missing.join(", ")), t("go_settings"), openSettings);
         el.toggle.disabled = false;
         return;
@@ -389,10 +400,10 @@
       /* 读不到就用默认值，连接失败时下面会提示 */
     }
 
-    setStatus(t("st_mic"));
+    setStatus("st_mic");
 
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      setStatus(t("st_no_mic_api"), "err");
+      setStatus("st_no_mic_api", "err");
       showError(
         "当前环境拿不到麦克风接口",
         "请用 Chrome / Edge 打开，地址必须是 http://127.0.0.1:8000。" +
@@ -420,7 +431,7 @@
         OverconstrainedError:
           "麦克风不支持请求的参数。",
       };
-      setStatus(t("st_mic_fail"), "err");
+      setStatus("st_mic_fail", "err");
       showError(`无法获取麦克风（${name}）`, tips[name] || err.message || "");
       console.error(err);
       el.toggle.disabled = false;
@@ -449,7 +460,7 @@
       sink.gain.value = 0;
       state.node.connect(sink).connect(state.ctx.destination);
     } catch (err) {
-      setStatus(t("st_audio_fail"), "err");
+      setStatus("st_audio_fail", "err");
       showError(
         "音频处理初始化失败",
         `${err.name || ""} ${err.message || err}`.trim()
@@ -463,7 +474,7 @@
     try {
       await connectWs();
     } catch {
-      setStatus(t("st_no_backend"), "err");
+      setStatus("st_no_backend", "err");
       showError(
         "无法连接后端服务",
         "确认 run.bat 的窗口还开着，且地址是 http://127.0.0.1:8000。"
@@ -502,7 +513,7 @@
     state.running = true;
     el.toggle.textContent = t("stop");
     el.toggle.classList.add("running");
-    setStatus(t("st_rec"), "ok");
+    setStatus("st_rec", "ok");
     el.toggle.disabled = false;
   }
 
@@ -529,7 +540,7 @@
 
     cleanupAudio();
     setInterim("");
-    setStatus(t("st_stopped"));
+    setStatus("st_stopped");
   }
 
   function cleanupAudio() {
@@ -566,7 +577,7 @@
       // 后端会重建会话，前端连接保持不变
       if (state.ws && state.ws.readyState === WebSocket.OPEN) {
         state.ws.send(JSON.stringify({ type: "lang", value: dir }));
-        setStatus(t("st_switch"), "warn");
+        setStatus("st_switch", "warn");
       }
     });
   });
@@ -753,9 +764,9 @@
   presetUI.select.addEventListener("change", async () => {
     try {
       await fetch(`/presets/${presetUI.select.value}/activate`, { method: "POST" });
-      setStatus(t("st_switch_ok"), "warn");
+      setStatus("st_switch_ok", "warn");
     } catch {
-      setStatus(t("switch_fail"), "err");
+      setStatus("switch_fail", "err");
     }
   });
 
@@ -774,9 +785,9 @@
         body: JSON.stringify({ name }),
       });
       await loadPresets();
-      setStatus(t("st_switched_preset", name), "ok");
+      setStatus("st_switched_preset", "ok", name);
     } catch {
-      setStatus(t("create_fail"), "err");
+      setStatus("create_fail", "err");
     }
   });
 
@@ -786,7 +797,7 @@
     try {
       data = await fetchPresets();
     } catch {
-      setStatus(t("read_preset_fail"), "err");
+      setStatus("read_preset_fail", "err");
       return;
     }
 
@@ -834,7 +845,7 @@
           del.onclick = async () => {
             const r = await fetch(`/presets/${p.id}`, { method: "DELETE" }).catch(() => null);
             const j = r ? await r.json().catch(() => ({})) : {};
-            if (j && j.ok === false) setStatus(j.reason || t("delete_fail"), "err");
+            if (j && j.ok === false) setStatus("delete_fail", "err");
             await loadPresets(dir);
             presetUI.manage.click();
           };
@@ -994,11 +1005,11 @@
     }).then((r) => r.json()).catch(() => null);
 
     if (!res) {
-      setStatus(t("backend_down"), "err");
+      setStatus("backend_down", "err");
       return;
     }
     settingsUI.modal.hidden = true;
-    setStatus(t("saved"), "ok");
+    setStatus("saved", "ok");
     loadPresets();
   }
 
@@ -1011,5 +1022,5 @@
 
   applyLang("zh");
   loadPresets();
-  setStatus(t("st_idle"));
+  setStatus("st_idle");
 })();
