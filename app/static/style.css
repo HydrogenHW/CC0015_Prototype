@@ -52,7 +52,10 @@ body {
 
 /* 整条顶栏的每一块都给定宽：中英文长度差很多，
    不固定的话切换语言时按钮会左右乱跳。 */
-.brand { width: 108px; }
+.brand {
+  min-width: 96px;
+  max-width: 132px;
+}
 
 .brand {
   font-weight: 600;
@@ -65,7 +68,7 @@ body {
 
 .dirs {
   display: flex;
-  width: 262px;
+  width: 288px;
   flex: none;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -74,8 +77,12 @@ body {
 
 .dir {
   flex: 1;
+  min-width: 0;
   white-space: nowrap;
-  padding: 7px 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 7px 8px;
+  font-size: 13px;
   background: transparent;
   color: var(--muted);
   border: 0;
@@ -93,7 +100,7 @@ body {
 }
 
 .primary {
-  width: 82px;
+  width: 92px;
   flex: none;
   padding: 8px 0;
   border-radius: 8px;
@@ -114,7 +121,7 @@ body {
 .status {
   font-size: 13px;
   color: var(--muted);
-  width: 132px;
+  width: 148px;
   flex: none;
   white-space: nowrap;
   overflow: hidden;
@@ -433,7 +440,8 @@ kbd {
 }
 
 .preset-label {
-  width: 54px;
+  min-width: 56px;
+  max-width: 72px;
   flex: none;
   font-size: 12px;
   color: var(--muted);
@@ -448,9 +456,10 @@ kbd {
   border-radius: 7px;
   padding: 6px 8px;
   font-size: 13px;
-  width: 150px;
+  width: 176px;
   flex: none;
   outline: none;
+  text-overflow: ellipsis;
 }
 
 .preset-select:focus { border-color: var(--accent); }
@@ -543,3 +552,25 @@ kbd {
 .preset-row .name { flex: 1; font-size: 14px; }
 .preset-row .count { color: var(--muted); font-size: 12px; }
 .preset-row button { padding: 3px 9px; font-size: 12px; }
+
+
+/* ---------- 中英文一致性 ---------- */
+/* 中英文字形高度不同，两种语言下行高会有 1~2px 的差，
+   统一 line-height 让顶栏高度在任何语言下都一样。 */
+.bar button,
+.bar select,
+.bar .status,
+.bar .preset-label,
+.brand {
+  line-height: 1.25;
+}
+
+/* 弹窗按钮也固定宽度：取消 / Cancel、创建 / Create 长短差很多 */
+.modal-actions button {
+  min-width: 88px;
+}
+
+@media (max-width: 980px) {
+  .brand { display: none; }
+  .preset-label { display: none; }
+}
