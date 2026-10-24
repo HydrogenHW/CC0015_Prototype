@@ -135,18 +135,17 @@ Press F12 and check the console. A JavaScript error at load time leaves the page
 ```
 app/
 ├── server.py           FastAPI entry, WebSocket bridge, /chat and /presets endpoints
-├── asr.py              Volcengine streaming ASR (+ OpenAI, Deepgram, mock)
+├── asr.py              Volcengine streaming ASR (+ Deepgram, mock)
 ├── segmenter.py        sentence assembly
 ├── glossary.py         term matching for translation constraints
 ├── pinyin_fix.py       homophone repair
 ├── presets.py          terminology set storage
-├── builtin_presets.py  the nine built-in subject sets
 ├── chat.py             terminology assistant (DeepSeek + tool calling)
 ├── translate.py        translation with term constraints
 └── static/             frontend (HTML/CSS/JS, no build step)
 data/
-├── glossary.json       267 TCM terms, bilingual
-└── presets.json        terminology sets, generated locally
+├── builtin_presets.json  the nine built-in sets (TCM glossary included)
+└── presets.json          your working copy, generated locally
 tools/                  tests and maintenance scripts
 docs/                   implementation notes
 ```

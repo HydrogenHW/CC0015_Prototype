@@ -47,8 +47,8 @@ SEG_MIN_LEN = 10
 
 TRANSLATE_DRAIN_TIMEOUT = float(os.getenv("TRANSLATE_DRAIN_TIMEOUT", "25"))
 
-GLOSSARY_PATH = ROOT / "data" / "glossary.json"
-HOTWORD_STORE = ROOT / "data" / "hotwords_custom.json"
+# 内置预设（含中医的中英对照表），唯一的数据源
+BUILTIN_PRESETS_PATH = ROOT / "data" / "builtin_presets.json"
 PRESET_STORE = ROOT / "data" / "presets.json"
 STATIC_DIR = Path(__file__).resolve().parent / "static"
 

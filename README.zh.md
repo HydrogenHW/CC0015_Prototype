@@ -135,18 +135,17 @@
 ```
 app/
 ├── server.py          FastAPI 入口、WebSocket 桥接、/chat 与 /presets 接口
-├── asr.py             火山流式识别（另含 OpenAI、Deepgram、Mock）
+├── asr.py             火山流式识别（另含 Deepgram、Mock）
 ├── segmenter.py       分句
 ├── glossary.py        翻译用的术语匹配
 ├── pinyin_fix.py      同音纠错
 ├── presets.py         热词组存储
-├── builtin_presets.py 9 个内置学科词表
 ├── chat.py            术语助手（DeepSeek + 工具调用）
 ├── translate.py       术语约束下的翻译
 └── static/            前端（HTML/CSS/JS，无构建步骤）
 data/
-├── glossary.json      267 条中医中英术语
-└── presets.json       热词组，本机生成
+├── builtin_presets.json  9 个内置热词组（含中医中英对照表）
+└── presets.json          本机工作副本，首次运行生成
 tools/                 测试与维护脚本
 docs/                  实现文档
 ```

@@ -45,7 +45,7 @@ SCAN_SUFFIX = {".py", ".md", ".json", ".txt", ".bat", ".ps1", ".js", ".html", ".
 # 包里必须有的东西，缺了说明打包逻辑漏了
 REQUIRED = {
     "run.bat", "setup_python.ps1", "requirements.txt",
-    "app/server.py", "app/static/index.html", "data/glossary.json", "README.md",
+    "app/server.py", "app/static/index.html", "data/builtin_presets.json", "README.md",
 }
 
 

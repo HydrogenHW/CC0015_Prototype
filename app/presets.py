@@ -27,9 +27,9 @@ def _has_cjk(text: str) -> bool:
 
 
 class PresetStore:
-    def __init__(self, path: Path, glossary: Glossary):
+    def __init__(self, path: Path, builtin_path: Path):
         self._path = path
-        self._glossary = glossary
+        self._builtin_path = builtin_path
         self._data: dict = {"version": 2, "active": "", "presets": []}
         self._load()
 
@@ -184,40 +184,32 @@ class PresetStore:
         log.info("旧格式预设已合并为 %d 个（双向共用）", len(merged))
         self._ensure_builtin()
 
-    def _seed(self) -> None:
-        from .builtin_presets import BUILTIN
+    def _builtin(self) -> list[dict]:
+        """内置预设，来自 data/builtin_presets.json（唯一数据源）。"""
+        data = json.loads(self._builtin_path.read_text(encoding="utf-8"))
+        out = []
+        for p in data.get("presets", []):
+            out.append({"id": p["id"], "name": p["name"], "words": list(p.get("words", []))})
+        return out
 
-        presets = []
-        for item in BUILTIN:
-            if item["id"] == "tcm":
-                continue    # 中医由 _tcm_words 单独生成
-            words = list(dict.fromkeys(item["zh"] + item["en"]))
-            presets.append({"id": item["id"], "name": item["name"], "words": words})
-        presets.insert(0, {"id": "tcm", "name": "中医 / TCM", "words": self._tcm_words()})
-        self._data = {"version": 2, "active": "tcm", "presets": presets}
+    def _seed(self) -> None:
+        presets = self._builtin()
+        self._data = {
+            "version": 2,
+            "active": presets[0]["id"] if presets else "",
+            "presets": presets,
+        }
         self._save()
         log.info("初始化 %d 个内置预设", len(presets))
 
-    def _tcm_words(self) -> list[str]:
-        zh = [e["zh"] for e in self._glossary.entries if len(e["zh"]) > 1]
-        en = [e["en"] for e in self._glossary.entries]
-        return list(dict.fromkeys(zh + en))
-
     def _ensure_builtin(self) -> None:
         """老用户的 presets.json 里可能还没有新增的学科预设，补齐。"""
-        from .builtin_presets import BUILTIN
-
         have = {p["id"] for p in self._data["presets"]}
         added = 0
-        for item in BUILTIN:
+        for item in self._builtin():
             if item["id"] in have:
                 continue
-            words = self._tcm_words() if item["id"] == "tcm" else list(
-                dict.fromkeys(item["zh"] + item["en"])
-            )
-            self._data["presets"].append(
-                {"id": item["id"], "name": item["name"], "words": words}
-            )
+            self._data["presets"].append(item)
             added += 1
         if added:
             self._save()

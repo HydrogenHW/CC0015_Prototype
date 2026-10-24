@@ -47,9 +47,9 @@ logging.basicConfig(
 )
 log = logging.getLogger("app")
 
-glossary = Glossary(config.GLOSSARY_PATH)
+glossary = Glossary(config.BUILTIN_PRESETS_PATH)
 translator = Translator(glossary)
-presets = PresetStore(config.PRESET_STORE, glossary)
+presets = PresetStore(config.PRESET_STORE, config.BUILTIN_PRESETS_PATH)
 assistant = ChatService(presets, glossary)
 
 

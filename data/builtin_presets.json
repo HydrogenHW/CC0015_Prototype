@@ -1,0 +1,2447 @@
+{
+ "version": 1,
+ "presets": [
+  {
+   "id": "tcm",
+   "name": "中医 / TCM",
+   "words": [
+    "阴阳",
+    "五行",
+    "火（五行）",
+    "水（五行）",
+    "相生",
+    "相克",
+    "相乘",
+    "相侮",
+    "阴阳互根",
+    "阴阳转化",
+    "阴阳消长",
+    "阴阳失衡",
+    "五行学说",
+    "津液",
+    "元气",
+    "宗气",
+    "营气",
+    "卫气",
+    "中气",
+    "正气",
+    "邪气",
+    "气血两虚",
+    "气虚",
+    "气滞",
+    "气逆",
+    "气陷",
+    "气脱",
+    "血虚",
+    "血瘀",
+    "血热",
+    "血寒",
+    "水湿",
+    "津亏",
+    "痰湿",
+    "痰热",
+    "痰浊",
+    "五脏",
+    "六腑",
+    "心包",
+    "小肠",
+    "大肠",
+    "膀胱",
+    "三焦",
+    "奇恒之腑",
+    "女子胞",
+    "脾胃",
+    "心主神明",
+    "肝主疏泄",
+    "脾主运化",
+    "肝藏血",
+    "肾藏精",
+    "脾统血",
+    "心主血脉",
+    "肝肾同源",
+    "心肾相交",
+    "经络",
+    "经脉",
+    "络脉",
+    "十二正经",
+    "奇经八脉",
+    "任脉",
+    "督脉",
+    "冲脉",
+    "带脉",
+    "手太阴肺经",
+    "手阳明大肠经",
+    "足阳明胃经",
+    "足太阴脾经",
+    "手少阴心经",
+    "手太阳小肠经",
+    "足太阳膀胱经",
+    "足少阴肾经",
+    "手厥阴心包经",
+    "手少阳三焦经",
+    "足少阳胆经",
+    "足厥阴肝经",
+    "腧穴",
+    "六淫",
+    "七情",
+    "内伤",
+    "疠气",
+    "病机",
+    "传变",
+    "正邪相争",
+    "虚实夹杂",
+    "四诊",
+    "望诊",
+    "闻诊",
+    "问诊",
+    "切诊",
+    "舌诊",
+    "舌质",
+    "舌苔",
+    "脉诊",
+    "脉象",
+    "浮脉",
+    "沉脉",
+    "迟脉",
+    "数脉",
+    "虚脉",
+    "实脉",
+    "滑脉",
+    "涩脉",
+    "弦脉",
+    "舌红",
+    "舌淡",
+    "苔黄",
+    "苔白",
+    "苔腻",
+    "八纲",
+    "表证",
+    "里证",
+    "寒证",
+    "热证",
+    "虚证",
+    "实证",
+    "半表半里",
+    "寒热错杂",
+    "辨证论治",
+    "证候",
+    "六经辨证",
+    "三焦辨证",
+    "卫气营血辨证",
+    "肝气郁结",
+    "肝火上炎",
+    "肝阳上亢",
+    "肝血虚",
+    "肝阴虚",
+    "脾气虚",
+    "脾阳虚",
+    "脾虚湿困",
+    "心气虚",
+    "心阳虚",
+    "心血虚",
+    "心火亢盛",
+    "心血瘀阻",
+    "肺气虚",
+    "肺阴虚",
+    "风寒犯肺",
+    "风热犯肺",
+    "肾阳虚",
+    "肾阴虚",
+    "肾气不固",
+    "肾精不足",
+    "胃阴虚",
+    "胃火",
+    "痰浊阻肺",
+    "痰蒙心窍",
+    "膀胱湿热",
+    "太阳伤寒",
+    "少阳证",
+    "阳明证",
+    "卫分证",
+    "气分证",
+    "营分证",
+    "血分证",
+    "上热下寒",
+    "心脾两虚",
+    "肝肾阴虚",
+    "阴虚火旺",
+    "阳虚水泛",
+    "治则",
+    "汗法",
+    "吐法",
+    "下法",
+    "和法",
+    "消法",
+    "益气",
+    "养血",
+    "滋阴",
+    "温阳",
+    "活血化瘀",
+    "行气",
+    "化痰",
+    "祛湿",
+    "疏肝",
+    "健脾",
+    "补肾",
+    "清热解毒",
+    "针灸",
+    "针刺",
+    "艾灸",
+    "拔罐",
+    "推拿",
+    "四君子汤",
+    "四物汤",
+    "八珍汤",
+    "六味地黄丸",
+    "桂枝汤",
+    "麻黄汤",
+    "小柴胡汤",
+    "逍遥散",
+    "补中益气汤",
+    "归脾汤",
+    "温胆汤",
+    "玉屏风散",
+    "银翘散",
+    "血府逐瘀汤",
+    "天王补心丹",
+    "合谷",
+    "足三里",
+    "太冲",
+    "三阴交",
+    "内关",
+    "百会",
+    "关元",
+    "气海",
+    "神门",
+    "曲池",
+    "阳陵泉",
+    "阴陵泉",
+    "太溪",
+    "风池",
+    "中脘",
+    "血海",
+    "尺泽",
+    "中医",
+    "中药",
+    "本草",
+    "方剂",
+    "四气",
+    "五味",
+    "归经",
+    "君臣佐使",
+    "yin-yang",
+    "yin",
+    "yang",
+    "five phases",
+    "wood",
+    "fire",
+    "earth",
+    "metal",
+    "water",
+    "engendering",
+    "restraining",
+    "overacting",
+    "counteracting",
+    "mutual rooting of yin and yang",
+    "yin-yang conversion",
+    "waxing and waning of yin and yang",
+    "yin-yang imbalance",
+    "five phase theory",
+    "essence",
+    "qi",
+    "blood",
+    "body fluid",
+    "spirit",
+    "original qi",
+    "pectoral qi",
+    "nutrient qi",
+    "defensive qi",
+    "middle qi",
+    "healthy qi",
+    "pathogenic qi",
+    "qi and blood deficiency",
+    "qi deficiency",
+    "qi stagnation",
+    "qi counterflow",
+    "qi sinking",
+    "qi collapse",
+    "blood deficiency",
+    "blood stasis",
+    "blood heat",
+    "blood cold",
+    "phlegm",
+    "retained fluid",
+    "water-dampness",
+    "fluid depletion",
+    "phlegm-dampness",
+    "phlegm-heat",
+    "phlegm turbidity",
+    "five zang-organs",
+    "six fu-organs",
+    "heart",
+    "liver",
+    "spleen",
+    "lung",
+    "kidney",
+    "pericardium",
+    "gallbladder",
+    "stomach",
+    "small intestine",
+    "large intestine",
+    "bladder",
+    "triple energizer",
+    "extraordinary fu-organs",
+    "brain",
+    "marrow",
+    "bone",
+    "vessel",
+    "uterus",
+    "spleen and stomach",
+    "heart governs mental activities",
+    "liver governs free flow",
+    "spleen governs transportation and transformation",
+    "liver stores blood",
+    "kidney stores essence",
+    "spleen controls blood",
+    "heart governs blood and vessels",
+    "liver and kidney share the same source",
+    "interaction between heart and kidney",
+    "meridian and collateral",
+    "meridian",
+    "collateral",
+    "twelve regular meridians",
+    "eight extra meridians",
+    "Conception Vessel",
+    "Governing Vessel",
+    "Penetrating Vessel",
+    "Girdling Vessel",
+    "Hand-Taiyin Lung Meridian",
+    "Hand-Yangming Large Intestine Meridian",
+    "Foot-Yangming Stomach Meridian",
+    "Foot-Taiyin Spleen Meridian",
+    "Hand-Shaoyin Heart Meridian",
+    "Hand-Taiyang Small Intestine Meridian",
+    "Foot-Taiyang Bladder Meridian",
+    "Foot-Shaoyin Kidney Meridian",
+    "Hand-Jueyin Pericardium Meridian",
+    "Hand-Shaoyang Sanjiao Meridian",
+    "Foot-Shaoyang Gallbladder Meridian",
+    "Foot-Jueyin Liver Meridian",
+    "acupoint",
+    "six excesses",
+    "wind",
+    "cold",
+    "summerheat",
+    "dampness",
+    "dryness",
+    "heat",
+    "seven emotions",
+    "joy",
+    "anger",
+    "anxiety",
+    "thought",
+    "sorrow",
+    "fear",
+    "fright",
+    "internal damage",
+    "pestilential qi",
+    "pathogenesis",
+    "transmission and transformation",
+    "struggle between healthy qi and pathogenic qi",
+    "deficiency-excess complex",
+    "four diagnostic methods",
+    "inspection",
+    "listening and smelling",
+    "inquiry",
+    "palpation",
+    "tongue diagnosis",
+    "tongue body",
+    "tongue coating",
+    "pulse diagnosis",
+    "pulse image",
+    "floating pulse",
+    "deep pulse",
+    "slow pulse",
+    "rapid pulse",
+    "vacuous pulse",
+    "replete pulse",
+    "slippery pulse",
+    "choppy pulse",
+    "wiry pulse",
+    "red tongue",
+    "pale tongue",
+    "yellow coating",
+    "white coating",
+    "greasy coating",
+    "eight principles",
+    "exterior",
+    "interior",
+    "deficiency",
+    "excess",
+    "exterior pattern",
+    "interior pattern",
+    "cold pattern",
+    "heat pattern",
+    "deficiency pattern",
+    "excess pattern",
+    "half-exterior half-interior",
+    "cold-heat complex",
+    "pattern identification and treatment",
+    "pattern",
+    "six-meridian pattern identification",
+    "sanjiao pattern identification",
+    "wei-qi-ying-xue pattern identification",
+    "liver qi stagnation",
+    "liver fire flaming upward",
+    "liver yang hyperactivity",
+    "liver blood deficiency",
+    "liver yin deficiency",
+    "spleen qi deficiency",
+    "spleen yang deficiency",
+    "spleen deficiency with dampness retention",
+    "heart qi deficiency",
+    "heart yang deficiency",
+    "heart blood deficiency",
+    "heart fire hyperactivity",
+    "heart blood stasis",
+    "lung qi deficiency",
+    "lung yin deficiency",
+    "wind-cold invading lung",
+    "wind-heat invading lung",
+    "kidney yang deficiency",
+    "kidney yin deficiency",
+    "kidney qi insecurity",
+    "kidney essence insufficiency",
+    "stomach yin deficiency",
+    "stomach fire",
+    "phlegm turbidity obstructing lung",
+    "phlegm clouding heart orifice",
+    "bladder damp-heat",
+    "Taiyang cold damage",
+    "Shaoyang pattern",
+    "Yangming pattern",
+    "Wei-level pattern",
+    "Qi-level pattern",
+    "Ying-level pattern",
+    "Xue-level pattern",
+    "upper heat and lower cold",
+    "heart and spleen deficiency",
+    "liver and kidney yin deficiency",
+    "yin deficiency with hyperactive fire",
+    "yang deficiency with water diffusion",
+    "treatment principle",
+    "tonify",
+    "purge",
+    "warm",
+    "clear heat",
+    "diaphoresis",
+    "emesis",
+    "purgation",
+    "harmonizing method",
+    "resolution method",
+    "replenish qi",
+    "nourish blood",
+    "nourish yin",
+    "warm yang",
+    "invigorate blood and resolve stasis",
+    "move qi",
+    "resolve phlegm",
+    "eliminate dampness",
+    "soothe liver",
+    "strengthen spleen",
+    "tonify kidney",
+    "clear heat and resolve toxin",
+    "acupuncture and moxibustion",
+    "acupuncture",
+    "moxibustion",
+    "cupping",
+    "tuina",
+    "Four Gentlemen Decoction",
+    "Four Substances Decoction",
+    "Eight Treasure Decoction",
+    "Six-Ingredient Rehmannia Pill",
+    "Cinnamon Twig Decoction",
+    "Ephedra Decoction",
+    "Minor Bupleurum Decoction",
+    "Free Wanderer Powder",
+    "Decoction for Tonifying the Middle and Benefiting Qi",
+    "Decoction for Restoring Spleen",
+    "Decoction for Warming Gallbladder",
+    "Jade Windscreen Powder",
+    "Lonicera and Forsythia Powder",
+    "Decoction for Removing Blood Stasis in the Blood Mansion",
+    "Celestial Emperor Heart-Supplementing Elixir",
+    "Hegu (LI4)",
+    "Zusanli (ST36)",
+    "Taichong (LR3)",
+    "Sanyinjiao (SP6)",
+    "Neiguan (PC6)",
+    "Baihui (GV20)",
+    "Guanyuan (CV4)",
+    "Qihai (CV6)",
+    "Shenmen (HT7)",
+    "Quchi (LI11)",
+    "Yanglingquan (GB34)",
+    "Yinlingquan (SP9)",
+    "Taixi (KI3)",
+    "Fengchi (GB20)",
+    "Zhongwan (CV12)",
+    "Xuehai (SP10)",
+    "Chize (LU5)",
+    "traditional Chinese medicine",
+    "Chinese materia medica",
+    "materia medica",
+    "formula",
+    "four natures",
+    "five flavors",
+    "channel tropism",
+    "sovereign, minister, assistant and courier"
+   ],
+   "glossary": [
+    {
+     "zh": "阴阳",
+     "en": "yin-yang",
+     "category": "theory"
+    },
+    {
+     "zh": "阴",
+     "en": "yin",
+     "category": "theory"
+    },
+    {
+     "zh": "阳",
+     "en": "yang",
+     "category": "theory"
+    },
+    {
+     "zh": "五行",
+     "en": "five phases",
+     "category": "theory"
+    },
+    {
+     "zh": "木",
+     "en": "wood",
+     "category": "theory"
+    },
+    {
+     "zh": "火（五行）",
+     "en": "fire",
+     "category": "theory"
+    },
+    {
+     "zh": "土",
+     "en": "earth",
+     "category": "theory"
+    },
+    {
+     "zh": "金",
+     "en": "metal",
+     "category": "theory"
+    },
+    {
+     "zh": "水（五行）",
+     "en": "water",
+     "category": "theory"
+    },
+    {
+     "zh": "相生",
+     "en": "engendering",
+     "category": "theory"
+    },
+    {
+     "zh": "相克",
+     "en": "restraining",
+     "category": "theory"
+    },
+    {
+     "zh": "相乘",
+     "en": "overacting",
+     "category": "theory"
+    },
+    {
+     "zh": "相侮",
+     "en": "counteracting",
+     "category": "theory"
+    },
+    {
+     "zh": "阴阳互根",
+     "en": "mutual rooting of yin and yang",
+     "category": "theory"
+    },
+    {
+     "zh": "阴阳转化",
+     "en": "yin-yang conversion",
+     "category": "theory"
+    },
+    {
+     "zh": "阴阳消长",
+     "en": "waxing and waning of yin and yang",
+     "category": "theory"
+    },
+    {
+     "zh": "阴阳失衡",
+     "en": "yin-yang imbalance",
+     "category": "theory"
+    },
+    {
+     "zh": "五行学说",
+     "en": "five phase theory",
+     "category": "theory"
+    },
+    {
+     "zh": "精",
+     "en": "essence",
+     "category": "substance"
+    },
+    {
+     "zh": "气",
+     "en": "qi",
+     "category": "substance"
+    },
+    {
+     "zh": "血",
+     "en": "blood",
+     "category": "substance"
+    },
+    {
+     "zh": "津液",
+     "en": "body fluid",
+     "category": "substance"
+    },
+    {
+     "zh": "神",
+     "en": "spirit",
+     "category": "substance"
+    },
+    {
+     "zh": "元气",
+     "en": "original qi",
+     "category": "substance"
+    },
+    {
+     "zh": "宗气",
+     "en": "pectoral qi",
+     "category": "substance"
+    },
+    {
+     "zh": "营气",
+     "en": "nutrient qi",
+     "category": "substance"
+    },
+    {
+     "zh": "卫气",
+     "en": "defensive qi",
+     "category": "substance"
+    },
+    {
+     "zh": "中气",
+     "en": "middle qi",
+     "category": "substance"
+    },
+    {
+     "zh": "正气",
+     "en": "healthy qi",
+     "category": "substance"
+    },
+    {
+     "zh": "邪气",
+     "en": "pathogenic qi",
+     "category": "substance"
+    },
+    {
+     "zh": "气血两虚",
+     "en": "qi and blood deficiency",
+     "category": "pattern"
+    },
+    {
+     "zh": "气虚",
+     "en": "qi deficiency",
+     "category": "pattern"
+    },
+    {
+     "zh": "气滞",
+     "en": "qi stagnation",
+     "category": "pathology"
+    },
+    {
+     "zh": "气逆",
+     "en": "qi counterflow",
+     "category": "pathology"
+    },
+    {
+     "zh": "气陷",
+     "en": "qi sinking",
+     "category": "pathology"
+    },
+    {
+     "zh": "气脱",
+     "en": "qi collapse",
+     "category": "pathology"
+    },
+    {
+     "zh": "血虚",
+     "en": "blood deficiency",
+     "category": "pattern"
+    },
+    {
+     "zh": "血瘀",
+     "en": "blood stasis",
+     "category": "pathology"
+    },
+    {
+     "zh": "血热",
+     "en": "blood heat",
+     "category": "pathology"
+    },
+    {
+     "zh": "血寒",
+     "en": "blood cold",
+     "category": "pathology"
+    },
+    {
+     "zh": "痰",
+     "en": "phlegm",
+     "category": "pathology"
+    },
+    {
+     "zh": "饮",
+     "en": "retained fluid",
+     "category": "pathology"
+    },
+    {
+     "zh": "水湿",
+     "en": "water-dampness",
+     "category": "pathology"
+    },
+    {
+     "zh": "津亏",
+     "en": "fluid depletion",
+     "category": "pathology"
+    },
+    {
+     "zh": "痰湿",
+     "en": "phlegm-dampness",
+     "category": "pathology"
+    },
+    {
+     "zh": "痰热",
+     "en": "phlegm-heat",
+     "category": "pathology"
+    },
+    {
+     "zh": "痰浊",
+     "en": "phlegm turbidity",
+     "category": "pathology"
+    },
+    {
+     "zh": "五脏",
+     "en": "five zang-organs",
+     "category": "organ"
+    },
+    {
+     "zh": "六腑",
+     "en": "six fu-organs",
+     "category": "organ"
+    },
+    {
+     "zh": "心",
+     "en": "heart",
+     "category": "organ"
+    },
+    {
+     "zh": "肝",
+     "en": "liver",
+     "category": "organ"
+    },
+    {
+     "zh": "脾",
+     "en": "spleen",
+     "category": "organ"
+    },
+    {
+     "zh": "肺",
+     "en": "lung",
+     "category": "organ"
+    },
+    {
+     "zh": "肾",
+     "en": "kidney",
+     "category": "organ"
+    },
+    {
+     "zh": "心包",
+     "en": "pericardium",
+     "category": "organ"
+    },
+    {
+     "zh": "胆",
+     "en": "gallbladder",
+     "category": "organ"
+    },
+    {
+     "zh": "胃",
+     "en": "stomach",
+     "category": "organ"
+    },
+    {
+     "zh": "小肠",
+     "en": "small intestine",
+     "category": "organ"
+    },
+    {
+     "zh": "大肠",
+     "en": "large intestine",
+     "category": "organ"
+    },
+    {
+     "zh": "膀胱",
+     "en": "bladder",
+     "category": "organ"
+    },
+    {
+     "zh": "三焦",
+     "en": "triple energizer",
+     "category": "organ"
+    },
+    {
+     "zh": "奇恒之腑",
+     "en": "extraordinary fu-organs",
+     "category": "organ"
+    },
+    {
+     "zh": "脑",
+     "en": "brain",
+     "category": "organ"
+    },
+    {
+     "zh": "髓",
+     "en": "marrow",
+     "category": "organ"
+    },
+    {
+     "zh": "骨",
+     "en": "bone",
+     "category": "organ"
+    },
+    {
+     "zh": "脉",
+     "en": "vessel",
+     "category": "organ"
+    },
+    {
+     "zh": "女子胞",
+     "en": "uterus",
+     "category": "organ"
+    },
+    {
+     "zh": "脾胃",
+     "en": "spleen and stomach",
+     "category": "organ"
+    },
+    {
+     "zh": "心主神明",
+     "en": "heart governs mental activities",
+     "category": "organ"
+    },
+    {
+     "zh": "肝主疏泄",
+     "en": "liver governs free flow",
+     "category": "organ"
+    },
+    {
+     "zh": "脾主运化",
+     "en": "spleen governs transportation and transformation",
+     "category": "organ"
+    },
+    {
+     "zh": "肝藏血",
+     "en": "liver stores blood",
+     "category": "organ"
+    },
+    {
+     "zh": "肾藏精",
+     "en": "kidney stores essence",
+     "category": "organ"
+    },
+    {
+     "zh": "脾统血",
+     "en": "spleen controls blood",
+     "category": "organ"
+    },
+    {
+     "zh": "心主血脉",
+     "en": "heart governs blood and vessels",
+     "category": "organ"
+    },
+    {
+     "zh": "肝肾同源",
+     "en": "liver and kidney share the same source",
+     "category": "organ"
+    },
+    {
+     "zh": "心肾相交",
+     "en": "interaction between heart and kidney",
+     "category": "organ"
+    },
+    {
+     "zh": "经络",
+     "en": "meridian and collateral",
+     "category": "meridian"
+    },
+    {
+     "zh": "经脉",
+     "en": "meridian",
+     "category": "meridian"
+    },
+    {
+     "zh": "络脉",
+     "en": "collateral",
+     "category": "meridian"
+    },
+    {
+     "zh": "十二正经",
+     "en": "twelve regular meridians",
+     "category": "meridian"
+    },
+    {
+     "zh": "奇经八脉",
+     "en": "eight extra meridians",
+     "category": "meridian"
+    },
+    {
+     "zh": "任脉",
+     "en": "Conception Vessel",
+     "category": "meridian"
+    },
+    {
+     "zh": "督脉",
+     "en": "Governing Vessel",
+     "category": "meridian"
+    },
+    {
+     "zh": "冲脉",
+     "en": "Penetrating Vessel",
+     "category": "meridian"
+    },
+    {
+     "zh": "带脉",
+     "en": "Girdling Vessel",
+     "category": "meridian"
+    },
+    {
+     "zh": "手太阴肺经",
+     "en": "Hand-Taiyin Lung Meridian",
+     "category": "meridian"
+    },
+    {
+     "zh": "手阳明大肠经",
+     "en": "Hand-Yangming Large Intestine Meridian",
+     "category": "meridian"
+    },
+    {
+     "zh": "足阳明胃经",
+     "en": "Foot-Yangming Stomach Meridian",
+     "category": "meridian"
+    },
+    {
+     "zh": "足太阴脾经",
+     "en": "Foot-Taiyin Spleen Meridian",
+     "category": "meridian"
+    },
+    {
+     "zh": "手少阴心经",
+     "en": "Hand-Shaoyin Heart Meridian",
+     "category": "meridian"
+    },
+    {
+     "zh": "手太阳小肠经",
+     "en": "Hand-Taiyang Small Intestine Meridian",
+     "category": "meridian"
+    },
+    {
+     "zh": "足太阳膀胱经",
+     "en": "Foot-Taiyang Bladder Meridian",
+     "category": "meridian"
+    },
+    {
+     "zh": "足少阴肾经",
+     "en": "Foot-Shaoyin Kidney Meridian",
+     "category": "meridian"
+    },
+    {
+     "zh": "手厥阴心包经",
+     "en": "Hand-Jueyin Pericardium Meridian",
+     "category": "meridian"
+    },
+    {
+     "zh": "手少阳三焦经",
+     "en": "Hand-Shaoyang Sanjiao Meridian",
+     "category": "meridian"
+    },
+    {
+     "zh": "足少阳胆经",
+     "en": "Foot-Shaoyang Gallbladder Meridian",
+     "category": "meridian"
+    },
+    {
+     "zh": "足厥阴肝经",
+     "en": "Foot-Jueyin Liver Meridian",
+     "category": "meridian"
+    },
+    {
+     "zh": "腧穴",
+     "en": "acupoint",
+     "category": "meridian"
+    },
+    {
+     "zh": "六淫",
+     "en": "six excesses",
+     "category": "pathology"
+    },
+    {
+     "zh": "风",
+     "en": "wind",
+     "category": "pathology"
+    },
+    {
+     "zh": "寒",
+     "en": "cold",
+     "category": "pathology"
+    },
+    {
+     "zh": "暑",
+     "en": "summerheat",
+     "category": "pathology"
+    },
+    {
+     "zh": "湿",
+     "en": "dampness",
+     "category": "pathology"
+    },
+    {
+     "zh": "燥",
+     "en": "dryness",
+     "category": "pathology"
+    },
+    {
+     "zh": "热",
+     "en": "heat",
+     "category": "pathology"
+    },
+    {
+     "zh": "七情",
+     "en": "seven emotions",
+     "category": "pathology"
+    },
+    {
+     "zh": "喜",
+     "en": "joy",
+     "category": "pathology"
+    },
+    {
+     "zh": "怒",
+     "en": "anger",
+     "category": "pathology"
+    },
+    {
+     "zh": "忧",
+     "en": "anxiety",
+     "category": "pathology"
+    },
+    {
+     "zh": "思",
+     "en": "thought",
+     "category": "pathology"
+    },
+    {
+     "zh": "悲",
+     "en": "sorrow",
+     "category": "pathology"
+    },
+    {
+     "zh": "恐",
+     "en": "fear",
+     "category": "pathology"
+    },
+    {
+     "zh": "惊",
+     "en": "fright",
+     "category": "pathology"
+    },
+    {
+     "zh": "内伤",
+     "en": "internal damage",
+     "category": "pathology"
+    },
+    {
+     "zh": "疠气",
+     "en": "pestilential qi",
+     "category": "pathology"
+    },
+    {
+     "zh": "病机",
+     "en": "pathogenesis",
+     "category": "pathology"
+    },
+    {
+     "zh": "传变",
+     "en": "transmission and transformation",
+     "category": "pathology"
+    },
+    {
+     "zh": "正邪相争",
+     "en": "struggle between healthy qi and pathogenic qi",
+     "category": "pathology"
+    },
+    {
+     "zh": "虚实夹杂",
+     "en": "deficiency-excess complex",
+     "category": "pathology"
+    },
+    {
+     "zh": "四诊",
+     "en": "four diagnostic methods",
+     "category": "diagnosis"
+    },
+    {
+     "zh": "望诊",
+     "en": "inspection",
+     "category": "diagnosis"
+    },
+    {
+     "zh": "闻诊",
+     "en": "listening and smelling",
+     "category": "diagnosis"
+    },
+    {
+     "zh": "问诊",
+     "en": "inquiry",
+     "category": "diagnosis"
+    },
+    {
+     "zh": "切诊",
+     "en": "palpation",
+     "category": "diagnosis"
+    },
+    {
+     "zh": "舌诊",
+     "en": "tongue diagnosis",
+     "category": "diagnosis"
+    },
+    {
+     "zh": "舌质",
+     "en": "tongue body",
+     "category": "diagnosis"
+    },
+    {
+     "zh": "舌苔",
+     "en": "tongue coating",
+     "category": "diagnosis"
+    },
+    {
+     "zh": "脉诊",
+     "en": "pulse diagnosis",
+     "category": "diagnosis"
+    },
+    {
+     "zh": "脉象",
+     "en": "pulse image",
+     "category": "diagnosis"
+    },
+    {
+     "zh": "浮脉",
+     "en": "floating pulse",
+     "category": "diagnosis"
+    },
+    {
+     "zh": "沉脉",
+     "en": "deep pulse",
+     "category": "diagnosis"
+    },
+    {
+     "zh": "迟脉",
+     "en": "slow pulse",
+     "category": "diagnosis"
+    },
+    {
+     "zh": "数脉",
+     "en": "rapid pulse",
+     "category": "diagnosis"
+    },
+    {
+     "zh": "虚脉",
+     "en": "vacuous pulse",
+     "category": "diagnosis"
+    },
+    {
+     "zh": "实脉",
+     "en": "replete pulse",
+     "category": "diagnosis"
+    },
+    {
+     "zh": "滑脉",
+     "en": "slippery pulse",
+     "category": "diagnosis"
+    },
+    {
+     "zh": "涩脉",
+     "en": "choppy pulse",
+     "category": "diagnosis"
+    },
+    {
+     "zh": "弦脉",
+     "en": "wiry pulse",
+     "category": "diagnosis"
+    },
+    {
+     "zh": "舌红",
+     "en": "red tongue",
+     "category": "diagnosis"
+    },
+    {
+     "zh": "舌淡",
+     "en": "pale tongue",
+     "category": "diagnosis"
+    },
+    {
+     "zh": "苔黄",
+     "en": "yellow coating",
+     "category": "diagnosis"
+    },
+    {
+     "zh": "苔白",
+     "en": "white coating",
+     "category": "diagnosis"
+    },
+    {
+     "zh": "苔腻",
+     "en": "greasy coating",
+     "category": "diagnosis"
+    },
+    {
+     "zh": "八纲",
+     "en": "eight principles",
+     "category": "diagnosis"
+    },
+    {
+     "zh": "表",
+     "en": "exterior",
+     "category": "diagnosis"
+    },
+    {
+     "zh": "里",
+     "en": "interior",
+     "category": "diagnosis"
+    },
+    {
+     "zh": "虚",
+     "en": "deficiency",
+     "category": "diagnosis"
+    },
+    {
+     "zh": "实",
+     "en": "excess",
+     "category": "diagnosis"
+    },
+    {
+     "zh": "表证",
+     "en": "exterior pattern",
+     "category": "diagnosis"
+    },
+    {
+     "zh": "里证",
+     "en": "interior pattern",
+     "category": "diagnosis"
+    },
+    {
+     "zh": "寒证",
+     "en": "cold pattern",
+     "category": "diagnosis"
+    },
+    {
+     "zh": "热证",
+     "en": "heat pattern",
+     "category": "diagnosis"
+    },
+    {
+     "zh": "虚证",
+     "en": "deficiency pattern",
+     "category": "diagnosis"
+    },
+    {
+     "zh": "实证",
+     "en": "excess pattern",
+     "category": "diagnosis"
+    },
+    {
+     "zh": "半表半里",
+     "en": "half-exterior half-interior",
+     "category": "diagnosis"
+    },
+    {
+     "zh": "寒热错杂",
+     "en": "cold-heat complex",
+     "category": "diagnosis"
+    },
+    {
+     "zh": "辨证论治",
+     "en": "pattern identification and treatment",
+     "category": "diagnosis"
+    },
+    {
+     "zh": "证候",
+     "en": "pattern",
+     "category": "diagnosis"
+    },
+    {
+     "zh": "六经辨证",
+     "en": "six-meridian pattern identification",
+     "category": "diagnosis"
+    },
+    {
+     "zh": "三焦辨证",
+     "en": "sanjiao pattern identification",
+     "category": "diagnosis"
+    },
+    {
+     "zh": "卫气营血辨证",
+     "en": "wei-qi-ying-xue pattern identification",
+     "category": "diagnosis"
+    },
+    {
+     "zh": "肝气郁结",
+     "en": "liver qi stagnation",
+     "category": "pattern"
+    },
+    {
+     "zh": "肝火上炎",
+     "en": "liver fire flaming upward",
+     "category": "pattern"
+    },
+    {
+     "zh": "肝阳上亢",
+     "en": "liver yang hyperactivity",
+     "category": "pattern"
+    },
+    {
+     "zh": "肝血虚",
+     "en": "liver blood deficiency",
+     "category": "pattern"
+    },
+    {
+     "zh": "肝阴虚",
+     "en": "liver yin deficiency",
+     "category": "pattern"
+    },
+    {
+     "zh": "脾气虚",
+     "en": "spleen qi deficiency",
+     "category": "pattern"
+    },
+    {
+     "zh": "脾阳虚",
+     "en": "spleen yang deficiency",
+     "category": "pattern"
+    },
+    {
+     "zh": "脾虚湿困",
+     "en": "spleen deficiency with dampness retention",
+     "category": "pattern"
+    },
+    {
+     "zh": "心气虚",
+     "en": "heart qi deficiency",
+     "category": "pattern"
+    },
+    {
+     "zh": "心阳虚",
+     "en": "heart yang deficiency",
+     "category": "pattern"
+    },
+    {
+     "zh": "心血虚",
+     "en": "heart blood deficiency",
+     "category": "pattern"
+    },
+    {
+     "zh": "心火亢盛",
+     "en": "heart fire hyperactivity",
+     "category": "pattern"
+    },
+    {
+     "zh": "心血瘀阻",
+     "en": "heart blood stasis",
+     "category": "pattern"
+    },
+    {
+     "zh": "肺气虚",
+     "en": "lung qi deficiency",
+     "category": "pattern"
+    },
+    {
+     "zh": "肺阴虚",
+     "en": "lung yin deficiency",
+     "category": "pattern"
+    },
+    {
+     "zh": "风寒犯肺",
+     "en": "wind-cold invading lung",
+     "category": "pattern"
+    },
+    {
+     "zh": "风热犯肺",
+     "en": "wind-heat invading lung",
+     "category": "pattern"
+    },
+    {
+     "zh": "肾阳虚",
+     "en": "kidney yang deficiency",
+     "category": "pattern"
+    },
+    {
+     "zh": "肾阴虚",
+     "en": "kidney yin deficiency",
+     "category": "pattern"
+    },
+    {
+     "zh": "肾气不固",
+     "en": "kidney qi insecurity",
+     "category": "pattern"
+    },
+    {
+     "zh": "肾精不足",
+     "en": "kidney essence insufficiency",
+     "category": "pattern"
+    },
+    {
+     "zh": "胃阴虚",
+     "en": "stomach yin deficiency",
+     "category": "pattern"
+    },
+    {
+     "zh": "胃火",
+     "en": "stomach fire",
+     "category": "pattern"
+    },
+    {
+     "zh": "痰浊阻肺",
+     "en": "phlegm turbidity obstructing lung",
+     "category": "pattern"
+    },
+    {
+     "zh": "痰蒙心窍",
+     "en": "phlegm clouding heart orifice",
+     "category": "pattern"
+    },
+    {
+     "zh": "膀胱湿热",
+     "en": "bladder damp-heat",
+     "category": "pattern"
+    },
+    {
+     "zh": "太阳伤寒",
+     "en": "Taiyang cold damage",
+     "category": "pattern"
+    },
+    {
+     "zh": "少阳证",
+     "en": "Shaoyang pattern",
+     "category": "pattern"
+    },
+    {
+     "zh": "阳明证",
+     "en": "Yangming pattern",
+     "category": "pattern"
+    },
+    {
+     "zh": "卫分证",
+     "en": "Wei-level pattern",
+     "category": "pattern"
+    },
+    {
+     "zh": "气分证",
+     "en": "Qi-level pattern",
+     "category": "pattern"
+    },
+    {
+     "zh": "营分证",
+     "en": "Ying-level pattern",
+     "category": "pattern"
+    },
+    {
+     "zh": "血分证",
+     "en": "Xue-level pattern",
+     "category": "pattern"
+    },
+    {
+     "zh": "上热下寒",
+     "en": "upper heat and lower cold",
+     "category": "pattern"
+    },
+    {
+     "zh": "心脾两虚",
+     "en": "heart and spleen deficiency",
+     "category": "pattern"
+    },
+    {
+     "zh": "肝肾阴虚",
+     "en": "liver and kidney yin deficiency",
+     "category": "pattern"
+    },
+    {
+     "zh": "阴虚火旺",
+     "en": "yin deficiency with hyperactive fire",
+     "category": "pattern"
+    },
+    {
+     "zh": "阳虚水泛",
+     "en": "yang deficiency with water diffusion",
+     "category": "pattern"
+    },
+    {
+     "zh": "治则",
+     "en": "treatment principle",
+     "category": "treatment"
+    },
+    {
+     "zh": "补",
+     "en": "tonify",
+     "category": "treatment"
+    },
+    {
+     "zh": "泻",
+     "en": "purge",
+     "category": "treatment"
+    },
+    {
+     "zh": "温",
+     "en": "warm",
+     "category": "treatment"
+    },
+    {
+     "zh": "清",
+     "en": "clear heat",
+     "category": "treatment"
+    },
+    {
+     "zh": "汗法",
+     "en": "diaphoresis",
+     "category": "treatment"
+    },
+    {
+     "zh": "吐法",
+     "en": "emesis",
+     "category": "treatment"
+    },
+    {
+     "zh": "下法",
+     "en": "purgation",
+     "category": "treatment"
+    },
+    {
+     "zh": "和法",
+     "en": "harmonizing method",
+     "category": "treatment"
+    },
+    {
+     "zh": "消法",
+     "en": "resolution method",
+     "category": "treatment"
+    },
+    {
+     "zh": "益气",
+     "en": "replenish qi",
+     "category": "treatment"
+    },
+    {
+     "zh": "养血",
+     "en": "nourish blood",
+     "category": "treatment"
+    },
+    {
+     "zh": "滋阴",
+     "en": "nourish yin",
+     "category": "treatment"
+    },
+    {
+     "zh": "温阳",
+     "en": "warm yang",
+     "category": "treatment"
+    },
+    {
+     "zh": "活血化瘀",
+     "en": "invigorate blood and resolve stasis",
+     "category": "treatment"
+    },
+    {
+     "zh": "行气",
+     "en": "move qi",
+     "category": "treatment"
+    },
+    {
+     "zh": "化痰",
+     "en": "resolve phlegm",
+     "category": "treatment"
+    },
+    {
+     "zh": "祛湿",
+     "en": "eliminate dampness",
+     "category": "treatment"
+    },
+    {
+     "zh": "疏肝",
+     "en": "soothe liver",
+     "category": "treatment"
+    },
+    {
+     "zh": "健脾",
+     "en": "strengthen spleen",
+     "category": "treatment"
+    },
+    {
+     "zh": "补肾",
+     "en": "tonify kidney",
+     "category": "treatment"
+    },
+    {
+     "zh": "清热解毒",
+     "en": "clear heat and resolve toxin",
+     "category": "treatment"
+    },
+    {
+     "zh": "针灸",
+     "en": "acupuncture and moxibustion",
+     "category": "treatment"
+    },
+    {
+     "zh": "针刺",
+     "en": "acupuncture",
+     "category": "treatment"
+    },
+    {
+     "zh": "艾灸",
+     "en": "moxibustion",
+     "category": "treatment"
+    },
+    {
+     "zh": "拔罐",
+     "en": "cupping",
+     "category": "treatment"
+    },
+    {
+     "zh": "推拿",
+     "en": "tuina",
+     "category": "treatment"
+    },
+    {
+     "zh": "四君子汤",
+     "en": "Four Gentlemen Decoction",
+     "category": "formula"
+    },
+    {
+     "zh": "四物汤",
+     "en": "Four Substances Decoction",
+     "category": "formula"
+    },
+    {
+     "zh": "八珍汤",
+     "en": "Eight Treasure Decoction",
+     "category": "formula"
+    },
+    {
+     "zh": "六味地黄丸",
+     "en": "Six-Ingredient Rehmannia Pill",
+     "category": "formula"
+    },
+    {
+     "zh": "桂枝汤",
+     "en": "Cinnamon Twig Decoction",
+     "category": "formula"
+    },
+    {
+     "zh": "麻黄汤",
+     "en": "Ephedra Decoction",
+     "category": "formula"
+    },
+    {
+     "zh": "小柴胡汤",
+     "en": "Minor Bupleurum Decoction",
+     "category": "formula"
+    },
+    {
+     "zh": "逍遥散",
+     "en": "Free Wanderer Powder",
+     "category": "formula"
+    },
+    {
+     "zh": "补中益气汤",
+     "en": "Decoction for Tonifying the Middle and Benefiting Qi",
+     "category": "formula"
+    },
+    {
+     "zh": "归脾汤",
+     "en": "Decoction for Restoring Spleen",
+     "category": "formula"
+    },
+    {
+     "zh": "温胆汤",
+     "en": "Decoction for Warming Gallbladder",
+     "category": "formula"
+    },
+    {
+     "zh": "玉屏风散",
+     "en": "Jade Windscreen Powder",
+     "category": "formula"
+    },
+    {
+     "zh": "银翘散",
+     "en": "Lonicera and Forsythia Powder",
+     "category": "formula"
+    },
+    {
+     "zh": "血府逐瘀汤",
+     "en": "Decoction for Removing Blood Stasis in the Blood Mansion",
+     "category": "formula"
+    },
+    {
+     "zh": "天王补心丹",
+     "en": "Celestial Emperor Heart-Supplementing Elixir",
+     "category": "formula"
+    },
+    {
+     "zh": "合谷",
+     "en": "Hegu (LI4)",
+     "category": "acupoint"
+    },
+    {
+     "zh": "足三里",
+     "en": "Zusanli (ST36)",
+     "category": "acupoint"
+    },
+    {
+     "zh": "太冲",
+     "en": "Taichong (LR3)",
+     "category": "acupoint"
+    },
+    {
+     "zh": "三阴交",
+     "en": "Sanyinjiao (SP6)",
+     "category": "acupoint"
+    },
+    {
+     "zh": "内关",
+     "en": "Neiguan (PC6)",
+     "category": "acupoint"
+    },
+    {
+     "zh": "百会",
+     "en": "Baihui (GV20)",
+     "category": "acupoint"
+    },
+    {
+     "zh": "关元",
+     "en": "Guanyuan (CV4)",
+     "category": "acupoint"
+    },
+    {
+     "zh": "气海",
+     "en": "Qihai (CV6)",
+     "category": "acupoint"
+    },
+    {
+     "zh": "神门",
+     "en": "Shenmen (HT7)",
+     "category": "acupoint"
+    },
+    {
+     "zh": "曲池",
+     "en": "Quchi (LI11)",
+     "category": "acupoint"
+    },
+    {
+     "zh": "阳陵泉",
+     "en": "Yanglingquan (GB34)",
+     "category": "acupoint"
+    },
+    {
+     "zh": "阴陵泉",
+     "en": "Yinlingquan (SP9)",
+     "category": "acupoint"
+    },
+    {
+     "zh": "太溪",
+     "en": "Taixi (KI3)",
+     "category": "acupoint"
+    },
+    {
+     "zh": "风池",
+     "en": "Fengchi (GB20)",
+     "category": "acupoint"
+    },
+    {
+     "zh": "中脘",
+     "en": "Zhongwan (CV12)",
+     "category": "acupoint"
+    },
+    {
+     "zh": "血海",
+     "en": "Xuehai (SP10)",
+     "category": "acupoint"
+    },
+    {
+     "zh": "尺泽",
+     "en": "Chize (LU5)",
+     "category": "acupoint"
+    },
+    {
+     "zh": "中医",
+     "en": "traditional Chinese medicine",
+     "category": "general"
+    },
+    {
+     "zh": "中药",
+     "en": "Chinese materia medica",
+     "category": "general"
+    },
+    {
+     "zh": "本草",
+     "en": "materia medica",
+     "category": "general"
+    },
+    {
+     "zh": "方剂",
+     "en": "formula",
+     "category": "general"
+    },
+    {
+     "zh": "四气",
+     "en": "four natures",
+     "category": "general"
+    },
+    {
+     "zh": "五味",
+     "en": "five flavors",
+     "category": "general"
+    },
+    {
+     "zh": "归经",
+     "en": "channel tropism",
+     "category": "general"
+    },
+    {
+     "zh": "君臣佐使",
+     "en": "sovereign, minister, assistant and courier",
+     "category": "general"
+    }
+   ]
+  },
+  {
+   "id": "cs",
+   "name": "计算机 / Computer Science",
+   "words": [
+    "算法",
+    "数据结构",
+    "链表",
+    "数组",
+    "栈",
+    "队列",
+    "哈希表",
+    "二叉树",
+    "图论",
+    "递归",
+    "时间复杂度",
+    "空间复杂度",
+    "编译",
+    "解释器",
+    "操作系统",
+    "进程",
+    "线程",
+    "内存",
+    "缓存",
+    "数据库",
+    "索引",
+    "事务",
+    "网络协议",
+    "接口",
+    "继承",
+    "多态",
+    "封装",
+    "并发",
+    "分布式",
+    "虚拟化",
+    "机器学习",
+    "神经网络",
+    "梯度下降",
+    "正则化",
+    "过拟合",
+    "超参数",
+    "特征向量",
+    "反向传播",
+    "卷积",
+    "注意力机制",
+    "algorithm",
+    "data structure",
+    "linked list",
+    "array",
+    "stack",
+    "queue",
+    "hash table",
+    "binary tree",
+    "graph",
+    "recursion",
+    "time complexity",
+    "space complexity",
+    "compiler",
+    "interpreter",
+    "operating system",
+    "process",
+    "thread",
+    "memory",
+    "cache",
+    "database",
+    "index",
+    "transaction",
+    "network protocol",
+    "interface",
+    "inheritance",
+    "polymorphism",
+    "encapsulation",
+    "concurrency",
+    "distributed system",
+    "virtualization",
+    "machine learning",
+    "neural network",
+    "gradient descent",
+    "regularization",
+    "overfitting",
+    "hyperparameter",
+    "eigenvector",
+    "backpropagation",
+    "convolution",
+    "attention mechanism"
+   ]
+  },
+  {
+   "id": "math",
+   "name": "数学 / Mathematics",
+   "words": [
+    "函数",
+    "导数",
+    "积分",
+    "极限",
+    "连续",
+    "可导",
+    "微分",
+    "偏导数",
+    "梯度",
+    "矩阵",
+    "向量",
+    "行列式",
+    "特征值",
+    "特征向量",
+    "线性变换",
+    "概率",
+    "随机变量",
+    "期望",
+    "方差",
+    "正态分布",
+    "假设检验",
+    "置信区间",
+    "回归",
+    "级数",
+    "收敛",
+    "发散",
+    "泰勒展开",
+    "傅里叶变换",
+    "拉普拉斯变换",
+    "拓扑",
+    "群论",
+    "同构",
+    "素数",
+    "整除",
+    "模运算",
+    "映射",
+    "奇点",
+    "洛必达法则",
+    "function",
+    "derivative",
+    "integral",
+    "limit",
+    "continuity",
+    "differentiable",
+    "differential",
+    "partial derivative",
+    "gradient",
+    "matrix",
+    "vector",
+    "determinant",
+    "eigenvalue",
+    "eigenvector",
+    "linear transformation",
+    "probability",
+    "random variable",
+    "expectation",
+    "variance",
+    "normal distribution",
+    "hypothesis test",
+    "confidence interval",
+    "regression",
+    "series",
+    "convergence",
+    "divergence",
+    "Taylor expansion",
+    "Fourier transform",
+    "Laplace transform",
+    "topology",
+    "group theory",
+    "isomorphism",
+    "prime",
+    "divisibility",
+    "modular arithmetic",
+    "mapping",
+    "singularity",
+    "L'Hopital's rule"
+   ]
+  },
+  {
+   "id": "physics",
+   "name": "物理 / Physics",
+   "words": [
+    "质点",
+    "位移",
+    "加速度",
+    "牛顿定律",
+    "动量",
+    "冲量",
+    "动能",
+    "势能",
+    "机械能守恒",
+    "角动量",
+    "力矩",
+    "转动惯量",
+    "万有引力",
+    "电场",
+    "磁场",
+    "电势",
+    "电容",
+    "电感",
+    "电流",
+    "电压",
+    "电阻",
+    "电磁感应",
+    "麦克斯韦方程",
+    "波长",
+    "频率",
+    "振幅",
+    "干涉",
+    "衍射",
+    "折射",
+    "热力学",
+    "熵增",
+    "内能",
+    "理想气体",
+    "量子态",
+    "波函数",
+    "测不准原理",
+    "薛定谔方程",
+    "光子",
+    "相对论",
+    "particle",
+    "displacement",
+    "acceleration",
+    "Newton's law",
+    "momentum",
+    "impulse",
+    "kinetic energy",
+    "potential energy",
+    "conservation of mechanical energy",
+    "angular momentum",
+    "torque",
+    "moment of inertia",
+    "universal gravitation",
+    "electric field",
+    "magnetic field",
+    "electric potential",
+    "capacitance",
+    "inductance",
+    "current",
+    "voltage",
+    "resistance",
+    "electromagnetic induction",
+    "Maxwell's equations",
+    "wavelength",
+    "frequency",
+    "amplitude",
+    "interference",
+    "diffraction",
+    "refraction",
+    "thermodynamics",
+    "entropy",
+    "internal energy",
+    "ideal gas",
+    "quantum state",
+    "wave function",
+    "uncertainty principle",
+    "Schrodinger equation",
+    "photon",
+    "relativity"
+   ]
+  },
+  {
+   "id": "chem",
+   "name": "化学 / Chemistry",
+   "words": [
+    "原子",
+    "分子",
+    "离子",
+    "共价键",
+    "离子键",
+    "化学式",
+    "摩尔",
+    "摩尔质量",
+    "浓度",
+    "溶解度",
+    "酸碱",
+    "中和反应",
+    "氧化还原",
+    "催化剂",
+    "化学平衡",
+    "反应速率",
+    "焓变",
+    "熵变",
+    "吉布斯自由能",
+    "有机物",
+    "烃",
+    "醇",
+    "醛",
+    "酮",
+    "羧酸",
+    "酯化",
+    "苯环",
+    "聚合物",
+    "异构体",
+    "官能团",
+    "电解",
+    "电泳",
+    "色谱",
+    "滴定",
+    "配位化合物",
+    "atom",
+    "molecule",
+    "ion",
+    "covalent bond",
+    "ionic bond",
+    "chemical formula",
+    "mole",
+    "molar mass",
+    "concentration",
+    "solubility",
+    "acid-base",
+    "neutralization",
+    "redox",
+    "catalyst",
+    "chemical equilibrium",
+    "reaction rate",
+    "enthalpy",
+    "entropy",
+    "Gibbs free energy",
+    "organic compound",
+    "hydrocarbon",
+    "alcohol",
+    "aldehyde",
+    "ketone",
+    "carboxylic acid",
+    "esterification",
+    "benzene ring",
+    "polymer",
+    "isomer",
+    "functional group",
+    "electrolysis",
+    "electrophoresis",
+    "chromatography",
+    "titration",
+    "coordination compound"
+   ]
+  },
+  {
+   "id": "bio",
+   "name": "生物 / Biology",
+   "words": [
+    "细胞膜",
+    "细胞核",
+    "线粒体",
+    "叶绿体",
+    "核糖体",
+    "基因",
+    "染色体",
+    "转录",
+    "翻译",
+    "复制",
+    "突变",
+    "蛋白质",
+    "酶",
+    "代谢",
+    "光合作用",
+    "呼吸作用",
+    "有丝分裂",
+    "减数分裂",
+    "显性",
+    "隐性",
+    "等位基因",
+    "种群",
+    "生态系统",
+    "食物链",
+    "自然选择",
+    "免疫",
+    "抗体",
+    "神经元",
+    "突触",
+    "内环境稳态",
+    "基因表达",
+    "细胞凋亡",
+    "cell membrane",
+    "nucleus",
+    "mitochondrion",
+    "chloroplast",
+    "ribosome",
+    "gene",
+    "chromosome",
+    "transcription",
+    "translation",
+    "replication",
+    "mutation",
+    "protein",
+    "enzyme",
+    "metabolism",
+    "photosynthesis",
+    "cellular respiration",
+    "mitosis",
+    "meiosis",
+    "dominant",
+    "recessive",
+    "allele",
+    "population",
+    "ecosystem",
+    "food chain",
+    "natural selection",
+    "immunity",
+    "antibody",
+    "neuron",
+    "synapse",
+    "homeostasis",
+    "gene expression",
+    "apoptosis"
+   ]
+  },
+  {
+   "id": "econ",
+   "name": "经济 / Economics",
+   "words": [
+    "供给",
+    "需求",
+    "均衡价格",
+    "弹性",
+    "边际效用",
+    "机会成本",
+    "通货膨胀",
+    "通货紧缩",
+    "利率",
+    "汇率",
+    "国内生产总值",
+    "货币政策",
+    "财政政策",
+    "市场结构",
+    "垄断",
+    "寡头",
+    "外部性",
+    "公共品",
+    "博弈论",
+    "纳什均衡",
+    "贴现",
+    "净现值",
+    "资产负债表",
+    "现金流",
+    "规模经济",
+    "比较优势",
+    "国际贸易",
+    "关税",
+    "中央银行",
+    "商业银行",
+    "债券",
+    "边际成本",
+    "supply",
+    "demand",
+    "equilibrium price",
+    "elasticity",
+    "marginal utility",
+    "opportunity cost",
+    "inflation",
+    "deflation",
+    "interest rate",
+    "exchange rate",
+    "GDP",
+    "monetary policy",
+    "fiscal policy",
+    "market structure",
+    "monopoly",
+    "oligopoly",
+    "externality",
+    "public goods",
+    "game theory",
+    "Nash equilibrium",
+    "discounting",
+    "net present value",
+    "balance sheet",
+    "cash flow",
+    "economies of scale",
+    "comparative advantage",
+    "international trade",
+    "tariff",
+    "central bank",
+    "commercial bank",
+    "bond",
+    "marginal cost"
+   ]
+  },
+  {
+   "id": "law",
+   "name": "法律 / Law",
+   "words": [
+    "合同",
+    "要约",
+    "承诺",
+    "违约责任",
+    "侵权",
+    "损害赔偿",
+    "所有权",
+    "物权",
+    "债权",
+    "知识产权",
+    "专利",
+    "商标",
+    "著作权",
+    "刑事责任",
+    "民事责任",
+    "犯罪构成",
+    "正当防卫",
+    "紧急避险",
+    "诉讼",
+    "管辖",
+    "证据",
+    "举证责任",
+    "判决",
+    "上诉",
+    "仲裁",
+    "调解",
+    "代理",
+    "法人",
+    "自然人",
+    "诉讼时效",
+    "contract",
+    "offer",
+    "acceptance",
+    "breach of contract",
+    "tort",
+    "damages",
+    "ownership",
+    "property right",
+    "claim",
+    "intellectual property",
+    "patent",
+    "trademark",
+    "copyright",
+    "criminal liability",
+    "civil liability",
+    "elements of crime",
+    "self-defense",
+    "necessity",
+    "litigation",
+    "jurisdiction",
+    "evidence",
+    "burden of proof",
+    "judgment",
+    "appeal",
+    "arbitration",
+    "mediation",
+    "agency",
+    "legal person",
+    "natural person",
+    "statute of limitations"
+   ]
+  },
+  {
+   "id": "med",
+   "name": "医学 / Medicine",
+   "words": [
+    "症状",
+    "体征",
+    "鉴别诊断",
+    "预后",
+    "并发症",
+    "感染",
+    "炎症",
+    "肿瘤",
+    "良性",
+    "恶性",
+    "高血压",
+    "糖尿病",
+    "冠心病",
+    "肺炎",
+    "哮喘",
+    "肾衰竭",
+    "肝功能",
+    "血常规",
+    "心电图",
+    "超声",
+    "核磁共振",
+    "病理",
+    "活检",
+    "抗生素",
+    "激素",
+    "输液",
+    "麻醉",
+    "康复",
+    "护理",
+    "疫苗",
+    "免疫接种",
+    "流行病学",
+    "收缩压",
+    "舒张压",
+    "symptom",
+    "sign",
+    "differential diagnosis",
+    "prognosis",
+    "complication",
+    "infection",
+    "inflammation",
+    "tumor",
+    "benign",
+    "malignant",
+    "hypertension",
+    "diabetes",
+    "coronary heart disease",
+    "pneumonia",
+    "asthma",
+    "renal failure",
+    "liver function",
+    "complete blood count",
+    "ECG",
+    "ultrasound",
+    "MRI",
+    "pathology",
+    "biopsy",
+    "antibiotic",
+    "hormone",
+    "infusion",
+    "anesthesia",
+    "rehabilitation",
+    "nursing",
+    "vaccine",
+    "immunization",
+    "epidemiology",
+    "systolic pressure",
+    "diastolic pressure"
+   ]
+  }
+ ]
+}
