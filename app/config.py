@@ -39,10 +39,10 @@ OPENAI_ASR_MODEL = os.getenv("OPENAI_ASR_MODEL", "gpt-4o-transcribe")
 # 静音多久判定一句结束（毫秒）。火山推荐 800~1000，太小会切碎句子。
 ASR_ENDPOINTING = int(os.getenv("ASR_ENDPOINTING", "800"))
 
-# 一句话最长多久必须强制切分（毫秒）。VAD 只在静音时断句，
-# 老师连讲不停就永远不结束；到点强制 commit 一刀，代价是可能切在词中间，
-# 所以别设太小（实测 5 秒会切出「治以。」这种碎片，8 秒比较平衡）。
-ASR_MAX_SPEECH_MS = int(os.getenv("ASR_MAX_SPEECH_MS", "8000"))
+# 时间兜底切分（毫秒）。0 = 关闭，纯按识别出的句号断句（推荐）。
+# 只有遇到「长时间说话但识别迟迟不给句号」的极端情况才需要设成正数，
+# 代价是会切在词中间。
+ASR_MAX_SPEECH_MS = int(os.getenv("ASR_MAX_SPEECH_MS", "0"))
 
 # 术语偏置：把术语表里的词喂给识别引擎，期望它更愿意听成这些词。
 # 效果因引擎和语言而异，所以做成开关，方便 A/B 对比。

@@ -35,6 +35,10 @@ VOLC_HDR_CLIENT = bytes([0x11, 0x10, 0x11, 0x00])
 VOLC_HDR_AUDIO = bytes([0x11, 0x20, 0x01, 0x00])
 VOLC_HDR_AUDIO_LAST = bytes([0x11, 0x22, 0x01, 0x00])
 
+# 句末标点：遇到就断句。比按时间切分好得多——切在语义边界上，
+# 不会切出「舌红少 | 、脉弦细数」这种半截话。
+SENTENCE_ENDS = "。！？!?"
+
 
 @dataclass
 class ASRResult:
@@ -264,7 +268,9 @@ class OpenAITranscribeStream:
 
         seconds = len(data) / 2 / config.SAMPLE_RATE
         self._pending_ms += seconds * 1000
-        if self._pending_ms >= config.ASR_MAX_SPEECH_MS:
+        # 0 = 关闭时间兜底（火山默认按句号断句，不需要这个）。
+        # 注意别写反：0 时若不加这个判断，每帧都会触发 commit。
+        if config.ASR_MAX_SPEECH_MS > 0 and self._pending_ms >= config.ASR_MAX_SPEECH_MS:
             try:
                 await self._sock.send(json.dumps({"type": "input_audio_buffer.commit"}))
                 log.info("连讲超过 %.0f 秒，强制切分一次", self._pending_ms / 1000)
@@ -443,35 +449,51 @@ class VolcengineStream:
                     continue                      # 这句已经上屏过，别再重复
 
                 prev_len = self._cut_len.get(start, 0)
+                segment = text[prev_len:]
+
+                # 优先按句末标点切：识别出句号就说明这句说完了，
+                # 立刻把那一段送去翻译，剩下的继续当草稿。
+                cut = -1
+                for i, ch in enumerate(segment):
+                    if ch in SENTENCE_ENDS:
+                        cut = prev_len + i + 1
+                        break
+
+                if cut > 0:
+                    chunk = text[prev_len:cut].strip()
+                    self._cut_len[start] = cut
+                    if chunk:
+                        yield ASRResult(text=chunk, is_final=True)
+                    rest = text[cut:].strip()
+                    if rest:
+                        yield ASRResult(text=rest, is_final=False)
+                    continue
 
                 if utt.get("definite"):
+                    # 火山判定了这句结束（通常是检测到静音），
+                    # 但文本里还没有句号，那就整段收下。
                     self._done.add(start)
-                    rest = text[prev_len:].strip()
-                    if rest:
-                        yield ASRResult(text=rest, is_final=True)
+                    if segment.strip():
+                        yield ASRResult(text=segment.strip(), is_final=True)
                     else:
-                        # 这句已经全部切走，发个空草稿把残留清掉
                         yield ASRResult(text="", is_final=False)
                     continue
 
-                # 还没定稿。火山只在检测到静音时才给 definite，
-                # 老师连着讲不停就永远不给——到时长就本地强制切一刀。
-                # 只切「上次切分之后新增的部分」，否则长句后半段会被整段丢掉。
-                first = self._seen.setdefault(start, now)
-                if now - first >= config.ASR_MAX_SPEECH_MS / 1000:
-                    rest = text[prev_len:].strip()
-                    if len(rest) >= 8:
+                # 既没句号也没定稿：继续累积草稿。
+                # 时间兜底默认关闭（用户要求纯按句号断句），
+                # 需要时把 ASR_MAX_SPEECH_MS 设成正数即可启用。
+                max_ms = config.ASR_MAX_SPEECH_MS
+                if max_ms > 0:
+                    first = self._seen.setdefault(start, now)
+                    if now - first >= max_ms / 1000 and len(segment.strip()) >= 8:
+                        self._seen[start] = now
                         self._cut_len[start] = len(text)
-                        self._seen[start] = now       # 计时重置，等下个窗口
-                        log.info("连讲超过 %.0f 秒，强制切分：%s",
-                                 config.ASR_MAX_SPEECH_MS / 1000, rest[:40])
-                        yield ASRResult(text=rest, is_final=True)
+                        log.info("超过 %.0f 秒没有句号，强制切分：%s",
+                                 max_ms / 1000, segment.strip()[:40])
+                        yield ASRResult(text=segment.strip(), is_final=True)
                         continue
-                    self._seen[start] = now
 
-                # 草稿只显示「还没切走的部分」。如果这里发完整文本，
-                # 已经上屏的那半句会继续赖在草稿区不消失。
-                yield ASRResult(text=text[prev_len:], is_final=False)
+                yield ASRResult(text=segment, is_final=False)
 
     async def close(self) -> None:
         if self._closed:
