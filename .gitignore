@@ -12,13 +12,13 @@ vendor/
 # 打包产物
 dist/
 
-# 原始资料（2MB PDF，术语表已从中提取成 data/glossary.json）
+# 原始资料（2MB PDF，只是术语表的来源，运行用不上）
 data/raw/
 
-# 用户自定义热词 / 预设 / 设置（本机数据，含密钥）
-data/hotwords_custom.json
-data/presets.json
+# 本机数据：设置（含密钥）、自定义预设、当前选中
 data/settings.json
+data/user_presets.json
+data/presets_state.json
 
 # 本地验证产物
 .tmp/

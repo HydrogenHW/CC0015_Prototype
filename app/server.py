@@ -47,9 +47,9 @@ logging.basicConfig(
 )
 log = logging.getLogger("app")
 
-glossary = Glossary(config.BUILTIN_PRESETS_PATH)
+glossary = Glossary(config.GLOSSARY_FILE)
 translator = Translator(glossary)
-presets = PresetStore(config.PRESET_STORE, config.BUILTIN_PRESETS_PATH)
+presets = PresetStore(config.PRESETS_DIR, config.USER_PRESETS, config.PRESET_STATE)
 assistant = ChatService(presets, glossary)
 
 
@@ -188,7 +188,7 @@ async def delete_preset(preset_id: str):
     ok = presets.delete(preset_id)
     return {
         "ok": ok,
-        "reason": "" if ok else "至少要保留一个预设",
+        "reason": "" if ok else "内置预设不可删除",
         "items": presets.list(),
         "active": presets.active_id(),
     }

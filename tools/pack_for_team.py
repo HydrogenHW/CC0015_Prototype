@@ -34,8 +34,9 @@ EXCLUDE_FILES = {
     ".env.example",         # 密钥现在在设置界面填，这个模板没用了
     ".gitignore",           # 使用者不提交代码
     "keys.txt",
-    "data/settings.json",   # 用户设置，含密钥
-    "data/presets.json",    # 用户热词组，首次运行会自动重建
+    "data/settings.json",       # 用户设置，含密钥
+    "data/user_presets.json",   # 用户自建的预设
+    "data/presets_state.json",  # 当前选中项
 }
 
 # 像密钥的东西：OpenAI / DeepSeek 的 sk-、40 位十六进制
@@ -45,7 +46,7 @@ SCAN_SUFFIX = {".py", ".md", ".json", ".txt", ".bat", ".ps1", ".js", ".html", ".
 # 包里必须有的东西，缺了说明打包逻辑漏了
 REQUIRED = {
     "run.bat", "setup_python.ps1", "requirements.txt",
-    "app/server.py", "app/static/index.html", "data/builtin_presets.json", "README.md",
+    "app/server.py", "app/static/index.html", "data/presets/00-tcm.json", "README.md",
 }
 
 

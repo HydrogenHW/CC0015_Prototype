@@ -121,6 +121,7 @@
       missing_keys: (n) => `缺少 API 密钥：${n}`,
       saved: "设置已保存",
       readonly_hint: "当前版本固定，暂不可改",
+      builtin_locked: "内置预设不可改名或删除",
 
     },
     en: {
@@ -185,6 +186,7 @@
       missing_keys: (n) => `Missing API keys: ${n}`,
       saved: "Settings saved",
       readonly_hint: "Fixed in this version",
+      builtin_locked: "Built-in sets cannot be renamed or deleted",
 
     },
   };
@@ -822,6 +824,7 @@
           const ren = document.createElement("button");
           ren.className = "ghost";
           ren.textContent = t("rename");
+          if (p.builtin) { ren.disabled = true; ren.title = t("builtin_locked"); }
           ren.onclick = async () => {
             const v = await showModal({
               title: t("rename_title"),
@@ -842,6 +845,7 @@
           const del = document.createElement("button");
           del.className = "ghost";
           del.textContent = t("delete");
+          if (p.builtin) { del.disabled = true; del.title = t("builtin_locked"); }
           del.onclick = async () => {
             const r = await fetch(`/presets/${p.id}`, { method: "DELETE" }).catch(() => null);
             const j = r ? await r.json().catch(() => ({})) : {};

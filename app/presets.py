@@ -1,14 +1,16 @@
-"""热词预设：可命名、可切换的热词组。
+"""热词预设：一个学科一个 JSON 文件。
+
+目录结构：
+  data/presets/            内置预设，随发布分发，一个学科一个文件
+  data/user_presets.json   用户自己建的（本机数据，不进版本库）
+  data/presets_state.json  当前选中了哪个
 
 一个预设就是一组词，中英混在一起也没关系——它代表的是「某个领域的
 术语」，不是「某个语言方向的术语」。中医这个预设里既有「肝阳上亢」
-也有 liver yang hyperactivity。
+也有 liver yang hyperactivity。真正用的时候按当前方向筛一遍。
 
-真正用的时候按当前方向筛一遍：中文识别只把中文词喂给引擎，
-英文识别只喂英文词。所以切换语言时预设列表不该变，变的只是取词。
-
-（早期版本按方向存了两套预设，用户新建的词在另一个方向看不到，
-那个设计是错的，这里已经改掉并带迁移。）
+内置预设只读（可以切换，不能改名删除）；用户自己建的可以随便改。
+新增一个学科只要往 data/presets/ 里丢一个 json，不用动代码。
 """
 from __future__ import annotations
 
@@ -16,8 +18,6 @@ import json
 import logging
 import uuid
 from pathlib import Path
-
-from .glossary import Glossary
 
 log = logging.getLogger("presets")
 
@@ -27,200 +27,163 @@ def _has_cjk(text: str) -> bool:
 
 
 class PresetStore:
-    def __init__(self, path: Path, builtin_path: Path):
-        self._path = path
-        self._builtin_path = builtin_path
-        self._data: dict = {"version": 2, "active": "", "presets": []}
-        self._load()
+    def __init__(self, builtin_dir: Path, user_path: Path, state_path: Path):
+        self._builtin_dir = builtin_dir
+        self._user_path = user_path
+        self._state_path = state_path
+        self._user: dict = {"presets": []}
+        self._active = ""
+        self._load_user()
+        self._load_state()
 
     # ------------------------------------------------------------------ 读
+    def _builtin(self) -> list[dict]:
+        out = []
+        if not self._builtin_dir.is_dir():
+            return out
+        for f in sorted(self._builtin_dir.glob("*.json")):
+            try:
+                d = json.loads(f.read_text(encoding="utf-8"))
+            except Exception:
+                log.warning("预设文件损坏，跳过：%s", f.name, exc_info=True)
+                continue
+            if not d.get("id") or not d.get("name"):
+                continue
+            out.append({"id": d["id"], "name": d["name"],
+                        "words": list(d.get("words") or []), "builtin": True})
+        return out
+
+    def all(self) -> list[dict]:
+        builtin = self._builtin()
+        used = {p["id"] for p in builtin}
+        extra = [p for p in self._user.get("presets", []) if p["id"] not in used]
+        return builtin + extra
+
     def list(self) -> list[dict]:
-        return [
-            {"id": p["id"], "name": p["name"], "count": len(p["words"])}
-            for p in self._data["presets"]
-        ]
+        return [{"id": p["id"], "name": p["name"], "count": len(p["words"]),
+                 "builtin": p.get("builtin", False)} for p in self.all()]
+
+    def get(self, preset_id: str) -> dict | None:
+        for p in self.all():
+            if p["id"] == preset_id:
+                return p
+        return None
 
     def active_id(self) -> str:
-        aid = self._data.get("active", "")
-        if any(p["id"] == aid for p in self._data["presets"]):
-            return aid
-        return self._data["presets"][0]["id"] if self._data["presets"] else ""
+        items = self.all()
+        if any(p["id"] == self._active for p in items):
+            return self._active
+        return items[0]["id"] if items else ""
 
     def active_name(self) -> str:
-        for p in self._data["presets"]:
-            if p["id"] == self.active_id():
-                return p["name"]
-        return ""
+        p = self.get(self.active_id())
+        return p["name"] if p else ""
 
     def words_for(self, direction: str, limit: int = 40) -> list[str]:
-        """当前预设里、适合这个方向的词。
-
-        中文识别拿含汉字的，英文识别拿不含汉字的。这样一份预设两边都能用。
-        """
-        preset = self._active()
+        """当前预设里、适合这个方向的词。中文识别拿含汉字的，英文拿不带的。"""
+        preset = self.get(self.active_id())
         if not preset:
             return []
         want_cjk = direction.startswith("zh")
         out = [w for w in preset["words"] if _has_cjk(w) == want_cjk]
         return out[:limit]
 
-    def get(self, preset_id: str) -> dict | None:
-        for p in self._data["presets"]:
-            if p["id"] == preset_id:
-                return p
-        return None
-
     # ------------------------------------------------------------------ 写
-    def create(self, name: str, words: list[str] | None = None) -> dict:
+    def create(self, name: str) -> dict:
         name = (name or "").strip() or "未命名"
-        preset = {"id": uuid.uuid4().hex[:10], "name": name, "words": list(words or [])}
-        self._data["presets"].append(preset)
-        self._data["active"] = preset["id"]
-        self._save()
+        preset = {"id": uuid.uuid4().hex[:10], "name": name, "words": []}
+        self._user.setdefault("presets", []).append(preset)
+        self._active = preset["id"]
+        self._save_user()
+        self._save_state()
         log.info("新建预设 %s", name)
         return preset
 
     def rename(self, preset_id: str, name: str) -> bool:
-        preset = self.get(preset_id)
-        if not preset:
-            return False
-        preset["name"] = (name or "").strip() or preset["name"]
-        self._save()
-        return True
+        for p in self._user.get("presets", []):
+            if p["id"] == preset_id:
+                p["name"] = (name or "").strip() or p["name"]
+                self._save_user()
+                return True
+        return False          # 内置预设不允许改名
 
     def delete(self, preset_id: str) -> bool:
-        if not self.get(preset_id):
-            return False
-        if len(self._data["presets"]) <= 1:
-            return False          # 至少留一个，否则下拉框会空掉
-        self._data["presets"] = [p for p in self._data["presets"] if p["id"] != preset_id]
-        if self._data.get("active") == preset_id:
-            self._data["active"] = self._data["presets"][0]["id"]
-        self._save()
+        items = self._user.get("presets", [])
+        if not any(p["id"] == preset_id for p in items):
+            return False      # 内置不能删
+        self._user["presets"] = [p for p in items if p["id"] != preset_id]
+        if self._active == preset_id:
+            self._active = self.active_id() or ""
+        self._save_user()
+        self._save_state()
         log.info("删除预设 %s", preset_id)
         return True
 
     def activate(self, preset_id: str) -> bool:
         if not self.get(preset_id):
             return False
-        self._data["active"] = preset_id
-        self._save()
+        self._active = preset_id
+        self._save_state()
         return True
 
     def add_words(self, preset_id: str, words: list[str]) -> list[str]:
-        preset = self.get(preset_id)
-        if not preset:
-            return []
-        added = []
-        for w in words:
-            w = (w or "").strip()
-            if len(w) >= 2 and w not in preset["words"]:
-                preset["words"].append(w)
-                added.append(w)
-        if added:
-            self._save()
-        return added
+        for p in self._user.get("presets", []):
+            if p["id"] != preset_id:
+                continue
+            added = []
+            for w in words:
+                w = (w or "").strip()
+                if len(w) >= 2 and w not in p["words"]:
+                    p["words"].append(w)
+                    added.append(w)
+            if added:
+                self._save_user()
+            return added
+        return []             # 内置预设不接收新词
 
     def remove_words(self, preset_id: str, words: list[str]) -> list[str]:
-        preset = self.get(preset_id)
-        if not preset:
-            return []
-        removed = [w for w in words if w in preset["words"]]
-        if removed:
-            preset["words"] = [w for w in preset["words"] if w not in removed]
-            self._save()
-        return removed
+        for p in self._user.get("presets", []):
+            if p["id"] != preset_id:
+                continue
+            removed = [w for w in words if w in p["words"]]
+            if removed:
+                p["words"] = [w for w in p["words"] if w not in removed]
+                self._save_user()
+            return removed
+        return []
 
     # ------------------------------------------------------------------ 持久化
-    def _active(self) -> dict | None:
-        return self.get(self.active_id())
-
-    def _load(self) -> None:
-        if not self._path.exists():
-            self._seed()
+    def _load_user(self) -> None:
+        if not self._user_path.exists():
             return
         try:
-            data = json.loads(self._path.read_text(encoding="utf-8"))
+            self._user = json.loads(self._user_path.read_text(encoding="utf-8"))
+            self._user.setdefault("presets", [])
+            log.info("载入自定义预设 %d 个", len(self._user["presets"]))
         except Exception:
-            log.warning("预设文件损坏，改用默认", exc_info=True)
-            self._seed()
-            return
+            log.warning("自定义预设文件损坏，已忽略", exc_info=True)
 
-        if data.get("version") == 2 and isinstance(data.get("presets"), list):
-            self._data = data
-            log.info("载入预设 %d 个", len(data["presets"]))
-            self._ensure_builtin()
-            return
-
-        self._migrate(data)
-
-    def _migrate(self, old: dict) -> None:
-        """把按方向存的两套旧预设合并成一套。"""
-        merged: list[dict] = []
-        index: dict[str, dict] = {}
-        for direction in ("zh2en", "en2zh"):
-            for p in (old.get("presets") or {}).get(direction, []):
-                name = p.get("name") or "未命名"
-                # 「中医」和「TCM」是同一领域，合并成一个
-                key = "tcm" if name.lower() in ("中医", "tcm", "中医 / tcm") else name
-                target = index.get(key)
-                if target is None:
-                    target = {"id": "tcm" if key == "tcm" else (p.get("id") or uuid.uuid4().hex[:10]),
-                              "name": "中医 / TCM" if key == "tcm" else name, "words": []}
-                    index[key] = target
-                    merged.append(target)
-                for w in p.get("words") or []:
-                    if w not in target["words"]:
-                        target["words"].append(w)
-
-        if not merged:
-            self._seed()
-            return
-
-        active_old = (old.get("active") or {}).get("zh2en", "")
-        active = next((p["id"] for p in merged if p["id"] == active_old), merged[0]["id"])
-        self._data = {"version": 2, "active": active, "presets": merged}
-        self._save()
-        log.info("旧格式预设已合并为 %d 个（双向共用）", len(merged))
-        self._ensure_builtin()
-
-    def _builtin(self) -> list[dict]:
-        """内置预设，来自 data/builtin_presets.json（唯一数据源）。"""
-        data = json.loads(self._builtin_path.read_text(encoding="utf-8"))
-        out = []
-        for p in data.get("presets", []):
-            out.append({"id": p["id"], "name": p["name"], "words": list(p.get("words", []))})
-        return out
-
-    def _seed(self) -> None:
-        presets = self._builtin()
-        self._data = {
-            "version": 2,
-            "active": presets[0]["id"] if presets else "",
-            "presets": presets,
-        }
-        self._save()
-        log.info("初始化 %d 个内置预设", len(presets))
-
-    def _ensure_builtin(self) -> None:
-        """老用户的 presets.json 里可能还没有新增的学科预设，补齐。"""
-        have = {p["id"] for p in self._data["presets"]}
-        added = 0
-        for item in self._builtin():
-            if item["id"] in have:
-                continue
-            self._data["presets"].append(item)
-            added += 1
-        if added:
-            self._save()
-            log.info("补充内置预设 %d 个", added)
-
-    def _save(self) -> None:
+    def _save_user(self) -> None:
         try:
-            self._path.parent.mkdir(parents=True, exist_ok=True)
-            self._path.write_text(
-                json.dumps(self._data, ensure_ascii=False, indent=1),
-                encoding="utf-8",
-            )
+            self._user_path.parent.mkdir(parents=True, exist_ok=True)
+            self._user_path.write_text(
+                json.dumps(self._user, ensure_ascii=False, indent=1), encoding="utf-8")
         except Exception:
-            log.warning("预设保存失败", exc_info=True)
+            log.warning("自定义预设保存失败", exc_info=True)
+
+    def _load_state(self) -> None:
+        if not self._state_path.exists():
+            return
+        try:
+            self._active = json.loads(self._state_path.read_text(encoding="utf-8")).get("active", "")
+        except Exception:
+            pass
+
+    def _save_state(self) -> None:
+        try:
+            self._state_path.parent.mkdir(parents=True, exist_ok=True)
+            self._state_path.write_text(
+                json.dumps({"active": self._active}, ensure_ascii=False, indent=1),
+                encoding="utf-8")
+        except Exception:
+            log.warning("预设状态保存失败", exc_info=True)

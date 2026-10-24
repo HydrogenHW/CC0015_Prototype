@@ -144,8 +144,7 @@ app/
 ├── translate.py       术语约束下的翻译
 └── static/            前端（HTML/CSS/JS，无构建步骤）
 data/
-├── builtin_presets.json  9 个内置热词组（含中医中英对照表）
-└── presets.json          本机工作副本，首次运行生成
+└── presets/            9 个内置热词组，一科一个文件
 tools/                 测试与维护脚本
 docs/                  实现文档
 ```

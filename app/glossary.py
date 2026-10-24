@@ -16,12 +16,8 @@ class Glossary:
     def __init__(self, path: str | Path, max_hits: int = 8):
         path = Path(path)
         data = json.loads(path.read_text(encoding="utf-8"))
-        # 中医预设里带 glossary 字段，那就是中英对照表本身
-        raw = []
-        for preset in data.get("presets", []):
-            if preset.get("glossary"):
-                raw = preset["glossary"]
-                break
+        # 中医预设文件自带 glossary 字段，那就是中英对照表本身
+        raw = data.get("glossary", [])
         self.path = path
         self.max_hits = max_hits
         self.entries = raw

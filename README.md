@@ -144,8 +144,7 @@ app/
 ├── translate.py        translation with term constraints
 └── static/             frontend (HTML/CSS/JS, no build step)
 data/
-├── builtin_presets.json  the nine built-in sets (TCM glossary included)
-└── presets.json          your working copy, generated locally
+└── presets/            nine built-in sets, one JSON per subject
 tools/                  tests and maintenance scripts
 docs/                   implementation notes
 ```

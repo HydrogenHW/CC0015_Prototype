@@ -47,9 +47,12 @@ SEG_MIN_LEN = 10
 
 TRANSLATE_DRAIN_TIMEOUT = float(os.getenv("TRANSLATE_DRAIN_TIMEOUT", "25"))
 
-# 内置预设（含中医的中英对照表），唯一的数据源
-BUILTIN_PRESETS_PATH = ROOT / "data" / "builtin_presets.json"
-PRESET_STORE = ROOT / "data" / "presets.json"
+# 预设：内置的一科一个文件，用户的另存一份
+PRESETS_DIR = ROOT / "data" / "presets"
+USER_PRESETS = ROOT / "data" / "user_presets.json"
+PRESET_STATE = ROOT / "data" / "presets_state.json"
+# 中医那份自带中英对照表，翻译层从这里读
+GLOSSARY_FILE = PRESETS_DIR / "00-tcm.json"
 STATIC_DIR = Path(__file__).resolve().parent / "static"
 
 DIRECTIONS = {

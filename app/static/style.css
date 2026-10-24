@@ -748,3 +748,8 @@ kbd {
 .settings-body::-webkit-scrollbar-corner {
   background: transparent;
 }
+
+.preset-row button:disabled {
+  opacity: .3;
+  cursor: not-allowed;
+}
