@@ -17,46 +17,58 @@ log = logging.getLogger("settings")
 
 
 # 界面上暴露哪些配置。group 会渲染成小标题，顺序即显示顺序。
+# readonly 的项只显示当前值，不给改——先把模型参数锁死，
+# 避免用户随手改坏，等明确了再放开。
 SCHEMA = [
     {
-        "group": "API 密钥",
+        "group": "API 密钥", "group_en": "API keys",
         "items": [
-            {"key": "VOLC_API_KEY", "label": "火山引擎（语音识别）", "type": "password",
+            {"key": "VOLC_API_KEY", "type": "password",
+             "label": "火山引擎（语音识别）", "label_en": "Volcengine (speech recognition)",
              "link": "https://console.volcengine.com/speech/new/setting/apikeys",
-             "link_text": "控制台"},
-            {"key": "OPENAI_API_KEY", "label": "OpenAI（翻译）", "type": "password",
-             "link": "https://platform.openai.com/api-keys", "link_text": "控制台"},
-            {"key": "DEEPSEEK_API_KEY", "label": "DeepSeek（术语助手）", "type": "password",
-             "link": "https://platform.deepseek.com/api_keys", "link_text": "控制台"},
+             "link_text": "控制台", "link_text_en": "Console"},
+            {"key": "OPENAI_API_KEY", "type": "password",
+             "label": "OpenAI（翻译）", "label_en": "OpenAI (translation)",
+             "link": "https://platform.openai.com/api-keys",
+             "link_text": "控制台", "link_text_en": "Console"},
+            {"key": "DEEPSEEK_API_KEY", "type": "password",
+             "label": "DeepSeek（术语助手）", "label_en": "DeepSeek (assistant)",
+             "link": "https://platform.deepseek.com/api_keys",
+             "link_text": "控制台", "link_text_en": "Console"},
         ],
     },
     {
-        "group": "语音识别",
+        "group": "语音识别", "group_en": "Recognition",
         "items": [
-            {"key": "ASR_PROVIDER", "label": "识别引擎", "type": "select",
-             "options": [["volc", "火山豆包"], ["openai", "OpenAI"], ["deepgram", "Deepgram"]]},
-            {"key": "ASR_ENDPOINTING", "label": "断句静音阈值（毫秒）", "type": "number",
-             "min": 300, "max": 5000},
-            {"key": "ASR_KEYWORDS", "label": "启用热词组", "type": "select",
-             "options": [["1", "开"], ["0", "关"]]},
-            {"key": "PINYIN_FIX", "label": "同音纠错", "type": "select",
-             "options": [["1", "开"], ["0", "关"]]},
+            {"key": "ASR_PROVIDER", "type": "select", "readonly": True,
+             "label": "识别引擎", "label_en": "Engine",
+             "options": [["volc", "火山豆包", "Volcengine"], ["deepgram", "Deepgram", "Deepgram"]]},
+            {"key": "ASR_ENDPOINTING", "type": "number", "readonly": True, "min": 300, "max": 5000,
+             "label": "断句静音阈值（毫秒）", "label_en": "Silence threshold (ms)"},
+            {"key": "ASR_KEYWORDS", "type": "select", "readonly": True,
+             "label": "启用热词组", "label_en": "Use hotword sets",
+             "options": [["1", "开", "On"], ["0", "关", "Off"]]},
+            {"key": "PINYIN_FIX", "type": "select", "readonly": True,
+             "label": "同音纠错", "label_en": "Homophone repair",
+             "options": [["1", "开", "On"], ["0", "关", "Off"]]},
         ],
     },
     {
-        "group": "翻译",
+        "group": "翻译", "group_en": "Translation",
         "items": [
-            {"key": "TRANSLATE_MODEL", "label": "翻译模型", "type": "text"},
-            {"key": "TRANSLATE_CONCURRENCY", "label": "并发路数", "type": "number",
-             "min": 1, "max": 8},
-            {"key": "TRANSLATE_TIMEOUT", "label": "单句超时（秒）", "type": "number",
-             "min": 1, "max": 30},
+            {"key": "TRANSLATE_MODEL", "type": "text", "readonly": True,
+             "label": "翻译模型", "label_en": "Model"},
+            {"key": "TRANSLATE_CONCURRENCY", "type": "number", "readonly": True, "min": 1, "max": 8,
+             "label": "并发路数", "label_en": "Parallel requests"},
+            {"key": "TRANSLATE_TIMEOUT", "type": "number", "readonly": True, "min": 1, "max": 30,
+             "label": "单句超时（秒）", "label_en": "Per-sentence timeout (s)"},
         ],
     },
     {
-        "group": "术语助手",
+        "group": "术语助手", "group_en": "Assistant",
         "items": [
-            {"key": "CHAT_MODEL", "label": "助手模型", "type": "text"},
+            {"key": "CHAT_MODEL", "type": "text", "readonly": True,
+             "label": "助手模型", "label_en": "Model"},
         ],
     },
 ]

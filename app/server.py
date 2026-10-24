@@ -110,7 +110,6 @@ async def lifespan(_app: FastAPI):
     config.validate()
     log.info("术语表：%s", glossary.summary())
     _engines = {"volc": f"火山豆包 {config.VOLC_RESOURCE_ID}",
-                "openai": f"OpenAI {config.OPENAI_ASR_MODEL}",
                 "deepgram": f"Deepgram {config.ASR_MODEL}"}
     log.info("翻译模型：%s ｜ 识别引擎：%s",
              config.TRANSLATE_MODEL, _engines.get(config.ASR_PROVIDER, config.ASR_PROVIDER))

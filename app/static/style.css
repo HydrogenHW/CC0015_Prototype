@@ -691,3 +691,60 @@ kbd {
 
 .toast[hidden] { display: none; }
 .toast a { color: #ffd7d7; text-decoration: underline; white-space: nowrap; }
+
+/* ---------- 锁定的配置项 ---------- */
+.setting-row input:disabled,
+.setting-row select:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+  border-style: dashed;
+  background: transparent;
+}
+
+/* ---------- 滚动条 ---------- */
+/* 系统默认滚动条是白底浅灰块，在深色界面里像贴了张纸条。
+   统一换成细的深色条，轨道透明。 */
+.scroll,
+.chat-log,
+.modal-body,
+.settings-body {
+  scrollbar-width: thin;
+  scrollbar-color: #2b3442 transparent;
+}
+
+.scroll::-webkit-scrollbar,
+.chat-log::-webkit-scrollbar,
+.modal-body::-webkit-scrollbar,
+.settings-body::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.scroll::-webkit-scrollbar-track,
+.chat-log::-webkit-scrollbar-track,
+.modal-body::-webkit-scrollbar-track,
+.settings-body::-webkit-scrollbar-track {
+  background: transparent;
+  border: 0;
+}
+
+.scroll::-webkit-scrollbar-thumb,
+.chat-log::-webkit-scrollbar-thumb,
+.modal-body::-webkit-scrollbar-thumb,
+.settings-body::-webkit-scrollbar-thumb {
+  background: #2b3442;
+  border: 0;
+  border-radius: 8px;
+}
+
+.scroll::-webkit-scrollbar-thumb:hover,
+.chat-log::-webkit-scrollbar-thumb:hover,
+.modal-body::-webkit-scrollbar-thumb:hover,
+.settings-body::-webkit-scrollbar-thumb:hover {
+  background: #3a4657;
+}
+
+.scroll::-webkit-scrollbar-corner,
+.settings-body::-webkit-scrollbar-corner {
+  background: transparent;
+}

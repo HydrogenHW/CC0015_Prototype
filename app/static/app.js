@@ -117,6 +117,7 @@
       go_settings: "去设置",
       missing_keys: (n) => `缺少 API 密钥：${n}`,
       saved: "设置已保存",
+      readonly_hint: "当前版本固定，暂不可改",
 
     },
     en: {
@@ -180,6 +181,7 @@
       go_settings: "Open settings",
       missing_keys: (n) => `Missing API keys: ${n}`,
       saved: "Settings saved",
+      readonly_hint: "Fixed in this version",
 
     },
   };
@@ -887,18 +889,25 @@
     clearTimeout(toastTimer);
   }
 
-  function renderSettingRow(item, state) {
+  function renderSettingRow(item, st) {
+    const en = state.dir === "en";
     const row = document.createElement("div");
     row.className = "setting-row";
     row.dataset.secret = item.type === "password" ? "1" : "0";
+    if (item.readonly) row.dataset.readonly = "1";
 
     const label = document.createElement("div");
     label.className = "label";
-    label.textContent = item.label;
+    label.textContent = en && item.label_en ? item.label_en : item.label;
     if (item.type === "password") {
       const hint = document.createElement("span");
       hint.className = "hint";
-      hint.textContent = state.set ? t("key_set") : t("key_unset");
+      hint.textContent = st.set ? t("key_set") : t("key_unset");
+      label.appendChild(hint);
+    } else if (item.readonly) {
+      const hint = document.createElement("span");
+      hint.className = "hint";
+      hint.textContent = t("readonly_hint");
       label.appendChild(hint);
     }
     row.appendChild(label);
@@ -909,10 +918,11 @@
       for (const opt of item.options || []) {
         const o = document.createElement("option");
         o.value = opt[0];
-        o.textContent = opt[1];
+        // 选项文字也带双语：[value, 中文, 英文]
+        o.textContent = en && opt[2] ? opt[2] : opt[1];
         field.appendChild(o);
       }
-      field.value = state.value ?? "";
+      field.value = st.value ?? "";
     } else {
       field = document.createElement("input");
       field.type = item.type === "password" ? "password"
@@ -921,11 +931,12 @@
       if (item.max !== undefined) field.max = item.max;
       if (item.type === "password") {
         field.value = "";
-        field.placeholder = state.set ? t("key_set") : t("key_unset");
+        field.placeholder = st.set ? t("key_set") : t("key_unset");
       } else {
-        field.value = state.value ?? "";
+        field.value = st.value ?? "";
       }
     }
+    if (item.readonly) field.disabled = true;
     field.dataset.key = item.key;
     row.appendChild(field);
 
@@ -934,7 +945,7 @@
       a.href = item.link;
       a.target = "_blank";
       a.rel = "noopener";
-      a.textContent = item.link_text || t("settings_link");
+      a.textContent = (en && item.link_text_en) ? item.link_text_en : (item.link_text || t("settings_link"));
       row.appendChild(a);
     }
     return row;
@@ -942,6 +953,7 @@
 
   async function openSettings() {
     hideToast();
+    const en = state.dir === "en";
     settingsUI.title.textContent = t("settings");
     settingsUI.desc.textContent = t("settings_desc");
     settingsUI.body.innerHTML = "";
@@ -957,7 +969,7 @@
     for (const group of data.schema || []) {
       const h = document.createElement("div");
       h.className = "setting-group-title";
-      h.textContent = group.group;
+      h.textContent = en && group.group_en ? group.group_en : group.group;
       settingsUI.body.appendChild(h);
       for (const item of group.items) {
         settingsUI.body.appendChild(renderSettingRow(item, data.values?.[item.key] || {}));
@@ -969,8 +981,9 @@
     const values = {};
     settingsUI.body.querySelectorAll("[data-key]").forEach((field) => {
       const row = field.closest(".setting-row");
+      if (row && row.dataset.readonly === "1") return;   // 锁定的项不提交
       const isSecret = row && row.dataset.secret === "1";
-      if (isSecret && field.value === "") return;   // 密钥留空 = 保持原样
+      if (isSecret && field.value === "") return;        // 密钥留空 = 保持原样
       values[field.dataset.key] = field.value;
     });
 

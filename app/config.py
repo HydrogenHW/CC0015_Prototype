@@ -31,12 +31,13 @@ CHAT_TIMEOUT = float(os.getenv("CHAT_TIMEOUT", "25"))
 ASR_MODEL = os.getenv("ASR_MODEL", "nova-2")
 # 火山豆包：2.0 模型用 seedasr，1.0 用 bigasr。用错会直接 403。
 VOLC_RESOURCE_ID = os.getenv("VOLC_RESOURCE_ID", "volc.seedasr.sauc.duration")
-OPENAI_ASR_MODEL = os.getenv("OPENAI_ASR_MODEL", "gpt-4o-transcribe")
 
 # 时间兜底切分（毫秒）。0 = 关闭，纯按识别出的句号断句。
 ASR_MAX_SPEECH_MS = int(os.getenv("ASR_MAX_SPEECH_MS", "0"))
 ASR_KEYWORDS_MAX = int(os.getenv("ASR_KEYWORDS_MAX", "40"))
 
+# 识别引擎都吃 16 kHz（火山 2.0、Deepgram 都是）
+SAMPLE_RATE = 16000
 CHANNELS = 1
 FRAME_MS = 100
 
@@ -68,9 +69,6 @@ _COERCE = {
 
 def __getattr__(name: str):
     """界面可配项的动态取值。"""
-    if name == "SAMPLE_RATE":
-        # OpenAI Realtime 只收 24 kHz 及以上，其余引擎要 16 kHz
-        return 24000 if settings_store.get("ASR_PROVIDER").lower() == "openai" else 16000
     if name in DEFAULTS:
         raw = settings_store.get(name)
         conv = _COERCE.get(name)
