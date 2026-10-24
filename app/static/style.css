@@ -29,30 +29,53 @@ body {
 .bar {
   display: flex;
   align-items: center;
-  gap: 14px;
+  justify-content: space-between;
+  gap: 16px;
   padding: 10px 18px;
   background: var(--bg-soft);
   border-bottom: 1px solid var(--line);
-  flex-wrap: wrap;
 }
+
+.bar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+
+.bar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: none;
+}
+
+/* 整条顶栏的每一块都给定宽：中英文长度差很多，
+   不固定的话切换语言时按钮会左右乱跳。 */
+.brand { width: 108px; }
 
 .brand {
   font-weight: 600;
   letter-spacing: .02em;
   font-size: 15px;
   color: var(--muted);
-  margin-right: auto;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .dirs {
   display: flex;
+  width: 262px;
+  flex: none;
   border: 1px solid var(--line);
   border-radius: 8px;
   overflow: hidden;
 }
 
 .dir {
-  padding: 7px 14px;
+  flex: 1;
+  white-space: nowrap;
+  padding: 7px 10px;
   background: transparent;
   color: var(--muted);
   border: 0;
@@ -70,7 +93,9 @@ body {
 }
 
 .primary {
-  padding: 8px 22px;
+  width: 82px;
+  flex: none;
+  padding: 8px 0;
   border-radius: 8px;
   border: 1px solid var(--accent);
   background: var(--accent);
@@ -89,7 +114,11 @@ body {
 .status {
   font-size: 13px;
   color: var(--muted);
-  min-width: 96px;
+  width: 132px;
+  flex: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .status.ok { color: #4ade80; }
@@ -404,9 +433,12 @@ kbd {
 }
 
 .preset-label {
+  width: 54px;
+  flex: none;
   font-size: 12px;
   color: var(--muted);
   white-space: nowrap;
+  overflow: hidden;
 }
 
 .preset-select {
@@ -416,7 +448,8 @@ kbd {
   border-radius: 7px;
   padding: 6px 8px;
   font-size: 13px;
-  max-width: 160px;
+  width: 150px;
+  flex: none;
   outline: none;
 }
 

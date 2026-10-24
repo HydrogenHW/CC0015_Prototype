@@ -49,6 +49,145 @@
     firstRow: true,
   };
 
+  // ------------------------------------------------------------ 文案
+  //
+  // 界面语言跟着翻译方向走：中文课就用中文界面，英文课就用英文界面。
+  // 有些值是函数，用来拼带变量的提示。
+  const I18N = {
+    zh: {
+      title: "实时字幕",
+      brand: "实时字幕",
+      dir_zh: "中文 → EN",
+      dir_en: "EN → 中文",
+      preset: "预设",
+      start: "开始",
+      stop: "停止",
+      assistant: "术语助手",
+      clear: "清空",
+      send: "发送",
+      cancel: "取消",
+      empty: "点「开始」，允许麦克风权限，字幕会从下一句开始出现。",
+      chat_tip: "可以问译法、术语含义，也能说「把某某加进热词」。",
+      chat_placeholder: "问术语或译法…",
+      foot: "空格 开始 / 停止　　字幕保留在本页，刷新即清空",
+      // 状态
+      st_idle: "未连接",
+      st_check: "检查服务…",
+      st_mic: "请求麦克风…",
+      st_mic_fail: "麦克风不可用",
+      st_audio_fail: "音频初始化失败",
+      st_no_backend: "连不上后端",
+      st_connecting: "连接中…",
+      st_rec: "录音中",
+      st_stopped: "已停止",
+      st_switch: "切换中…",
+      st_switch_ok: "已切换热词组，下次开始时生效",
+      st_reconnect: (c) => `断开(${c})，重连中…`,
+      st_switched_preset: (n) => `已新建「${n}」`,
+      st_no_mic_api: "当前环境拿不到麦克风",
+      delete_fail: "删除失败",
+      // 弹窗
+      new_preset: "新建热词组",
+      new_preset_desc: t("new_preset_desc"),
+      new_preset_ph: "热词组名称",
+      create: "创建",
+      manage_title: t("manage_title"),
+      manage_desc: "预设两个方向共用，切换语言不影响这里。",
+      rename: "改名",
+      delete: "删除",
+      rename_title: t("rename_title"),
+      rename_ph: "新名称",
+      save: "保存",
+      done: "完成",
+      words_unit: "词",
+      thinking: "思考中…",
+      no_reply: "（没有回复）",
+      backend_down: "连不上后端服务，确认 run.bat 窗口还开着。",
+      hotword_updated: (s) => `热词已更新：${s}\n下一次点「开始」时生效`,
+      read_preset_fail: "读取预设失败",
+      switch_fail: "切换失败",
+      create_fail: "新建失败",
+      disconnect_msg: "后端连接反复断开",
+    },
+    en: {
+      title: "Live Captions",
+      brand: "Live Captions",
+      dir_zh: "Chinese → EN",
+      dir_en: "EN → Chinese",
+      preset: "Presets",
+      start: "Start",
+      stop: "Stop",
+      assistant: "Terminology",
+      clear: "Clear",
+      send: "Send",
+      cancel: "Cancel",
+      empty: "Press Start, allow microphone access, and captions will appear from the next sentence.",
+      chat_tip: "Ask about a translation or a term — or say “add X to the hotwords”.",
+      chat_placeholder: "Ask about a term…",
+      foot: "Space to start / stop　　 Captions stay on this page; refresh clears them",
+      st_idle: "Disconnected",
+      st_check: "Checking…",
+      st_mic: "Requesting mic…",
+      st_mic_fail: "Microphone unavailable",
+      st_audio_fail: "Audio init failed",
+      st_no_backend: "No backend",
+      st_connecting: "Connecting…",
+      st_rec: "Listening",
+      st_stopped: "Stopped",
+      st_switch: "Switching…",
+      st_switch_ok: "Hotword set switched — applies next time you press Start",
+      st_reconnect: (c) => `Dropped (${c}), reconnecting…`,
+      st_switched_preset: (n) => `Created “${n}”`,
+      st_no_mic_api: "Microphone API unavailable",
+      delete_fail: "Delete failed",
+      new_preset: "New hotword set",
+      new_preset_desc: "Give it a name you'll recognise, e.g. “Computer Science”, “Law”.",
+      new_preset_ph: "Set name",
+      create: "Create",
+      manage_title: "Manage hotword sets",
+      manage_desc: "Sets are shared by both directions — switching language doesn't change this list.",
+      rename: "Rename",
+      delete: "Delete",
+      rename_title: "Rename hotword set",
+      rename_ph: "New name",
+      save: "Save",
+      done: "Done",
+      words_unit: "words",
+      thinking: "Thinking…",
+      no_reply: "(no reply)",
+      backend_down: "Can't reach the backend — check that run.bat is still open.",
+      hotword_updated: (s) => `Hotwords updated: ${s}\nTakes effect next time you press Start`,
+      read_preset_fail: "Failed to load presets",
+      switch_fail: "Switch failed",
+      create_fail: "Create failed",
+      disconnect_msg: "Backend keeps disconnecting",
+    },
+  };
+
+  let T = I18N.zh;
+
+  function t(key, ...args) {
+    const v = T[key];
+    if (typeof v === "function") return v(...args);
+    return v !== undefined ? v : key;
+  }
+
+  function applyLang(dir) {
+    T = I18N[dir === "en" ? "en" : "zh"];
+    document.documentElement.lang = dir === "en" ? "en" : "zh-CN";
+    document.title = t("title");
+    document.querySelectorAll("[data-i18n]").forEach((node) => {
+      node.textContent = t(node.dataset.i18n);
+    });
+    document.querySelectorAll("[data-i18n-title]").forEach((node) => {
+      node.title = t(node.dataset.i18nTitle);
+    });
+    document.querySelectorAll("[data-i18n-placeholder]").forEach((node) => {
+      node.placeholder = t(node.dataset.i18nPlaceholder);
+    });
+    if (!state.running) el.toggle.textContent = t("start");
+  }
+
   // ---------------------------------------------------------------- 工具
 
   function setStatus(text, kind = "") {
@@ -156,7 +295,7 @@
       ws.onopen = () => {
         state.retryTimer = null;
         state.retries = 0;
-        setStatus("录音中", "ok");
+        setStatus(t("st_rec"), "ok");
         resolve(ws);
       };
 
@@ -178,14 +317,14 @@
       };
 
       ws.onerror = () => {
-        setStatus("连接异常", "err");
+        setStatus(t("st_no_backend"), "err");
         reject(new Error("websocket error"));
       };
 
       ws.onclose = (ev) => {
         if (!state.running) return;
         state.retries += 1;
-        setStatus(`断开(${ev.code})，重连中…`, "warn");
+        setStatus(t("st_reconnect", ev.code), "warn");
         if (state.retries === 3) {
           showError(
             "后端连接反复断开",
@@ -208,7 +347,7 @@
   async function start() {
     if (state.running) return;
     el.toggle.disabled = true;
-    setStatus("检查服务…");
+    setStatus(t("st_check"));
 
     // 问后端要采样率：换识别引擎时这里不用改
     try {
@@ -221,10 +360,10 @@
       /* 读不到就用默认值，连接失败时下面会提示 */
     }
 
-    setStatus("请求麦克风…");
+    setStatus(t("st_mic"));
 
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      setStatus("浏览器不支持", "err");
+      setStatus(t("st_no_mic_api"), "err");
       showError(
         "当前环境拿不到麦克风接口",
         "请用 Chrome / Edge 打开，地址必须是 http://127.0.0.1:8000。" +
@@ -252,7 +391,7 @@
         OverconstrainedError:
           "麦克风不支持请求的参数。",
       };
-      setStatus("麦克风不可用", "err");
+      setStatus(t("st_mic_fail"), "err");
       showError(`无法获取麦克风（${name}）`, tips[name] || err.message || "");
       console.error(err);
       el.toggle.disabled = false;
@@ -281,7 +420,7 @@
       sink.gain.value = 0;
       state.node.connect(sink).connect(state.ctx.destination);
     } catch (err) {
-      setStatus("音频初始化失败", "err");
+      setStatus(t("st_audio_fail"), "err");
       showError(
         "音频处理初始化失败",
         `${err.name || ""} ${err.message || err}`.trim()
@@ -295,7 +434,7 @@
     try {
       await connectWs();
     } catch {
-      setStatus("连不上后端", "err");
+      setStatus(t("st_no_backend"), "err");
       showError(
         "无法连接后端服务",
         "确认 run.bat 的窗口还开着，且地址是 http://127.0.0.1:8000。"
@@ -332,15 +471,15 @@
     };
 
     state.running = true;
-    el.toggle.textContent = "停止";
+    el.toggle.textContent = t("stop");
     el.toggle.classList.add("running");
-    setStatus("录音中", "ok");
+    setStatus(t("st_rec"), "ok");
     el.toggle.disabled = false;
   }
 
   function stop() {
     state.running = false;
-    el.toggle.textContent = "开始";
+    el.toggle.textContent = t("start");
     el.toggle.classList.remove("running");
 
     if (state.retryTimer) {
@@ -361,7 +500,7 @@
 
     cleanupAudio();
     setInterim("");
-    setStatus("已停止");
+    setStatus(t("st_stopped"));
   }
 
   function cleanupAudio() {
@@ -393,11 +532,12 @@
       const dir = btn.dataset.dir;
       if (dir === state.dir) return;
       setDir(dir);
+      applyLang(dir);            // 界面语言跟着方向走
       loadPresets(dir);          // 只更新标签，列表是双向共用的
       // 后端会重建会话，前端连接保持不变
       if (state.ws && state.ws.readyState === WebSocket.OPEN) {
         state.ws.send(JSON.stringify({ type: "lang", value: dir }));
-        setStatus("切换中…", "warn");
+        setStatus(t("st_switch"), "warn");
       }
     });
   });
@@ -445,7 +585,7 @@
     if (!text) return;
     chat.input.value = "";
     addMsg("user", text);
-    const pending = addMsg("bot", "思考中…", "pending");
+    const pending = addMsg("bot", t("thinking"), "pending");
     chat.send.disabled = true;
     try {
       const res = await fetch("/chat", {
@@ -455,17 +595,17 @@
       });
       const data = await res.json();
       pending.remove();
-      addMsg("bot", data.reply || "（没有回复）");
+      addMsg("bot", data.reply || t("no_reply"));
       const c = data.changed;
       if (c && (c.added?.length || c.removed?.length)) {
         const bits = [];
         if (c.added?.length) bits.push("+" + c.added.join("、"));
         if (c.removed?.length) bits.push("−" + c.removed.join("、"));
-        addMsg("sys", `热词已更新：${bits.join("　")}\n下一次点「开始」时生效`);
+        addMsg("sys", t("hotword_updated", bits.join("  ")));
       }
     } catch {
       pending.remove();
-      addMsg("bot", "连不上后端服务，确认 run.bat 窗口还开着。");
+      addMsg("bot", t("backend_down"));
     } finally {
       chat.send.disabled = false;
       chat.input.focus();
@@ -565,7 +705,7 @@
 
   async function loadPresets(dir = state.dir) {
     // 预设是双向共用的：切换语言只换标签，列表不变
-    presetUI.label.textContent = dir === "zh" ? "预设（中文-En）" : "Preset（En-中文）";
+    presetUI.label.textContent = t("preset");
     try {
       const data = await fetchPresets();
       presetUI.select.innerHTML = "";
@@ -584,18 +724,18 @@
   presetUI.select.addEventListener("change", async () => {
     try {
       await fetch(`/presets/${presetUI.select.value}/activate`, { method: "POST" });
-      setStatus("已切换热词组，下次开始时生效", "warn");
+      setStatus(t("st_switch_ok"), "warn");
     } catch {
-      setStatus("切换失败", "err");
+      setStatus(t("switch_fail"), "err");
     }
   });
 
   presetUI.add.addEventListener("click", async () => {
     const name = await showModal({
-      title: "新建热词组",
-      desc: "取一个一眼能看懂的名字，比如「计算机」「法律」「药理」。",
-      placeholder: "热词组名称",
-      okText: "创建",
+      title: t("new_preset"),
+      desc: t("new_preset_desc"),
+      placeholder: t("new_preset_ph"),
+      okText: t("create"),
     });
     if (!name) return;
     try {
@@ -605,9 +745,9 @@
         body: JSON.stringify({ name }),
       });
       await loadPresets();
-      setStatus(`已新建「${name}」`, "ok");
+      setStatus(t("st_switched_preset", name), "ok");
     } catch {
-      setStatus("新建失败", "err");
+      setStatus(t("create_fail"), "err");
     }
   });
 
@@ -617,15 +757,15 @@
     try {
       data = await fetchPresets();
     } catch {
-      setStatus("读取预设失败", "err");
+      setStatus(t("read_preset_fail"), "err");
       return;
     }
 
     await showModal({
-      title: "管理热词组",
-      desc: "当前方向：" + (dir === "zh" ? "中文 → EN" : "EN → 中文"),
+      title: t("manage_title"),
+      desc: t("manage_desc"),
       withInput: false,
-      okText: "完成",
+      okText: t("done"),
       renderBody: (box) => {
         data.items.forEach((p) => {
           const row = document.createElement("div");
@@ -637,17 +777,17 @@
 
           const count = document.createElement("span");
           count.className = "count";
-          count.textContent = `${p.count} 词`;
+          count.textContent = `${p.count} ${t("words_unit")}`;
 
           const ren = document.createElement("button");
           ren.className = "ghost";
-          ren.textContent = "改名";
+          ren.textContent = t("rename");
           ren.onclick = async () => {
             const v = await showModal({
-              title: "重命名热词组",
+              title: t("rename_title"),
               value: p.name,
-              placeholder: "新名称",
-              okText: "保存",
+              placeholder: t("rename_ph"),
+              okText: t("save"),
             });
             if (!v) return;
             await fetch(`/presets/${p.id}`, {
@@ -661,11 +801,11 @@
 
           const del = document.createElement("button");
           del.className = "ghost";
-          del.textContent = "删除";
+          del.textContent = t("delete");
           del.onclick = async () => {
             const r = await fetch(`/presets/${p.id}`, { method: "DELETE" }).catch(() => null);
             const j = r ? await r.json().catch(() => ({})) : {};
-            if (j && j.ok === false) setStatus(j.reason || "删除失败", "err");
+            if (j && j.ok === false) setStatus(j.reason || t("delete_fail"), "err");
             await loadPresets(dir);
             presetUI.manage.click();
           };
@@ -677,7 +817,7 @@
     });
   });
 
+  applyLang("zh");
   loadPresets();
-
-  setStatus("未连接");
+  setStatus(t("st_idle"));
 })();

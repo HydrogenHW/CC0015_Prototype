@@ -149,6 +149,7 @@ class PresetStore:
         if data.get("version") == 2 and isinstance(data.get("presets"), list):
             self._data = data
             log.info("载入预设 %d 个", len(data["presets"]))
+            self._ensure_builtin()
             return
 
         self._migrate(data)
@@ -161,11 +162,11 @@ class PresetStore:
             for p in (old.get("presets") or {}).get(direction, []):
                 name = p.get("name") or "未命名"
                 # 「中医」和「TCM」是同一领域，合并成一个
-                key = "tcm" if name.lower() in ("中医", "tcm") else name
+                key = "tcm" if name.lower() in ("中医", "tcm", "中医 / tcm") else name
                 target = index.get(key)
                 if target is None:
-                    target = {"id": p.get("id") or uuid.uuid4().hex[:10],
-                              "name": "中医" if key == "tcm" else name, "words": []}
+                    target = {"id": "tcm" if key == "tcm" else (p.get("id") or uuid.uuid4().hex[:10]),
+                              "name": "中医 / TCM" if key == "tcm" else name, "words": []}
                     index[key] = target
                     merged.append(target)
                 for w in p.get("words") or []:
@@ -181,20 +182,46 @@ class PresetStore:
         self._data = {"version": 2, "active": active, "presets": merged}
         self._save()
         log.info("旧格式预设已合并为 %d 个（双向共用）", len(merged))
+        self._ensure_builtin()
 
     def _seed(self) -> None:
+        from .builtin_presets import BUILTIN
+
+        presets = []
+        for item in BUILTIN:
+            if item["id"] == "tcm":
+                continue    # 中医由 _tcm_words 单独生成
+            words = list(dict.fromkeys(item["zh"] + item["en"]))
+            presets.append({"id": item["id"], "name": item["name"], "words": words})
+        presets.insert(0, {"id": "tcm", "name": "中医 / TCM", "words": self._tcm_words()})
+        self._data = {"version": 2, "active": "tcm", "presets": presets}
+        self._save()
+        log.info("初始化 %d 个内置预设", len(presets))
+
+    def _tcm_words(self) -> list[str]:
         zh = [e["zh"] for e in self._glossary.entries if len(e["zh"]) > 1]
         en = [e["en"] for e in self._glossary.entries]
-        words: list[str] = []
-        for w in zh + en:
-            if w not in words:
-                words.append(w)
-        self._data = {
-            "version": 2,
-            "active": "tcm",
-            "presets": [{"id": "tcm", "name": "中医", "words": words}],
-        }
-        self._save()
+        return list(dict.fromkeys(zh + en))
+
+    def _ensure_builtin(self) -> None:
+        """老用户的 presets.json 里可能还没有新增的学科预设，补齐。"""
+        from .builtin_presets import BUILTIN
+
+        have = {p["id"] for p in self._data["presets"]}
+        added = 0
+        for item in BUILTIN:
+            if item["id"] in have:
+                continue
+            words = self._tcm_words() if item["id"] == "tcm" else list(
+                dict.fromkeys(item["zh"] + item["en"])
+            )
+            self._data["presets"].append(
+                {"id": item["id"], "name": item["name"], "words": words}
+            )
+            added += 1
+        if added:
+            self._save()
+            log.info("补充内置预设 %d 个", added)
 
     def _save(self) -> None:
         try:
