@@ -449,6 +449,9 @@ class VolcengineStream:
                     rest = text[prev_len:].strip()
                     if rest:
                         yield ASRResult(text=rest, is_final=True)
+                    else:
+                        # 这句已经全部切走，发个空草稿把残留清掉
+                        yield ASRResult(text="", is_final=False)
                     continue
 
                 # 还没定稿。火山只在检测到静音时才给 definite，
@@ -466,8 +469,9 @@ class VolcengineStream:
                         continue
                     self._seen[start] = now
 
-                # 草稿显示当前这句的完整文本，方便用户边听边看
-                yield ASRResult(text=text, is_final=False)
+                # 草稿只显示「还没切走的部分」。如果这里发完整文本，
+                # 已经上屏的那半句会继续赖在草稿区不消失。
+                yield ASRResult(text=text[prev_len:], is_final=False)
 
     async def close(self) -> None:
         if self._closed:
