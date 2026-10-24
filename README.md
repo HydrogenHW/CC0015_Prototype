@@ -60,7 +60,11 @@ Install [Python 3.10+](https://www.python.org/downloads/), or run `.setup/instal
 
 ### 2. API keys
 
-Keys live in **environment variables**, never in the project folder:
+Two ways — pick either.
+
+**In the app** (recommended). Click the gear icon at the top-left, paste the keys, save. They are stored in `data/settings.json` on this machine.
+
+**Environment variables** (handy during development):
 
 ```powershell
 [Environment]::SetEnvironmentVariable("VOLC_API_KEY",     "your_key", "User")
@@ -68,7 +72,7 @@ Keys live in **environment variables**, never in the project folder:
 [Environment]::SetEnvironmentVariable("DEEPSEEK_API_KEY", "your_key", "User")
 ```
 
-Reopen your terminal afterwards.
+Keys entered in the app always take priority. If a key is missing from both places, pressing Start shows a prompt with a link back to settings.
 
 ### 3. Start
 

@@ -85,6 +85,7 @@
       st_reconnect: (c) => `断开(${c})，重连中…`,
       st_switched_preset: (n) => `已新建「${n}」`,
       st_no_mic_api: "当前环境拿不到麦克风",
+      st_no_keys: "缺少 API 密钥",
       delete_fail: "删除失败",
       // 弹窗
       new_preset: "新建热词组",
@@ -108,6 +109,15 @@
       switch_fail: "切换失败",
       create_fail: "新建失败",
       disconnect_msg: "后端连接反复断开",
+      settings: "设置",
+      settings_desc: "API 密钥优先用这里填的；留空则读取环境变量。",
+      settings_link: "控制台",
+      key_set: "已设置，留空则不改",
+      key_unset: "未设置",
+      go_settings: "去设置",
+      missing_keys: (n) => `缺少 API 密钥：${n}`,
+      saved: "设置已保存",
+
     },
     en: {
       title: "Live Captions",
@@ -139,6 +149,7 @@
       st_reconnect: (c) => `Dropped (${c}), reconnecting…`,
       st_switched_preset: (n) => `Created “${n}”`,
       st_no_mic_api: "Microphone API unavailable",
+      st_no_keys: "Missing API keys",
       delete_fail: "Delete failed",
       new_preset: "New hotword set",
       new_preset_desc: "Give it a name you'll recognise, e.g. “Computer Science”, “Law”.",
@@ -161,6 +172,15 @@
       switch_fail: "Switch failed",
       create_fail: "Create failed",
       disconnect_msg: "Backend keeps disconnecting",
+      settings: "Settings",
+      settings_desc: "Keys entered here take priority; leave blank to use environment variables.",
+      settings_link: "Console",
+      key_set: "Set — leave blank to keep",
+      key_unset: "Not set",
+      go_settings: "Open settings",
+      missing_keys: (n) => `Missing API keys: ${n}`,
+      saved: "Settings saved",
+
     },
   };
 
@@ -349,12 +369,19 @@
     el.toggle.disabled = true;
     setStatus(t("st_check"));
 
-    // 问后端要采样率：换识别引擎时这里不用改
+    // 问后端要采样率，顺便看密钥齐不齐
     try {
       const cfg = await fetch("/health", { cache: "no-store" }).then((r) => r.json());
       if (cfg && Number(cfg.sampleRate) > 0) {
         TARGET_RATE = Number(cfg.sampleRate);
         FRAME_SAMPLES = Math.round(TARGET_RATE * 0.1);
+      }
+      if (cfg && Array.isArray(cfg.missing) && cfg.missing.length > 0) {
+        // 缺密钥就别急着开麦了，先把人引到设置去
+        setStatus(t("st_no_keys"), "err");
+        showToast(t("missing_keys", cfg.missing.join(", ")), t("go_settings"), openSettings);
+        el.toggle.disabled = false;
+        return;
       }
     } catch {
       /* 读不到就用默认值，连接失败时下面会提示 */
@@ -815,6 +842,158 @@
         });
       },
     });
+  });
+
+  // ---------------------------------------------------------------- 设置
+
+  const settingsUI = {
+    btn: document.getElementById("settings-btn"),
+    modal: document.getElementById("settings-modal"),
+    title: document.getElementById("settings-title"),
+    desc: document.getElementById("settings-desc"),
+    body: document.getElementById("settings-body"),
+    cancel: document.getElementById("settings-cancel"),
+    save: document.getElementById("settings-save"),
+  };
+
+  const toastUI = {
+    root: document.getElementById("toast"),
+    text: document.getElementById("toast-text"),
+    action: document.getElementById("toast-action"),
+  };
+
+  let toastTimer = null;
+
+  function showToast(text, actionLabel, onAction) {
+    toastUI.text.textContent = text;
+    if (actionLabel && onAction) {
+      toastUI.action.textContent = actionLabel;
+      toastUI.action.hidden = false;
+      toastUI.action.onclick = (e) => {
+        e.preventDefault();
+        hideToast();
+        onAction();
+      };
+    } else {
+      toastUI.action.hidden = true;
+    }
+    toastUI.root.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(hideToast, 9000);
+  }
+
+  function hideToast() {
+    toastUI.root.hidden = true;
+    clearTimeout(toastTimer);
+  }
+
+  function renderSettingRow(item, state) {
+    const row = document.createElement("div");
+    row.className = "setting-row";
+    row.dataset.secret = item.type === "password" ? "1" : "0";
+
+    const label = document.createElement("div");
+    label.className = "label";
+    label.textContent = item.label;
+    if (item.type === "password") {
+      const hint = document.createElement("span");
+      hint.className = "hint";
+      hint.textContent = state.set ? t("key_set") : t("key_unset");
+      label.appendChild(hint);
+    }
+    row.appendChild(label);
+
+    let field;
+    if (item.type === "select") {
+      field = document.createElement("select");
+      for (const opt of item.options || []) {
+        const o = document.createElement("option");
+        o.value = opt[0];
+        o.textContent = opt[1];
+        field.appendChild(o);
+      }
+      field.value = state.value ?? "";
+    } else {
+      field = document.createElement("input");
+      field.type = item.type === "password" ? "password"
+        : item.type === "number" ? "number" : "text";
+      if (item.min !== undefined) field.min = item.min;
+      if (item.max !== undefined) field.max = item.max;
+      if (item.type === "password") {
+        field.value = "";
+        field.placeholder = state.set ? t("key_set") : t("key_unset");
+      } else {
+        field.value = state.value ?? "";
+      }
+    }
+    field.dataset.key = item.key;
+    row.appendChild(field);
+
+    if (item.link) {
+      const a = document.createElement("a");
+      a.href = item.link;
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.textContent = item.link_text || t("settings_link");
+      row.appendChild(a);
+    }
+    return row;
+  }
+
+  async function openSettings() {
+    hideToast();
+    settingsUI.title.textContent = t("settings");
+    settingsUI.desc.textContent = t("settings_desc");
+    settingsUI.body.innerHTML = "";
+    settingsUI.modal.hidden = false;
+
+    let data;
+    try {
+      data = await fetch("/settings").then((r) => r.json());
+    } catch {
+      settingsUI.body.textContent = t("backend_down");
+      return;
+    }
+    for (const group of data.schema || []) {
+      const h = document.createElement("div");
+      h.className = "setting-group-title";
+      h.textContent = group.group;
+      settingsUI.body.appendChild(h);
+      for (const item of group.items) {
+        settingsUI.body.appendChild(renderSettingRow(item, data.values?.[item.key] || {}));
+      }
+    }
+  }
+
+  async function saveSettings() {
+    const values = {};
+    settingsUI.body.querySelectorAll("[data-key]").forEach((field) => {
+      const row = field.closest(".setting-row");
+      const isSecret = row && row.dataset.secret === "1";
+      if (isSecret && field.value === "") return;   // 密钥留空 = 保持原样
+      values[field.dataset.key] = field.value;
+    });
+
+    const res = await fetch("/settings", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ values }),
+    }).then((r) => r.json()).catch(() => null);
+
+    if (!res) {
+      setStatus(t("backend_down"), "err");
+      return;
+    }
+    settingsUI.modal.hidden = true;
+    setStatus(t("saved"), "ok");
+    loadPresets();
+  }
+
+  settingsUI.btn.addEventListener("click", openSettings);
+  settingsUI.cancel.addEventListener("click", () => { settingsUI.modal.hidden = true; });
+  settingsUI.save.addEventListener("click", saveSettings);
+  settingsUI.modal.addEventListener("click", (e) => {
+    if (e.target === settingsUI.modal) settingsUI.modal.hidden = true;
   });
 
   applyLang("zh");

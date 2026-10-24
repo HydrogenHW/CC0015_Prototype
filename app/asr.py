@@ -514,7 +514,7 @@ class VolcengineStream:
 
 async def connect(lang: str, keywords: list[str] | None = None) -> ASRStream:
     """按当前配置返回真实或模拟的识别流。"""
-    if config.MOCK:
+    if config.mock_active():
         return MockStream(lang)  # type: ignore[return-value]
     if config.ASR_PROVIDER == "volc":
         return await VolcengineStream.connect(lang, keywords=keywords)

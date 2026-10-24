@@ -69,7 +69,7 @@ class Translator:
                 log.info("[纠字] %s", "；".join(f"{a}→{b}" for a, b in hits))
             text = fixed
 
-        if config.MOCK:
+        if config.mock_active():
             return text, self._mock_translate(text, direction)
 
         target = config.DIRECTIONS[direction]["target"]

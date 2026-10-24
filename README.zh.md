@@ -60,7 +60,11 @@
 
 ### 2. 配置密钥
 
-密钥放在**环境变量**里，不写进项目文件：
+两种方式，任选其一。
+
+**在界面里填**（推荐）。点左上角的齿轮，把密钥粘进去保存。会存在本机的 `data/settings.json`。
+
+**环境变量**（开发时方便）：
 
 ```powershell
 [Environment]::SetEnvironmentVariable("VOLC_API_KEY",     "你的key", "User")
@@ -68,7 +72,7 @@
 [Environment]::SetEnvironmentVariable("DEEPSEEK_API_KEY", "你的key", "User")
 ```
 
-设完重开一个窗口。
+界面里填的优先。两边都没有时，点「开始」会在顶部弹提示，并给一个直达设置的入口。
 
 ### 3. 启动
 

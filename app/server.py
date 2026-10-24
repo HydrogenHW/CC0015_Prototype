@@ -72,6 +72,10 @@ class HotwordIn(BaseModel):
     direction: str = "zh2en"
 
 
+class SettingsIn(BaseModel):
+    values: dict = {}
+
+
 class Client:
     """给 WebSocket 加一把锁——两个任务会并发往回写。"""
 
@@ -132,11 +136,33 @@ async def health():
     # OpenAI Realtime 只收 24 kHz 及以上，Deepgram 要 16 kHz。
     return {
         "ok": True,
-        "mock": config.MOCK,
+        "mock": config.mock_active(),
+        "missing": config.missing_keys(),
         "glossary": len(glossary),
         "sampleRate": config.SAMPLE_RATE,
         "provider": config.ASR_PROVIDER,
         "assistant": bool(config.DEEPSEEK_API_KEY),
+    }
+
+
+@app.get("/settings")
+async def get_settings():
+    """设置界面用：有哪些项、当前值、密钥只告诉有没有。"""
+    return {
+        "schema": config.settings_store.schema(),
+        "values": config.settings_store.public(),
+        "missing": config.missing_keys(),
+    }
+
+
+@app.post("/settings")
+async def update_settings(payload: SettingsIn):
+    result = config.settings_store.update(payload.values)
+    return {
+        "ok": True,
+        **result,
+        "values": config.settings_store.public(),
+        "missing": config.missing_keys(),
     }
 
 

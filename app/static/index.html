@@ -4,12 +4,19 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title data-i18n="title">实时字幕</title>
-  <link rel="stylesheet" href="/static/style.css?v=6">
+  <link rel="stylesheet" href="/static/style.css?v=7">
 </head>
 <body>
   <header class="bar">
-    <!-- 左侧：品牌 + 语言方向，固定区域，不随右侧内容变化而位移 -->
+    <!-- 左侧：设置 + 品牌 + 语言方向，固定区域，不随右侧内容变化而位移 -->
     <div class="bar-left">
+      <button id="settings-btn" class="gear" data-i18n-title="settings" title="设置" aria-label="settings">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+      </button>
       <span class="brand" data-i18n="brand">实时字幕</span>
       <div class="dirs" role="group" aria-label="translation direction">
         <button class="dir active" data-dir="zh" data-i18n="dir_zh">中文 → EN</button>
@@ -76,6 +83,25 @@
     </div>
   </div>
 
-  <script src="/static/app.js?v=6"></script>
+  <!-- 顶部居中的轻提示，缺密钥时用 -->
+  <div id="toast" class="toast" hidden>
+    <span id="toast-text"></span>
+    <a href="#" id="toast-action" hidden>去设置</a>
+  </div>
+
+  <!-- 设置界面 -->
+  <div id="settings-modal" class="modal" hidden>
+    <div class="modal-card settings-card" role="dialog" aria-modal="true">
+      <h3 id="settings-title" class="modal-title">设置</h3>
+      <p class="modal-desc" id="settings-desc"></p>
+      <div id="settings-body" class="settings-body"></div>
+      <div class="modal-actions">
+        <button id="settings-cancel" class="ghost" data-i18n="cancel">取消</button>
+        <button id="settings-save" class="primary" data-i18n="save">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/app.js?v=7"></script>
 </body>
 </html>

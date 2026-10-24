@@ -15,9 +15,10 @@ dist/
 # 原始资料（2MB PDF，术语表已从中提取成 data/glossary.json）
 data/raw/
 
-# 用户自定义热词 / 预设（本机数据）
+# 用户自定义热词 / 预设 / 设置（本机数据，含密钥）
 data/hotwords_custom.json
 data/presets.json
+data/settings.json
 
 # 本地验证产物
 .tmp/
