@@ -14,6 +14,7 @@ import gzip
 import json
 import logging
 import struct
+import time
 import uuid
 from dataclasses import dataclass
 from typing import AsyncIterator, Protocol
@@ -356,6 +357,11 @@ class VolcengineStream:
         self._sock = sock
         self._vad_ms = vad_ms
         self._closed = False
+        # 火山每次推送都带「到目前为止的全部 utterances」，必须自己去重，
+        # 否则同一句会被反复当成新句子送进翻译区。
+        self._seen: dict[float, float] = {}   # start_time → 首次见到的时间
+        self._done: set[float] = set()        # 已定稿的 start_time
+        self._cut_len: dict[float, int] = {}  # 被强制切分过时，已上屏的字数
 
     @classmethod
     async def connect(cls, lang: str, keywords: list[str] | None = None) -> "VolcengineStream":
@@ -419,15 +425,49 @@ class VolcengineStream:
             except Exception:
                 continue
             if msg.get("error"):
-                log.error("火山识别错误: %s", msg["error"])
+                err = str(msg["error"])
+                # 会话收尾时火山会抱怨没有新音频，这是正常结束，不是故障
+                if "Timed out waiting" in err or "session has ended" in err:
+                    break
+                log.error("火山识别错误: %s", err)
                 continue
             result = msg.get("payload", {}).get("result") or {}
+            now = time.monotonic()
+
             for utt in result.get("utterances") or []:
                 text = (utt.get("text") or "").strip()
                 if not text:
                     continue
-                # definite=True 是这句话的定稿，False 是边说边出的草稿
-                yield ASRResult(text=text, is_final=bool(utt.get("definite")))
+                start = utt.get("start_time", 0) or 0
+                if start in self._done:
+                    continue                      # 这句已经上屏过，别再重复
+
+                prev_len = self._cut_len.get(start, 0)
+
+                if utt.get("definite"):
+                    self._done.add(start)
+                    rest = text[prev_len:].strip()
+                    if rest:
+                        yield ASRResult(text=rest, is_final=True)
+                    continue
+
+                # 还没定稿。火山只在检测到静音时才给 definite，
+                # 老师连着讲不停就永远不给——到时长就本地强制切一刀。
+                # 只切「上次切分之后新增的部分」，否则长句后半段会被整段丢掉。
+                first = self._seen.setdefault(start, now)
+                if now - first >= config.ASR_MAX_SPEECH_MS / 1000:
+                    rest = text[prev_len:].strip()
+                    if len(rest) >= 8:
+                        self._cut_len[start] = len(text)
+                        self._seen[start] = now       # 计时重置，等下个窗口
+                        log.info("连讲超过 %.0f 秒，强制切分：%s",
+                                 config.ASR_MAX_SPEECH_MS / 1000, rest[:40])
+                        yield ASRResult(text=rest, is_final=True)
+                        continue
+                    self._seen[start] = now
+
+                # 草稿显示当前这句的完整文本，方便用户边听边看
+                yield ASRResult(text=text, is_final=False)
 
     async def close(self) -> None:
         if self._closed:
