@@ -71,11 +71,19 @@ Reopen your terminal afterwards. On macOS/Linux, export them in your shell profi
 
 ### Run
 
-```
-run.bat          # Windows
-```
+**Option 1 — browser extension (recommended for daily use)**
 
-Then open `http://127.0.0.1:8000`, press **开始**, and allow microphone access.
+1. Double-click `start_service.vbs` — starts the backend **with no console window**
+2. First time only: open `chrome://extensions`, enable **Developer mode**, click **Load unpacked**, pick the `extension/` folder
+3. From then on, click the toolbar icon
+
+The icon probes the service before opening anything. If it is not running you get an explanatory page instead of the browser's "can't reach this site".
+
+To start the service at login, run `install_autostart.bat` once (it drops a shortcut in your Startup folder, trivially removable).
+
+**Option 2 — `run.bat` (visible log, useful when debugging)**
+
+Double-click `run.bat`, then open `http://127.0.0.1:8000`, press **开始**, and allow microphone access.
 
 > Manual start:
 > ```bash
@@ -123,6 +131,9 @@ tools/
 ├── smoke_test.py      end-to-end test, no keys needed
 ├── test_order.py      concurrent translation ordering test
 └── pack_for_team.py   share-safe packaging
+extension/             Chrome extension (one-click entry point)
+start_service.vbs      silent backend launcher
+install_autostart.bat  enable start-at-login
 ```
 
 ## Testing

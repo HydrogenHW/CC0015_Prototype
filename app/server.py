@@ -13,6 +13,7 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+import sys
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
@@ -27,14 +28,19 @@ from .translate import Translator
 LOG_DIR = config.ROOT / "logs"
 LOG_DIR.mkdir(exist_ok=True)
 
+# pythonw.exe（无控制台）下 sys.stderr 是 None，直接挂 StreamHandler 会让
+# logging 初始化抛异常——进程在 import 阶段就死，连文件日志都留不下。
+_log_handlers: list[logging.Handler] = [
+    logging.FileHandler(LOG_DIR / "app.log", encoding="utf-8"),
+]
+if sys.stderr is not None:
+    _log_handlers.append(logging.StreamHandler())
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s  %(levelname)-7s %(name)s: %(message)s",
     datefmt="%H:%M:%S",
-    handlers=[
-        logging.StreamHandler(),
-        logging.FileHandler(LOG_DIR / "app.log", encoding="utf-8"),
-    ],
+    handlers=_log_handlers,
 )
 log = logging.getLogger("app")
 

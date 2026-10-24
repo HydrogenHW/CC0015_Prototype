@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>服务未启动</title>
+  <style>
+    :root {
+      --bg: #0e1116;
+      --card: #161b23;
+      --line: #232a35;
+      --fg: #e8ecf3;
+      --muted: #7d8799;
+      --accent: #5b9cff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: "Inter", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    }
+    .card {
+      width: min(560px, 92vw);
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 34px 34px 28px;
+    }
+    h1 {
+      margin: 0 0 10px;
+      font-size: 22px;
+      font-weight: 600;
+    }
+    p {
+      margin: 0 0 14px;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 15px;
+    }
+    code {
+      background: #0a0d12;
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      padding: 2px 7px;
+      font-size: 13px;
+      color: #a9b6ca;
+    }
+    ol {
+      margin: 0 0 22px;
+      padding-left: 20px;
+      color: var(--muted);
+      line-height: 1.9;
+      font-size: 15px;
+    }
+    .row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    button {
+      padding: 10px 20px;
+      border-radius: 9px;
+      font-size: 14px;
+      cursor: pointer;
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--fg);
+    }
+    button.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #04101f;
+      font-weight: 600;
+    }
+    button:disabled { opacity: .55; cursor: default; }
+    .hint {
+      margin-top: 18px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>本地服务没有在跑</h1>
+    <p>
+      这个扩展只是入口，真正的识别和翻译跑在本机的 Python 服务上。
+      现在 <code>127.0.0.1:8000</code> 没有响应。
+    </p>
+    <ol>
+      <li>在项目目录里双击 <code>start_service.vbs</code>（静默启动，无窗口）</li>
+      <li>等 2~3 秒，回到这里点「重试」</li>
+      <li>想以后开机自动启动，运行一次 <code>install_autostart.bat</code></li>
+    </ol>
+    <div class="row">
+      <button class="primary" id="retry">重试</button>
+      <button id="close">关闭本页</button>
+    </div>
+    <div class="hint" id="hint"></div>
+  </div>
+
+  <script>
+    const HEALTH = "http://127.0.0.1:8000/health";
+    const APP = "http://127.0.0.1:8000/";
+    const hint = document.getElementById("hint");
+    const retry = document.getElementById("retry");
+
+    async function probe() {
+      retry.disabled = true;
+      hint.textContent = "正在检查…";
+      try {
+        const res = await fetch(HEALTH, {
+          cache: "no-store",
+          signal: AbortSignal.timeout(1500),
+        });
+        if (res.ok) {
+          location.replace(APP);
+          return;
+        }
+        hint.textContent = "还是连不上。确认 start_service.vbs 已经运行过。";
+      } catch {
+        hint.textContent = "还是连不上。确认 start_service.vbs 已经运行过。";
+      } finally {
+        retry.disabled = false;
+      }
+    }
+
+    retry.addEventListener("click", probe);
+    document.getElementById("close").addEventListener("click", () => window.close());
+    // 打开本页时自动探一次，说不定用户已经在别处启动了
+    probe();
+  </script>
+</body>
+</html>
