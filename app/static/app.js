@@ -1,17 +1,19 @@
 /**
- * 前端：采集麦克风 → 16 kHz PCM → WebSocket；接收字幕 → 渲染。
+ * 前端：采集麦克风 → PCM → WebSocket；接收字幕 → 渲染。
  *
  * 几个必须守住的点：
  *   - 只在 127.0.0.1 / localhost 下跑，否则浏览器不给麦克风
- *   - echoCancellation + noiseSuppression 必开，教室里的空调声很致命
+ *   - 采样率由后端决定（OpenAI 要 24 kHz，Deepgram 要 16 kHz），
+ *     启动时从 /health 读，别写死
  *   - 重采样先降采样再取平均，不能直接抽样，否则混叠成噪声
  *   - 写字幕一律用 textContent，外部数据不能当 HTML 解析
  */
 (() => {
   "use strict";
 
-  const TARGET_RATE = 16000;   // Deepgram linear16 期望的采样率
-  const FRAME_SAMPLES = 1600;  // 1600 / 16000 = 100 ms
+  // 默认值只是兜底，真正用哪个由后端 /health 给
+  let TARGET_RATE = 24000;
+  let FRAME_SAMPLES = 2400;    // 100 ms
 
   // 浏览器自带的降噪/回声消除是为通话设计的，会削掉语音里的弱成分，
   // 对识别不一定是好事。做成 URL 开关，方便同一句话反复对比：
@@ -205,6 +207,19 @@
   async function start() {
     if (state.running) return;
     el.toggle.disabled = true;
+    setStatus("检查服务…");
+
+    // 问后端要采样率：换识别引擎时这里不用改
+    try {
+      const cfg = await fetch("/health", { cache: "no-store" }).then((r) => r.json());
+      if (cfg && Number(cfg.sampleRate) > 0) {
+        TARGET_RATE = Number(cfg.sampleRate);
+        FRAME_SAMPLES = Math.round(TARGET_RATE * 0.1);
+      }
+    } catch {
+      /* 读不到就用默认值，连接失败时下面会提示 */
+    }
+
     setStatus("请求麦克风…");
 
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {

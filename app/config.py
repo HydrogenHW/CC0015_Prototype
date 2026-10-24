@@ -22,15 +22,25 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "").strip()
 ASR_MODEL = os.getenv("ASR_MODEL", "nova-2")
 TRANSLATE_MODEL = os.getenv("TRANSLATE_MODEL", "gpt-4o-mini")
 
+# 识别引擎：openai（默认，走 OpenAI Realtime 转写）或 deepgram。
+# Deepgram 的 key 曾因撤销而 401，OpenAI 这条线复用了已有的 key，
+# 少一个供应商、少一个要来的密钥。
+ASR_PROVIDER = os.getenv("ASR_PROVIDER", "openai").strip().lower()
+
+# OpenAI Realtime 转写模型。mini 更快更便宜，4o 更准。
+OPENAI_ASR_MODEL = os.getenv("OPENAI_ASR_MODEL", "gpt-4o-transcribe")
+
 # 静音多久判定一句结束。太小会把词切碎、丢上下文，太大字幕出得慢。
-ASR_ENDPOINTING = int(os.getenv("ASR_ENDPOINTING", "300"))
+ASR_ENDPOINTING = int(os.getenv("ASR_ENDPOINTING", "500"))
 
 # 术语偏置：把术语表里的词喂给识别引擎，期望它更愿意听成这些词。
 # 效果因引擎和语言而异，所以做成开关，方便 A/B 对比。
 ASR_KEYWORDS = os.getenv("ASR_KEYWORDS", "0").strip() == "1"
 ASR_KEYWORDS_MAX = int(os.getenv("ASR_KEYWORDS_MAX", "40"))
 
-SAMPLE_RATE = 16000
+# 采样率由引擎决定：OpenAI Realtime 只收 24 kHz 及以上，
+# Deepgram 要 16 kHz。前端通过 /health 拿到这个值，不用改代码。
+SAMPLE_RATE = 24000 if ASR_PROVIDER == "openai" else 16000
 CHANNELS = 1
 FRAME_MS = 100
 

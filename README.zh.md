@@ -23,7 +23,7 @@
   getUserMedia → AudioWorklet → 16 kHz PCM
         │
         ▼  WebSocket
-  FastAPI ──► Deepgram 流式识别
+  FastAPI ──► OpenAI 流式转写
         │           │
         │           ▼
         │        语义分句
@@ -56,7 +56,8 @@
 
 - Python 3.10+
 - 麦克风（内置可用，外接效果明显更好）
-- [Deepgram](https://console.deepgram.com) 和 [OpenAI](https://platform.openai.com/api-keys) 账号
+- [OpenAI](https://platform.openai.com/api-keys) 账号 —— 识别和翻译都用它，**一个 key 就够**
+- 可选：[Deepgram](https://console.deepgram.com)，只有切到 `ASR_PROVIDER=deepgram` 时才需要
 
 > 本机已装好 Python 3.13.16（`%LocalAppData%\Programs\Python\Python313`，已加入用户 PATH），
 > 依赖在 `.venv/` 里，直接跳到下一步。换机器时运行 `.setup\install_python.py`
@@ -106,7 +107,7 @@
 ```
 app/
 ├── server.py         FastAPI 入口、WebSocket 桥接、顺序化并发翻译
-├── asr.py            Deepgram 流式识别（含 Mock）
+├── asr.py            OpenAI Realtime 转写（另含 Deepgram、Mock）
 ├── segmenter.py      语义分句
 ├── glossary.py       术语匹配（长词优先、去重叠）
 ├── pinyin_fix.py     同音纠错
@@ -154,7 +155,7 @@ python tools/pack_for_team.py
 
 **有灰色文字但没有正式字幕**
 
-识别在工作，分句没触发。Deepgram 靠 300 ms 静音判定一句结束，说话时自然停顿即可。若长时间不出，调小 `app/config.py` 里的 `SEG_MAX_WAIT`。
+识别在工作，分句没触发。转写会话用的是服务端 VAD，靠约 500 ms 静音判定一句结束，说话时自然停顿即可。若长时间不出，调小 `app/config.py` 里的 `SEG_MAX_WAIT`。
 
 **字幕出得慢**
 

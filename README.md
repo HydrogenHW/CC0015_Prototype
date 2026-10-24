@@ -23,7 +23,7 @@ Browser (localhost:8000)
   getUserMedia → AudioWorklet → 16 kHz PCM
         │
         ▼  WebSocket
-  FastAPI ──► Deepgram streaming ASR
+  FastAPI ──► OpenAI Realtime transcription
         │           │
         │           ▼
         │      sentence assembly
@@ -56,7 +56,8 @@ Measured end-to-end latency: **1.5–2.2 s**.
 
 - Python 3.10+
 - A microphone (built-in is fine, external is much better)
-- Accounts on [Deepgram](https://console.deepgram.com) and [OpenAI](https://platform.openai.com/api-keys)
+- An [OpenAI](https://platform.openai.com/api-keys) account — used for both recognition and translation, so one key is enough
+- Optional: [Deepgram](https://console.deepgram.com) if you switch `ASR_PROVIDER=deepgram`
 
 ### Configure API keys
 
@@ -101,7 +102,7 @@ Set `MOCK=1` in `.env`. Nothing external is called; recognition and translation 
 
 | Component | Notes |
 |---|---|
-| Streaming ASR | Deepgram nova-2, ~300 ms to first token |
+| Streaming ASR | OpenAI `gpt-4o-transcribe` via Realtime API; `delta` → interim, `completed` → final |
 | Translation | GPT-4o-mini, glossary-constrained, 3-way concurrent |
 | Glossary | 267 terms, 11 categories, WHO ISTTM (2007) |
 | Homophone repair | pypinyin, local, zero latency |
@@ -113,7 +114,7 @@ Set `MOCK=1` in `.env`. Nothing external is called; recognition and translation 
 ```
 app/
 ├── server.py         FastAPI entry, WebSocket bridge, ordered translation
-├── asr.py            Deepgram streaming client (+ mock)
+├── asr.py            OpenAI Realtime transcription (+ Deepgram, + mock)
 ├── segmenter.py      sentence assembly
 ├── glossary.py       longest-first, non-overlapping term matching
 ├── pinyin_fix.py     homophone repair
@@ -153,7 +154,7 @@ Check the address is `127.0.0.1` or `localhost`. A LAN IP is refused silently.
 
 **Grey text appears but never commits**
 
-Recognition works; sentence assembly has not fired. Deepgram finalises on 300 ms of silence, so pause naturally between sentences. If it still lags, lower `SEG_MAX_WAIT` in `app/config.py`.
+Recognition works; sentence assembly has not fired. The transcription session uses server-side VAD, which finalises a sentence after ~500 ms of silence — pause naturally between sentences. If it still lags, lower `SEG_MAX_WAIT` in `app/config.py`.
 
 **Captions feel slow**
 

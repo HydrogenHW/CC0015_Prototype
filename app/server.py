@@ -81,10 +81,12 @@ def pick_lang(value: str | None) -> str:
 async def lifespan(_app: FastAPI):
     config.validate()
     log.info("术语表：%s", glossary.summary())
-    log.info("翻译模型：%s ｜ 识别模型：%s",
-             config.TRANSLATE_MODEL, config.ASR_MODEL)
-    log.info("识别参数：endpointing=%dms ｜ 术语偏置=%s",
-             config.ASR_ENDPOINTING, "开" if config.ASR_KEYWORDS else "关")
+    log.info("翻译模型：%s ｜ 识别引擎：%s（%s）",
+             config.TRANSLATE_MODEL, config.ASR_PROVIDER,
+             config.OPENAI_ASR_MODEL if config.ASR_PROVIDER == "openai" else config.ASR_MODEL)
+    log.info("采集采样率：%d Hz ｜ endpointing=%dms ｜ 术语偏置=%s",
+             config.SAMPLE_RATE, config.ASR_ENDPOINTING,
+             "开" if config.ASR_KEYWORDS else "关")
     log.info("服务已就绪，用浏览器打开 run.bat 里给出的地址")
     yield
 
@@ -100,7 +102,15 @@ async def index():
 
 @app.get("/health")
 async def health():
-    return {"ok": True, "mock": config.MOCK, "glossary": len(glossary)}
+    # 前端靠这里拿到该用多大的采样率推流：
+    # OpenAI Realtime 只收 24 kHz 及以上，Deepgram 要 16 kHz。
+    return {
+        "ok": True,
+        "mock": config.MOCK,
+        "glossary": len(glossary),
+        "sampleRate": config.SAMPLE_RATE,
+        "provider": config.ASR_PROVIDER,
+    }
 
 
 @app.websocket("/ws")

@@ -9,13 +9,18 @@
 from __future__ import annotations
 
 import asyncio
+import base64
 import json
+import logging
 from dataclasses import dataclass
 from typing import AsyncIterator, Protocol
 
 from . import config
 
+log = logging.getLogger("asr")
+
 DG_URL = "wss://api.deepgram.com/v1/listen"
+OPENAI_RT_URL = "wss://api.openai.com/v1/realtime?intent=transcription"
 
 
 @dataclass
@@ -170,8 +175,117 @@ class MockStream:
         await self._queue.put(None)
 
 
+class OpenAITranscribeStream:
+    """OpenAI GA Realtime 转写（/v1/realtime?intent=transcription）。
+
+    事件模型刚好对上两段式字幕：
+      ...transcription.delta      逐字增量  → interim
+      ...transcription.completed  整句定稿  → final
+
+    两个坑已经踩过，写在这里免得再踩：
+      1. 旧文档里的 `OpenAI-Beta: realtime=v1` 头已经停用，带上会直接 400；
+      2. 采样率低于 24 kHz 会被拒（integer_below_min_value），
+         所以前端必须按 24 kHz 推流，别沿用 Deepgram 的 16 kHz。
+    """
+
+    def __init__(self, sock, model: str, lang: str, vad_ms: int):
+        self._sock = sock
+        self._model = model
+        self._lang = lang
+        self._vad_ms = vad_ms
+        self._cur = ""
+        self._closed = False
+
+    @classmethod
+    async def connect(cls, lang: str, keywords: list[str] | None = None) -> "OpenAITranscribeStream":
+        import websockets
+
+        headers = {"Authorization": f"Bearer {config.OPENAI_API_KEY}"}
+        sock = await websockets.connect(
+            OPENAI_RT_URL, additional_headers=headers, max_size=16 * 1024 * 1024
+        )
+        # "zh-CN" / "en-US" → "zh" / "en"
+        short = (lang or "zh").split("-")[0].lower()
+        self = cls(sock, config.OPENAI_ASR_MODEL, short, config.ASR_ENDPOINTING)
+
+        # 必须先收掉 session.created，再发 session.update。
+        # 顺序反了 update 会被服务端无声忽略，表现为「连上了但永远没有结果」。
+        try:
+            first = json.loads(await asyncio.wait_for(sock.recv(), timeout=10))
+            if first.get("type") == "error":
+                log.error("转写会话建立失败: %s", json.dumps(first)[:300])
+        except (asyncio.TimeoutError, ValueError):
+            log.warning("没等到 session.created，继续尝试配置")
+
+        await self._configure()
+        return self
+
+    async def _configure(self) -> None:
+        await self._sock.send(json.dumps({
+            "type": "session.update",
+            "session": {
+                "type": "transcription",
+                "audio": {
+                    "input": {
+                        "format": {"type": "audio/pcm", "rate": config.SAMPLE_RATE},
+                        "transcription": {"model": self._model, "language": self._lang},
+                        "turn_detection": {
+                            "type": "server_vad",
+                            "silence_duration_ms": self._vad_ms,
+                        },
+                    }
+                },
+            },
+        }))
+
+    async def send(self, data: bytes) -> None:
+        if self._closed:
+            return
+        await self._sock.send(json.dumps({
+            "type": "input_audio_buffer.append",
+            "audio": base64.b64encode(data).decode(),
+        }))
+
+    async def __aiter__(self) -> AsyncIterator[ASRResult]:
+        async for raw in self._sock:
+            if self._closed:
+                break
+            try:
+                msg = json.loads(raw)
+            except (ValueError, TypeError):
+                continue
+            kind = msg.get("type", "")
+
+            if kind.endswith("input_audio_transcription.delta"):
+                self._cur += msg.get("delta", "")
+                if self._cur.strip():
+                    yield ASRResult(text=self._cur, is_final=False)
+            elif kind.endswith("input_audio_transcription.completed"):
+                text = (msg.get("transcript") or self._cur).strip()
+                self._cur = ""
+                if text:
+                    yield ASRResult(text=text, is_final=True)
+            elif kind.endswith("input_audio_transcription.failed"):
+                log.warning("转写失败: %s", json.dumps(msg)[:200])
+                self._cur = ""
+            elif kind == "error":
+                # 单个事件出错不掀桌子，把原因留在日志里继续跑
+                log.error("OpenAI 转写出错: %s", json.dumps(msg)[:300])
+
+    async def close(self) -> None:
+        if self._closed:
+            return
+        self._closed = True
+        try:
+            await self._sock.close()
+        except Exception:
+            pass
+
+
 async def connect(lang: str, keywords: list[str] | None = None) -> ASRStream:
     """按当前配置返回真实或模拟的识别流。"""
     if config.MOCK:
         return MockStream(lang)  # type: ignore[return-value]
+    if config.ASR_PROVIDER == "openai":
+        return await OpenAITranscribeStream.connect(lang, keywords=keywords)
     return await DeepgramStream.connect(lang, keywords=keywords)
